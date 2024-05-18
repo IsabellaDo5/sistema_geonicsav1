@@ -21,4 +21,5 @@ import ensayos.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ensayos.views.index),
+    path('granulometria/', ensayos.views.granulometria),
 ]

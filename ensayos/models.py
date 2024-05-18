@@ -19,6 +19,8 @@ class Ensayo(models.Model):
 class Mallas(models.Model):
     id_malla = models.IntegerField(primary_key=True)
     medida = models.TextField()
+    medida_mm = models.DecimalField(max_digits=10, decimal_places=3, null=True)
+
 
 class Granulometria(models.Model):
     id_ensayo = models.ForeignKey(Ensayo, on_delete=models.CASCADE)
