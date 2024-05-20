@@ -1,3 +1,21 @@
+document.getElementById("calcular_granulometria").addEventListener('click', async ( )=>{
+    try{
+        const response = await fetch('api/graficogranu');
+        if (!response.ok){
+            throw new Error("Mala respuesta de la red");
+        }
+
+        const data = await response.json();
+        document.getElementById('grafico_contenedor').innerHTML = '<img src='+'"'+data+'"' + '>';
+    }
+    catch(error){
+        console.error('Error al ontener la información')
+    }
+});
+
+
+
+
 function calcTabla1(event, prp,perp, pera, pqp, sumaprp, sumaperp){
     calcularPeRP(prp,perp,sumaprp, sumaperp);
     calcularPeRA(perp,pera);
@@ -9,8 +27,20 @@ function calcTabla2(event, prp,perp, pera, pqp, sumaprp, sumaperp){
     calcularPeRA(perp,pera);
     calcularPQP(pera, pqp);
     tabla_lavado();
+    fracciones_muestra();
 }
 
+
+function fracciones_muestra(){
+    const pct_grava = document.getElementById("PCEG_GRANULOMETRIA");
+    const pct_arena = document.getElementById("PCEA_GRANULOMETRIA");
+    const pct_fino = document.getElementById("PCEF_GRANULOMETRIA");
+
+
+    pct_grava.textContent = 100 - parseFloat(document.getElementById("PQP9").value);
+    pct_fino.textContent =  parseFloat(document.getElementById("PQPL12").value);
+    pct_arena.textContent = 100 - (parseFloat(pct_grava.textContent) + parseFloat(pct_fino.textContent));
+}
 function tabla_lavado(){
 
     const peso_seco = document.getElementById("PS_GRANULOMETRIA");
@@ -18,9 +48,9 @@ function tabla_lavado(){
     const peso_seco_lavado = document.getElementById("PSL_GRANULOMETRIA");
 
 
-    peso_seco.textContent = document.getElementById("sumaPRPL").textContent;
+    peso_seco.value = document.getElementById("sumaPRPL").textContent;
     diferencia.textContent = document.getElementById("PRPL14").value;
-    peso_seco_lavado.textContent =parseFloat(peso_seco.textContent) - parseFloat( diferencia.textContent);
+    peso_seco_lavado.textContent =parseFloat(peso_seco.value) - parseFloat( diferencia.textContent);
 
 }
 function calcularPeRP(prp,perp, sumaPRP, sumaperp) {
@@ -39,7 +69,7 @@ function calcularPeRP(prp,perp, sumaPRP, sumaperp) {
         if (value !== "") {
             const peso = parseFloat(value);
             if (!isNaN(peso)) {
-                PeRPInput[x].value= ((PRPInput[x].value * 100)/sumarPRP).toFixed(3);
+                PeRPInput[x].value=Math.round((PRPInput[x].value * 100)/sumarPRP);
                 sumador += parseFloat(PeRPInput[x].value);
             }
         }
@@ -62,7 +92,7 @@ function calcularPeRA(perp_, pera_){
             const peso = parseFloat(value);
             if (!isNaN(peso)) {
                 sumador += peso;
-                PeRA[x].value = sumador.toFixed(3);
+                PeRA[x].value = Math.round(sumador);
             }
         }
     }
@@ -79,7 +109,7 @@ function calcularPQP(pera_, pqp_){
         if (value !== "") {
             const peso = parseFloat(value);
             if (!isNaN(peso)) {
-                PQP[x].value = (100-peso).toFixed(3);
+                PQP[x].value = Math.round(100-peso);
             }
         }
     }

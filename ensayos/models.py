@@ -8,13 +8,14 @@ class Area(models.Model):
 class Ensayo(models.Model):
     codigo_area = models.ForeignKey(Area, on_delete=models.CASCADE)
     nombre_proyecto = models.TextField()
-    cliente = models.TextField()
-    operador = models.TextField()
+    cliente = models.TextField(null=True)
+    operador = models.TextField(null=True)
     descripcion = models.TextField()
     no_sondeo = models.IntegerField()
+    no_muestra = models.IntegerField(null=True)
     profundidad = models.DecimalField(max_digits=10, decimal_places=2)
     fecha = models.DateField()
-    tipo = models.TextField()
+    tipo = models.TextField(null=True)
 
 class Mallas(models.Model):
     id_malla = models.IntegerField(primary_key=True)
