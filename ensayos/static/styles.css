@@ -7,7 +7,7 @@
 
 @media only screen and (max-width: 600px) {
 
-    input {
+    td > input {
         width: 5rem !important;
     }
 }

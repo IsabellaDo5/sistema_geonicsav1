@@ -5,12 +5,17 @@ from . import models
 
 def index(request):
 
-    '''mm= models.Mallas.objects.get(id_malla=9)
-    mm.medida = "No. 4"
-    mm.medida_mm = 4.75
-    mm.save()
-    SomeModel.objects.filter(id=id).delete()'''
+    '''mm= models.Mallas.objects.get(id_malla=11)
+    #mm.medida = "No. 4"
+    mm.medida_mm = 0.425
+    mm.save()'''
 
+    '''SomeModel.objects.filter(id=id).delete()'''
+
+    '''nueva_malla = models.Mallas(
+        medida ="Pasa No. 200"
+    )
+    nueva_malla.save()'''
 
     return redirect('/granulometria/')
 

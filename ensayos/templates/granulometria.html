@@ -4,8 +4,43 @@ Granulometria
 {% endblock %}
 
 {% block content %}
-
 <h1> Granulometria </h1>
+<hr>
+<form>
+  <div class="row">
+    <div class="col-md">
+      <label class="form-label">Proyecto</label>
+      <input type="text" class="form-control">
+
+      <label class="form-label">Cliente</label>
+      <input type="text" class="form-control">
+
+      <label class="form-label">Operador</label>
+      <input type="text" class="form-control">
+
+      <label class="form-label">Descripción</label>
+      <input type="text" class="form-control">
+
+    </div>
+
+    <div class="col-md">
+      <label class="form-label">Sondeo No.</label>
+      <input type="text" class="form-control">
+
+      <label class="form-label">Muestra No.</label>
+      <input type="text" class="form-control">
+
+      <label class="form-label">Profundidad</label>
+      <input type="text" class="form-control">
+
+      <label class="form-label">Fecha</label>
+      <input type="date" class="form-control">
+    </div>
+  </div>
+</form>
+
+
+<hr>
 <form action="/granulometria/" method="POST">
   {% csrf_token %}
 
@@ -24,33 +59,36 @@ Granulometria
         <tbody>
           {% for medida in mallas %}
           <tr>
-            {% if medida.1 > 2 %}
+            {% if medida.1 > 2 or medida.0 == "Pasa No. 4" %}
             <th scope="row">{{ medida.0 }}</th>
 
-            <td><input class="form-control" name="PRP" type="number" step="0.01" value=""
-                aria-label="default input example" id="PRP{{medida.2}}"> </td>
-            <td><input class="form-control" name="PeRP" type="number" step="0.01" value=""
-                aria-label="default input example"></td>
-            <td><input class="form-control" name="PeRA" type="number" step="0.01" value=""
-                aria-label="default input example"></td>
-            <td><input class="form-control" name="PQP" type="number" step="0.01" value=""
-                aria-label="default input example"></td>
-    
+            <td><input class="form-control" name="PRP" type="number" step="0.01" value="" id="PRP{{medida.2}}"
+                oninput="sumaPRP(event,'PRP' ,'sumaPRP')"> </td>
+            <td><input class="form-control" name="PeRP" type="number" step="0.01" value="" id="PeRP{{medida.2}}"
+                disabled></td>
+            <td><input class="form-control" name="PeRA" type="number" step="0.01" value="" disabled></td>
+            <td><input class="form-control" name="PQP" type="number" step="0.01" value="" disabled></td>
+
             {% endif %}
           </tr>
           {% endfor %}
           <tr>
             <th>Suma</th>
-            <td></td>
-            <td></td>
+            <td id="sumaPRP"> </td>
+            <td id="sumaPeRP"></td>
             <td></td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
-
+  <button type="button" class="btn btn-primary"
+    onclick="calcTabla1(event, 'PRP' ,'PeRP', 'PeRA', 'PQP', 'sumaPRP', 'sumaPeRP')">Calcular</button>
   <br>
+
+
+
+
   <h3>Composición granulometrica del material tamizado por la malla número 40 por lavado.</h3>
   <div class="row">
     <div class="table-responsive ">
@@ -67,36 +105,44 @@ Granulometria
         <tbody>
           {% for x in mallas %}
           <tr>
-            {% if x.1 < 4  %}
+            {% if x.1 < 4 or x.0 == "Pasa No. 200" %} 
+            
             <th scope="row">{{ x.0 }}</th>
-
-            <td><input class="form-control" name="PRPL" type="number" min="0" step="0.01" value="" 
-                aria-label="default input example"> </td>
-            <td><input class="form-control" name="PeRPL" type="number" min="0" step="0.01" value="" 
-                aria-label="default input example"></td>
-            <td><input class="form-control" name="PeRAL" type="number" min="0" step="0.01" value="" 
-                aria-label="default input example"></td>
-            <td><input class="form-control" name="PQPL" type="number" min="0" step="0.01" value="" 
-                aria-label="default input example"></td>
-            {% endif %}
+              <td><input class="form-control" name="PRPL" type="number" min="0" step="0.01" value=""
+                  oninput="sumaPRP(event,'PRPL' ,'sumaPRPL')" id="PRPL{{x.2}}"> </td>
+              <td><input class="form-control" name="PeRPL" type="number" min="0" step="0.01" value="" disabled></td>
+              <td><input class="form-control" name="PeRAL" type="number" min="0" step="0.01" value="" disabled></td>
+              <td><input class="form-control" name="PQPL" type="number" min="0" step="0.01" value="" disabled></td>
+              {% endif %}
           </tr>
           {% endfor %}
-
+          <tr>
+            <th>Suma</th>
+            <td id="sumaPRPL"></td>
+            <td id="sumaPeRPL"></td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </div>
+
+
   </div>
+  <button type="button" class="btn btn-primary"
+    onclick="calcTabla2(event, 'PRPL' ,'PeRPL', 'PeRAL', 'PQPL', 'sumaPRPL', 'sumaPeRPL')">Calcular</button>
+
+<br>
   <!--Tercera tabla -->
   <div class="row ">
     <div class="col-md">
-
+      <h3>Lavado</h3>
       <div class="table-responsive">
         <table class="table table-bordered border-dark-subtle">
           <tbody>
 
             <tr>
               <th scope="row">Peso seco (gr):</th>
-              <td id="PS_GRANULOMETRIA"> hola</td>
+              <td id="PS_GRANULOMETRIA"></td>
             </tr>
 
             <tr>
@@ -115,7 +161,7 @@ Granulometria
     </div>
 
     <div class="col-md ">
-
+      <h3>Peso seco</h3>
       <div class="table-responsive">
         <table class="table table-bordered border-dark-subtle">
           <tbody>
