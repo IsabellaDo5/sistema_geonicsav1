@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ensayos.views.index),
     path('granulometria/', ensayos.views.granulometria),
+    path('limites-de-attemberg/', ensayos.views.limites_atterberg),
     path('api/graficogranu', ensayos.views.grafica_granulometria.as_view(), name='grafica_granu'),
 ]

@@ -1,0 +1,353 @@
+{% extends "layout.html" %}
+{% block title %}
+Límites de Atterberg
+{% endblock %}
+
+{% block content %}
+<h1> Límites de atterberg </h1>
+
+<hr>
+<form action="/limites_atterberg/" method="POST">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-md">
+      <label class="form-label">Proyecto</label>
+      <input type="text" name="nombre_proyecto" class="form-control">
+
+      <label class="form-label">Cliente</label>
+      <input type="text" name="cliente" class="form-control">
+
+      <label class="form-label">Operador</label>
+      <input type="text" name="operador" class="form-control">
+
+      <label class="form-label">Descripción</label>
+      <input type="text" name="descripcion" class="form-control">
+
+    </div>
+
+    <div class="col-md">
+      <label class="form-label">Sondeo No.</label>
+      <input type="text" name="no_sondeo" class="form-control">
+
+      <label class="form-label">Muestra No.</label>
+      <input type="text" name="no_muestra" class="form-control">
+
+      <label class="form-label">Profundidad</label>
+      <input type="text" name="profundidad" class="form-control">
+
+      <label class="form-label">Fecha</label>
+      <input type="date" name="fecha_ensayo" class="form-control">
+    </div>
+  </div>
+  <hr>
+  <div class="row ">
+    <h1>Limite líquido</h1>
+    <div class="table-responsive">
+      <table class="table table-bordered border-dark-subtle">
+        <tbody>
+          <tr>
+
+            <th scope="row">Numero de golpes N.</th>
+
+            <td><input class="form-control" name="no_golpes_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="no_golpes_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="no_golpes_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="no_golpes_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="no_golpes_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="no_golpes_LL" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Recipiente no.</th>
+
+            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Pw más recipiente:</th>
+
+            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+          <tr>
+
+            <th scope="row">Ps más recipiente</th>
+
+            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Agua</th>
+
+            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
+            </td>
+            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
+            </td>
+            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
+            </td>
+            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
+            </td>
+            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
+            </td>
+
+            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
+            </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Recipiente</th>
+
+            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Peso seco (Ps)</th>
+
+            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+
+          </tr>
+
+          <tr>
+
+            <th scope="row">% de agua</th>
+
+            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+
+          </tr>
+
+
+          <tr>
+
+            <th scope="row">Factor</th>
+
+            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id=""
+                readonly> </td>
+
+          </tr>
+
+          <tr>
+
+            <th scope="row">Limite Liquido</th>
+
+            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
+                readonly> </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary"
+    onclick="limite_liquido(event, 'no_golpes_LL', 'recipiente_no_LL', 'pw_mas_recip_LL', 'ps_mas_recip_LL', 'agua_LL', 'recipiente_LL', 'peso_seco_LL' ,'Pe_agua_LL', 'factor_LL')">Calcular</button>
+  <br>
+
+  <div class="row ">
+    <div class="col-md">
+    <h2>Limite Plástico</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered border-dark-subtle">
+        <tbody>
+
+          <tr>
+
+            <th scope="row">Recipiente no.</th>
+
+            <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Pw más recipiente:</th>
+
+            <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+          <tr>
+
+            <th scope="row">Ps más recipiente</th>
+
+            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Agua</th>
+
+            <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" id="" readonly>
+            </td>
+            <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" id="" readonly>
+            </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Recipiente</th>
+
+            <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+
+          <tr>
+          
+            <th scope="row">Peso seco (Ps)</th>
+            <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" id=""
+              readonly> </td>
+          <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" id=""
+              readonly> </td>
+          <tr>
+
+            <th scope="row">Limite Plástico</th>
+
+            <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" id=""
+                readonly> </td>
+            <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" id=""
+                readonly> </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md">
+    <h2>Contracción Lineal</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered border-dark-subtle">
+        <tbody>
+
+          <tr>
+
+            <th scope="row">Molde no.</th>
+
+            <td><input class="form-control" name="molde_no" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="molde_no" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+
+          <tr>
+
+            <th scope="row">Long. molde (mm):</th>
+
+            <td><input class="form-control" name="long_molde"" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="long_molde"" type="number" step="0.01" value="" id=""> </td>
+            
+          </tr>
+          <tr>
+
+            <th scope="row">Long. Mat. Seco (mm):</th>
+
+            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+          <tr>
+
+          <th scope="row">Cont. Lineal:</th>
+
+            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+          </tr>
+          <tr>
+            <th colspan="3" class="text-center"> RESULTADO </th>
+          </tr>
+          <tr>
+            <th>L. L</th>
+            <td colspan="2"></td>
+          </tr>
+          <tr>
+            <th>L. p</th>
+            <td colspan="2"></td>
+          </tr>
+          <tr>
+            <th>I. P</th>
+            <td colspan="2"></td>
+          </tr>
+          <tr>
+            <th>C. L</th>
+            <td colspan="2"></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  </div>
+  <button type="button" class="btn btn-primary"
+    onclick=""
+    id="calcular_granulometria">Calcular</button>
+
+
+  <div class="row" id="grafico_contenedor">
+
+  </div>
+  <button type="submit" class="btn btn-outline-success">Guardar</button>
+</form>
+
+{% endblock %}

@@ -81,3 +81,17 @@ def granulometria(request):
         return render(request, 'granulometria.html', context={
             'mallas': mallas,
         })
+
+def limites_atterberg(request):
+    if request.method == 'POST':
+        return redirect('/')
+    else:
+        with connection.cursor() as cursor:
+            limite_L = cursor.execute("SELECT * FROM ensayos_limiteliquido").fetchall()
+            limite_P = cursor.execute("SELECT * FROM ensayos_limiteplastico").fetchall()
+
+
+        return render(request, 'limites_atterberg.html', context={
+            'limiteLiquido': limite_L,
+            'limitePlastico': limite_P,
+        })

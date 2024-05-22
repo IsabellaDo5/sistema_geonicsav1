@@ -1,3 +1,5 @@
+
+
 document.getElementById("calcular_granulometria").addEventListener('click', async ( )=>{
     try{
         const response = await fetch('api/graficogranu');
