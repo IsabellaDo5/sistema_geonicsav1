@@ -204,8 +204,12 @@ Límites de Atterberg
     </div>
   </div>
   <button type="button" class="btn btn-primary"
-    onclick="limite_liquido(event, 'no_golpes_LL', 'recipiente_no_LL', 'pw_mas_recip_LL', 'ps_mas_recip_LL', 'agua_LL', 'recipiente_LL', 'peso_seco_LL' ,'Pe_agua_LL', 'factor_LL')">Calcular</button>
+    onclick="limite_liquido(event, 'no_golpes_LL', 'recipiente_no_LL', 'pw_mas_recip_LL', 'ps_mas_recip_LL', 'agua_LL', 'recipiente_LL', 'peso_seco_LL' ,'Pe_agua_LL', 'factor_LL')" id="LL">Calcular</button>
   <br>
+
+
+  <div id="ajax-response"></div>
+
 
   <div class="row ">
     <div class="col-md">
@@ -349,5 +353,29 @@ Límites de Atterberg
   </div>
   <button type="submit" class="btn btn-outline-success">Guardar</button>
 </form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script >
+  $(document).ready(function() {
+    $('#LL').click(function() {
+        $.ajax({
+            url: '{% url "obtener_factores" %}',
+            success: function(catalogo_factores) {
+                // Limpiar el contenedor antes de agregar nuevos datos
+                $('#ajax-response').empty();
+                
+                // Iterar sobre cada objeto en el array recibido
+                $.each(catalogo_factores, function(index, factor) {
+                    // Aquí puedes acceder a las propiedades de cada objeto
+                    // Por ejemplo, para acceder al nombre (suponiendo que hay una propiedad 'N')
+                    $('#ajax-response').append('<p>' + factor.N + '</p>'+ '<p>' + factor.K + '</p>');
+                });
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.log('Error:', errorThrown);
+            }
+        });
+    });
+});
 
+</script>
 {% endblock %}

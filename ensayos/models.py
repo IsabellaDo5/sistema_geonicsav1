@@ -34,7 +34,7 @@ class Granulometria(models.Model):
 class FactoresLL(models.Model):
     id_factor = models.IntegerField(primary_key=True)
     N = models.IntegerField()
-    K = models.DecimalField(max_digits=10, decimal_places=2)
+    K = models.DecimalField(max_digits=10, decimal_places=3)
 
 class LimiteLiquido(models.Model):
     id_ensayo = models.ForeignKey(Ensayo, on_delete=models.CASCADE)

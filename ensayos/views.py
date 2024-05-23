@@ -1,15 +1,15 @@
 import matplotlib.pyplot as plt
-from django.db import connection
+from django.db import OperationalError, connection
 from django.shortcuts import render, redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import JsonResponse
+import json
 from . import models
 # Create your views here.
 
-
-def index(request):
-
+def querys_utiles():
     '''mm= models.Mallas.objects.get(id_malla=11)
     #mm.medida = "No. 4"
     mm.medida_mm = 0.425
@@ -22,7 +22,37 @@ def index(request):
     )
     nueva_malla.save()'''
 
+    # PARA ALMACENAR LOS FACTORES EN MI TABLA FACTORESLL
+    factores = [0.895,0.909, 0.915, 0.924, 0.932, 0.940, 0.947, 0.954,0.961, 0.967, 0.973, 0.979, 0.985, 0.990, 0.995, 1.000, 1.005,1.009,1.014,1.018,1.022, 1.026, 1.030, 1.034, 1.038,1.000, 1.005, 1.009, 1.014, 1.018]
+    
+    id = 1
+    N = 10
+    for valor in factores:
+        
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO factoresll(N,K) VALUES("+str(N)+""+str(valor)+") ")
+        N+=1
+        id+=1
+    return N
+
+def index(request):
+
     return redirect('/granulometria/')
+
+# https://medium.com/@rajputgajanan50/ajax-in-django-72b895708167
+def obtener_factores(request):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM ensayos_factoresll")
+            # Recuperar los nombres de las columnas
+            columns = [col[0] for col in cursor.description]
+            # Obtener todos los resultados de la consulta como una lista de diccionarios
+            rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    except OperationalError as e:
+        # Manejar el error si la consulta falla
+        return JsonResponse({'error': str(e)}, status=500)
+    # Devolver los datos como JSON
+    return JsonResponse(rows, safe=False)
 
 class grafica_granulometria(APIView):
     def obtener_grafica(self,request):
