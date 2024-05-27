@@ -24,4 +24,5 @@ urlpatterns = [
     path('granulometria/', ensayos.views.granulometria),
     path('limites-de-attemberg/', ensayos.views.limites_atterberg),
     path('ajax/obtener_factores/', ensayos.views.obtener_factores, name='obtener_factores'),
+    path('ajax/obtener_grafica/', ensayos.views.obtener_grafica, name="obtener-grafica"),
 ]

@@ -22,6 +22,8 @@ class Mallas(models.Model):
     medida = models.TextField()
     medida_mm = models.DecimalField(max_digits=10, decimal_places=3, null=True)
 
+    def __str__(self):
+        return f'{self.id_malla}, {self.medida}, {self.medida_mm}'
 
 class Granulometria(models.Model):
     id_ensayo = models.ForeignKey(Ensayo, on_delete=models.CASCADE)
@@ -30,6 +32,7 @@ class Granulometria(models.Model):
     PeRP = models.DecimalField(max_digits=10, decimal_places=2)
     PRA = models.DecimalField(max_digits=10, decimal_places=2)
     PeQP = models.DecimalField(max_digits=10, decimal_places=2)
+
 
 class FactoresLL(models.Model):
     id_factor = models.IntegerField(primary_key=True)

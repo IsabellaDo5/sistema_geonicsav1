@@ -1,10 +1,14 @@
+import io
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from django.db import OperationalError, connection
 from django.shortcuts import render, redirect
+import numpy as np
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 import json
 from . import models
 # Create your views here.
@@ -39,35 +43,51 @@ def index(request):
 
     return redirect('/granulometria/')
 
-# https://medium.com/@rajputgajanan50/ajax-in-django-72b895708167
+# FUNCIÓN ASINCRONA  
 def obtener_factores(request):
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM ensayos_factoresll")
-            # Recuperar los nombres de las columnas
+            # Obtiene los nombres de las columnas, 
             columns = [col[0] for col in cursor.description]
-            # Obtener todos los resultados de la consulta como una lista de diccionarios
+            # Obtener todos los resultados de la consulta como una lista de diccionarios [{"key":value, "key2": value2}]
             rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
     except OperationalError as e:
-        # Manejar el error si la consulta falla
+        # Envia un error si la consulta falla
         return JsonResponse({'error': str(e)}, status=500)
-    # Devolver los datos como JSON
+    # Devuelve los datos como JSON
     return JsonResponse(rows, safe=False)
 
-class grafica_granulometria(APIView):
-    def obtener_grafica(self,request):
 
-        datos = [1, 2, 3, 4, 5]
-        plt.plot(datos)
-        plt.xlabel('Eje X')
-        plt.ylabel('Eje Y')
-        plt.title('Mi Gráfica')
-        # Guarda la gráfica en un archivo o en memoria
-        img_path = '/graficas/mi_grafica.png'
-        plt.savefig(img_path)
-        plt.close()  # Cierra la figura para liberar memoria
-    
-        return Response()
+def obtener_grafica(request):
+        if request.method == 'GET':
+            plt.xlabel('Diámetro de particulas (mm)')
+            plt.ylabel('% que pasa')
+            plt.title('Curva granulométrica')
+
+            mallas_lista = json.loads(request.GET.get('mallas_lista', '[]'))
+            pesos_lista = json.loads(request.GET.get('pesos_lista', '[]'))
+
+             # Filtrar cadenas vacías y convertir a float
+            mallas_lista = [float(i) if i else 0 for i in mallas_lista ]
+            pesos_lista = [float(i) if i else 0 for i in pesos_lista ]
+
+            print("MEDIDAS MALLAS:", mallas_lista)
+            print("PESOS LISTA:", pesos_lista)
+
+            xpoints = np.array(mallas_lista)
+            ypoints = np.array(pesos_lista)
+
+            plt.plot(xpoints, ypoints)
+            
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            plt.close()
+            buf.seek(0)
+            
+            print(buf)
+            return HttpResponse(buf, content_type='image/png')
 
 
 def granulometria(request):
