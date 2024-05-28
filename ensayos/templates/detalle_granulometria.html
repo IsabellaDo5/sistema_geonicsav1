@@ -84,8 +84,7 @@ Granulometria
       </table>
     </div>
   </div>
-  <button type="button" class="btn btn-primary"
-    onclick="calcTabla1(event, 'PRP' ,'PeRP', 'PeRA', 'PQP', 'sumaPRP', 'sumaPeRP')">Calcular</button>
+  <button type="button" class="btn btn-primary"></button>
   <br>
 
 
@@ -132,9 +131,7 @@ Granulometria
 
 
   </div>
-  <button type="button" class="btn btn-primary"
-    onclick="calcTabla2(event, 'PRPL' ,'PeRPL', 'PeRAL', 'PQPL', 'sumaPRPL', 'sumaPeRPL')"
-    id="calcular_granulometria">Calcular</button>
+  <button type="button" class="btn btn-primary" id="calcular_granulometria">Calcular</button>
 
   <br>
   <!--Tercera tabla -->
@@ -195,10 +192,13 @@ Granulometria
 
   <img src="" alt="" srcset="" id="grafica">
 
-  <button type="button" onclick="graficar(event)" class="btn btn-outline-success">Guardar</button>
+  <div class="d-grid gap-2">
+    <button class="btn  btn-success" type="submit">Guardar</button>
+  </div>
 </form>
 
 {% endblock %}
+
 {% block scripts %}
 
 {% endblock %}

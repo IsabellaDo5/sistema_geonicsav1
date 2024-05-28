@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="hstack gap-3">
+    <div class="p-2">
+        <h3>Reportes</h3>
+    </div>
+    <div class="p-2 ms-auto">Granulometría</div>
+    <div class="p-2">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Filtrar
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    {% for ensayo in ensayos_granulometria %}
+    <div class="col-md">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ensayo.1}}</h5>
+                <p class="card-text">{{ensayo.4}}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Profundidad: {{x.6}}</li>
+                <li class="list-group-item">A second item</li>
+                <li class="list-group-item">Fecha: {{x.7 | date:"Y/M/D"}} </li>
+            </ul>
+            <div class="card-body">
+                <a href="#" class="card-link">Ver detalles</a>
+                <a href="#" class="card-link">Descargar Reporte</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

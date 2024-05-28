@@ -41,9 +41,9 @@ def querys_utiles():
 
 def index(request):
 
-    return redirect('/granulometria/')
+    return render(request,'index.html')
 
-# FUNCIÓN ASINCRONA  
+# FUNCIONES ASINCRONAS  
 def obtener_factores(request):
     try:
         with connection.cursor() as cursor:
@@ -90,24 +90,39 @@ def obtener_grafica(request):
             return HttpResponse(buf, content_type='image/png')
 
 
-def granulometria(request):
+# GRANULOMETRIA
+
+def reportes_granulometria(request):
+    if request.method == 'GET':
+        with connection.cursor() as cursor:
+            ensayos = cursor.execute("SELECT * FROM ensayos_ensayo").fetchall()
+        connection.commit()
+
+        print("Ensayos:" + str(ensayos))
+    return render(request, 'reportes_granulometria.html', context={
+        'ensayos_granulometria': ensayos,
+    })
+
+
+def registrar_granulometria(request):
     if request.method == 'POST':
         
         # INFORMACION DEL ENSAYO
-        nombre_proyecto = request.POST('nombre_proyecto')
-        cliente = request.POST('cliente')
-        operador = request.POST('operador')
-        descripcion = request.POST('descripcion')
-        no_sondeo = request.POST('no_sondeo')
-        no_muestra = request.POST('no_muestra')
-        profundidad = request.POST('profundidad')
-        fecha_ensayo = request.POST('fecha_ensayo')
+        nombre_proyecto = request.POST['nombre_proyecto']
+        cliente = request.POST['cliente']
+        operador = request.POST['operador']
+        descripcion = request.POST['descripcion']
+        no_sondeo = request.POST['no_sondeo']
+        no_muestra = request.POST['no_muestra']
+        profundidad = request.POST['profundidad']
+        fecha_ensayo = request.POST['fecha_ensayo']
 
         # GRANULOMETRIA
         PRP = request.POST.getlist('PRP')
         PerRP = request.POST.getlist('PeRP')
         PerRA = request.POST.getlist('PeRA')
         PQP = request.POST.getlist('PQP')
+        mallas = request.POST.getlist('ID_MALLA')
 
         # GRANULOMETRIA POR LAVADO
         PRPL = request.POST.getlist('PRPL')
@@ -115,24 +130,43 @@ def granulometria(request):
         PerRAL = request.POST.getlist('PeRAL')
         PQPL = request.POST.getlist('PQPL')
 
-        with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO ensayos_ensayo(nombre_proyecto, cliente,operador,descripcion, no_sondeo, profundidad, fecha, tipo, codigo_area_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)")
-            cursor.execute("SELECT * FROM ensayos_ensayo ORDER BY id DESC LIMIT 1;").fetchall()
-            cursor.execute("INSERT INTO ensayos_granulometria(PRP, PeRP,PRA, PeQP, id_ensayo_id, id_malla_id) VALUES(%s, %s, %s, %s, %s, %s )")
-            
-        cursor.commit()
-        print("return html: "+ str(PRP))
-        print("return html prpl: "+ str(PRPL))
+        peso_retenido = PRP+PRPL
+        pce_retenido_parcial = PerRP+PerRPL
+        pce_retenido_acumulado = PerRA+PerRAL
+        pce_que_pasa = PQP+PQPL
 
-        return render(request, 'index.html')
+        with connection.cursor() as cursor:
+
+            sql_info_ensayo = "INSERT INTO ensayos_ensayo(nombre_proyecto, cliente,operador,descripcion, no_sondeo, profundidad, fecha, tipo, codigo_area_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            insertar_valores = (nombre_proyecto,cliente,operador,descripcion,no_sondeo,profundidad,fecha_ensayo,"",2)
+            cursor.execute(sql_info_ensayo, insertar_valores)
+            id_ensayo = cursor.execute("SELECT id FROM ensayos_ensayo ORDER BY id DESC LIMIT 1;").fetchall()
+
+        connection.commit()
+
+        print("ensayo: "+str(id_ensayo[0][0]))
+        with connection.cursor() as cursor:
+            for id_malla, peso, pr, perrp, perra, pp in zip(mallas, peso_retenido,peso_retenido, pce_retenido_parcial, pce_retenido_acumulado, pce_que_pasa):
+                if peso != "":
+                    print("PESO RETENIDO: "+str(pr)+" PORCENTAJE PESO RETENIDO: "+str(perrp)+" PCE RETENIDO ACUMULADO: "+str(perra)+" PORCENTAJE QUE PASA: "+str(pp))
+                    sql_granulometria_t1= "INSERT INTO ensayos_granulometria(PRP, PeRP,PRA, PeQP, id_ensayo_id, id_malla_id) VALUES(%s, %s, %s, %s, %s, %s )"
+                    insertar_granulometria =(pr,perrp,perra,pp, id_ensayo[0][0], id_malla)
+                    cursor.execute(sql_granulometria_t1, insertar_granulometria)
+
+
+        return redirect('/reportes-granulometria/')
     else:
         mallas = models.Mallas.objects.values_list('medida', 'medida_mm', 'id_malla')
         print(mallas)
-        return render(request, 'granulometria.html', context={
+        return render(request, 'registrar_granulometria.html', context={
             'mallas': mallas,
         })
 
-def limites_atterberg(request):
+def detalle_granulometria(request):
+    if request.method == 'GET':
+        return render(request, 'detalle_granulometria.html')  
+        
+def registrar_limites_atterberg(request):
     if request.method == 'POST':
         return redirect('/')
     else:
@@ -141,7 +175,7 @@ def limites_atterberg(request):
             limite_P = cursor.execute("SELECT * FROM ensayos_limiteplastico").fetchall()
 
 
-        return render(request, 'limites_atterberg.html', context={
+        return render(request, 'registrar_limites_atterberg.html', context={
             'limiteLiquido': limite_L,
             'limitePlastico': limite_P,
         })

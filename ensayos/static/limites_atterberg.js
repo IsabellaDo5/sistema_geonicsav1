@@ -15,6 +15,8 @@ function obtenerFactor(no_golpes_id, factor_id){
                     factor_input.value = factor.K;
                 }
             });
+
+            return factor_input.value;
         })
         .catch(function (error) {
             console.log('Error:', error);
@@ -27,6 +29,9 @@ function limite_liquido(event, no_golpes, no_recipiente, pw_recip, ps_recip, agu
     calcular_pte_agua(agua, peso_seco, pte_agua);
 }
 
+function limite_plastico(event, pw_recip, ps_recip, agua, recipiente, peso_seco, pte_agua, factor){
+    calcular_agua(pw_recip, ps_recip, agua);
+}
 function calcular_peso_seco(ps_mas_recip, recipiente_input, peso_seco) {
     const ps_recip = document.getElementsByName(ps_mas_recip);
     const recipiente = document.getElementsByName(recipiente_input);

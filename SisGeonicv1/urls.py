@@ -21,8 +21,11 @@ import ensayos.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ensayos.views.index),
-    path('granulometria/', ensayos.views.granulometria),
-    path('limites-de-attemberg/', ensayos.views.limites_atterberg),
+    # REPORTES
+    path('reportes-granulometria/', ensayos.views.reportes_granulometria, name="reportes-granulometria"),
+    # REGISTROS
+    path('granulometria/nuevo/', ensayos.views.registrar_granulometria, name="registrar-granulometria"),
+    path('limites-de-atterberg/nuevo/', ensayos.views.registrar_limites_atterberg, name="registrar-limites-de-attemberg"),
     path('ajax/obtener_factores/', ensayos.views.obtener_factores, name='obtener_factores'),
     path('ajax/obtener_grafica/', ensayos.views.obtener_grafica, name="obtener-grafica"),
 ]
