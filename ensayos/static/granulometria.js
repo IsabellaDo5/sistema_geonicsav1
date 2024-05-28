@@ -158,3 +158,22 @@ function sumaPRP(event, PRP, sumaPRP_) {
     sumaPRP.textContent = sumador.toFixed(3); // Formatea el resultado a dos decimales
 
 }
+
+function sumaPRP(PRP, sumaPRP_) {
+    const PRP_lista = document.getElementsByName(PRP);
+    let sumaPRP = document.getElementById(sumaPRP_);
+    let sumador = 0.0;
+
+    for (let x = 0; x < PRP_lista.length; x++) {
+        const value = PRP_lista[x].value;
+        if (value !== "") {
+            const peso = parseFloat(value);
+            if (!isNaN(peso)) {
+                sumador += peso;
+            }
+        }
+    }
+
+    sumaPRP.textContent = sumador.toFixed(3); // Formatea el resultado a dos decimales
+
+}

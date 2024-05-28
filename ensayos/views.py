@@ -39,9 +39,6 @@ def querys_utiles():
         id+=1
     return N
 
-def index(request):
-
-    return render(request,'index.html')
 
 # FUNCIONES ASINCRONAS  
 def obtener_factores(request):
@@ -90,6 +87,14 @@ def obtener_grafica(request):
             return HttpResponse(buf, content_type='image/png')
 
 
+''' FUNCIONES NORMALES '''
+
+def index(request):
+    '''with connection.cursor() as cursor:
+        cursor.execute("UPDATE ensayos_ensayo SET nombre_proyecto = 'Delipollo', cliente='Isabella', descripcion='Probando 123' WHERE id = 10")
+    connection.commit()'''
+    return render(request,'index.html')
+
 # GRANULOMETRIA
 
 def reportes_granulometria(request):
@@ -99,8 +104,9 @@ def reportes_granulometria(request):
         connection.commit()
 
         print("Ensayos:" + str(ensayos))
-    return render(request, 'reportes_granulometria.html', context={
-        'ensayos_granulometria': ensayos,
+    return render(request, 'reportes.html', context={
+        'info': ensayos,
+        'nombre_ensayo': "Granulometría",
     })
 
 
@@ -162,10 +168,46 @@ def registrar_granulometria(request):
             'mallas': mallas,
         })
 
-def detalle_granulometria(request):
+def detalle_granulometria(request, id_ensayo):
     if request.method == 'GET':
-        return render(request, 'detalle_granulometria.html')  
-        
+        with connection.cursor() as cursor:
+            mallas = cursor.execute("SELECT * FROM ensayos_mallas").fetchall()
+
+            suma = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE id_ensayo_id = %s AND id_malla_id < 10", (id_ensayo,)).fetchall()
+            sql_encabezado = "SELECT * FROM ensayos_ensayo WHERE id = %s"
+            sql_granulometria = "SELECT * FROM  ensayos_granulometria WHERE id_ensayo_id = %s"
+            parametros=(id_ensayo,)
+            tablas_ensayo = cursor.execute(sql_granulometria, parametros).fetchall()
+            encabezado_ensayo = cursor.execute(sql_encabezado, parametros).fetchall()
+
+            print("ID: "+str(id_ensayo))
+            print("encabezado: "+str(encabezado_ensayo))
+            print(tablas_ensayo)
+            print(suma)
+
+        if len(encabezado_ensayo) == 0:
+            return render(request, 'error.html', context={
+                'mensaje': "Ups, parece que ha ocurrido un error",
+            })
+        else:
+            return render(request, 'detalle_granulometria.html', context={
+                'encabezado': encabezado_ensayo,
+                'detalle_ensayo': tablas_ensayo,
+                'mallas': mallas,
+            })  
+
+
+# LIMITES DE ATTERBERG
+def reportes_limites_atterberg(request):
+    if request.method == 'GET':
+        with connection.cursor() as cursor:
+            ensayos = cursor.execute("SELECT * FROM ensayos_ensayo").fetchall()
+        connection.commit()
+        return render(request, 'reportes.html', context={
+            'nombre_ensayo': "Límites de Atterberg",
+        })   
+
+
 def registrar_limites_atterberg(request):
     if request.method == 'POST':
         return redirect('/')

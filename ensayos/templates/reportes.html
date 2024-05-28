@@ -5,7 +5,7 @@
     <div class="p-2">
         <h3>Reportes</h3>
     </div>
-    <div class="p-2 ms-auto">Granulometría</div>
+    <div class="p-2 ms-auto">{{nombre_ensayo}}</div>
     <div class="p-2">
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -23,11 +23,11 @@
 
 <div class="row">
 
-    {% for ensayo in ensayos_granulometria %}
+    {% for ensayo in info %}
     <div class="col-md">
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 20rem;">
             <div class="card-body">
-                <h5 class="card-title">{{ensayo.1}}</h5>
+                <h5 class="card-title"><strong>{{ensayo.1}}</strong> </h5>
                 <p class="card-text">{{ensayo.4}}</p>
             </div>
             <ul class="list-group list-group-flush">
@@ -36,8 +36,8 @@
                 <li class="list-group-item">Fecha: {{x.7 | date:"Y/M/D"}} </li>
             </ul>
             <div class="card-body">
-                <a href="#" class="card-link">Ver detalles</a>
-                <a href="#" class="card-link">Descargar Reporte</a>
+                <a href="{% url 'detalle-granulometria' ensayo.0 %}" class="btn btn-primary">Ver detalles</a>
+                <a href="#" class="btn btn-dark"><i class="bi bi-box-arrow-in-down"></i>Descargar</a>
             </div>
         </div>
     </div>
