@@ -213,145 +213,109 @@ Límites de Atterberg
   <div id="ajax-response"></div>
 
 
-  <div class="row ">
+  <div class="row">
     <div class="col-md">
-    <h2>Limite Plástico</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered border-dark-subtle">
-        <tbody>
-
-          <tr>
-
-            <th scope="row">Recipiente no.</th>
-
-            <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-
-          <tr>
-
-            <th scope="row">Pw más recipiente:</th>
-
-            <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-          <tr>
-
-            <th scope="row">Ps más recipiente</th>
-
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-
-          <tr>
-
-            <th scope="row">Agua</th>
-
-            <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" id="" readonly>
-            </td>
-            <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" id="" readonly>
-            </td>
-          </tr>
-
-          <tr>
-
-            <th scope="row">Recipiente</th>
-
-            <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-
-          <tr>
-          
-            <th scope="row">Peso seco (Ps)</th>
-            <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" id=""
-              readonly> </td>
-          <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" id=""
-              readonly> </td>
-          <tr>
-
-            <th scope="row">Limite Plástico</th>
-
-            <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" id=""
-                readonly> </td>
-
-          </tr>
-        </tbody>
-      </table>
+        <h2>Limite Plástico</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered border-dark-subtle">
+                <tbody>
+                    <tr>
+                        <th scope="row">Recipiente no.</th>
+                        <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value=""></td>
+                        <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value=""></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Pw más recipiente:</th>
+                        <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value=""></td>
+                        <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value=""></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Ps más recipiente</th>
+                        <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value=""></td>
+                        <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value=""></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Agua</th>
+                        <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" readonly></td>
+                        <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" readonly></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Recipiente</th>
+                        <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value=""></td>
+                        <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value=""></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Peso seco (Ps)</th>
+                        <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" readonly></td>
+                        <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" readonly></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Limite Plástico</th>
+                        <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" readonly></td>
+                        <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" readonly></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
-
-  <div class="col-md">
-    <h2>Contracción Lineal</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered border-dark-subtle">
-        <tbody>
-
-          <tr>
-
-            <th scope="row">Molde no.</th>
-
-            <td><input class="form-control" name="molde_no" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="molde_no" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-
-          <tr>
-
-            <th scope="row">Long. molde (mm):</th>
-
-            <td><input class="form-control" name="long_molde"" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="long_molde"" type="number" step="0.01" value="" id=""> </td>
-            
-          </tr>
-          <tr>
-
-            <th scope="row">Long. Mat. Seco (mm):</th>
-
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-          <tr>
-
-          <th scope="row">Cont. Lineal:</th>
-
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-          <tr>
-            <th colspan="3" class="text-center"> RESULTADO </th>
-          </tr>
-          <tr>
-            <th>L. L</th>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th>L. p</th>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th>I. P</th>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th>C. L</th>
-            <td colspan="2"></td>
-          </tr>
-
-        </tbody>
-      </table>
+    <div class="col-md">
+        <h2>Contracción Lineal</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered border-dark-subtle">
+                <tbody>
+                    <tr>
+                        <th scope="row">Molde no.</th>
+                        <td><input class="form-control" name="molde_no" type="number" step="0.01" value=""></td>
+                        <td><input class="form-control" name="molde_no" type="number" step="0.01" value=""></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Long. molde (mm):</th>
+                        <td><input class="form-control" name="long_molde" type="number" step="0.01" value=""></td>
+                        <td><input class="form-control" name="long_molde" type="number" step="0.01" value=""></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Long. Mat. Seco (mm):</th>
+                        <td><input class="form-control" name="long_mat_seco" type="number" step="0.01" value=""></td>
+                        <td><input class="form-control" name="long_mat_seco" type="number" step="0.01" value=""></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cont. Lineal:</th>
+                        <td><input class="form-control" name="cont_lineal" type="number" step="0.01" value=""></td>
+                        <td><input class="form-control" name="cont_lineal" type="number" step="0.01" value=""></td>
+                    </tr>
+                    <tr>
+                        <th colspan="3" class="text-center"> RESULTADO </th>
+                    </tr>
+                    <tr>
+                        <th>L. L</th>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <th>L. p</th>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <th>I. P</th>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <th>C. L</th>
+                        <td colspan="2"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-
-  </div>
-  </div>
-  <button type="button" class="btn btn-primary"
-  onclick= "limite_plastico(event, 'pw_mas_recip_LP', 'ps_mas_recip_LP', 'agua_LP', 'recipiente_LP', 'peso_seco_LP' ,'Pe_agua_LP', 'factor_LP')"
+</div>
+<button type="button" class="btn btn-primary"
+    onclick="limite_plastico(event, 'pw_mas_recip_LP', 'ps_mas_recip_LP', 'agua_LP', 'recipiente_LP', 'peso_seco_LP', 'Limite_Plastico')"
     id="calcular_granulometria">Calcular</button>
 
 
   </div>
-  <button type="submit" class="btn btn-outline-success">Guardar</button>
+  <div class="d-grid gap-2">
+    <button class="btn  btn-success" type="submit">Guardar</button>
+  </div>
 </form>
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
 

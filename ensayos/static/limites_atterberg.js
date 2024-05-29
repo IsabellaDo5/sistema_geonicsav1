@@ -30,9 +30,13 @@ function limite_liquido(event, no_golpes, no_recipiente, pw_recip, ps_recip, agu
     calcular_limite_liquido(factor, pte_agua, ll_input);
 }
 
-function limite_plastico(event, pw_recip, ps_recip, agua, recipiente, peso_seco, pte_agua, factor){
+function limite_plastico(event, pw_recip, ps_recip, agua, recipiente, peso_seco_lp, lp_input) {
     calcular_agua(pw_recip, ps_recip, agua);
+    calcular_peso_seco(ps_recip, recipiente, peso_seco_lp);
+    calcular_limite_plastico(agua, peso_seco_lp, lp_input);
 }
+
+
 function calcular_limite_liquido(factor_input, pte_agua, ll_input){
     const factor = document.getElementsByName(factor_input)
     const pce_agua = document.getElementsByName(pte_agua);
@@ -53,6 +57,29 @@ function calcular_limite_liquido(factor_input, pte_agua, ll_input){
         }
     }
 }
+
+
+function calcular_limite_plastico(agua_input, peso_seco_input, LP_input){
+    const agua_tag = document.getElementsByName(agua_input);
+    const ps_tag = document.getElementsByName(peso_seco_input);
+    const lp_tag = document.getElementsByName(LP_input);
+
+    for (let x = 0; x < agua_tag.length; x++) {
+        lp_tag[x].value = "";
+        const agua = agua_tag[x].value;
+        const ps = ps_tag[x].value;
+
+        if (agua !== "" && ps != "") {
+            const arg1 = parseFloat(agua);
+            const arg2 = parseFloat(ps);
+            if (!isNaN(arg1) && !isNaN(arg2)) {
+                lp_tag[x].value = (100*(arg1/arg2)).toFixed(2);
+            }
+        }
+    }
+
+}
+
 function calcular_peso_seco(ps_mas_recip, recipiente_input, peso_seco) {
     const ps_recip = document.getElementsByName(ps_mas_recip);
     const recipiente = document.getElementsByName(recipiente_input);
@@ -63,7 +90,7 @@ function calcular_peso_seco(ps_mas_recip, recipiente_input, peso_seco) {
         const ps = ps_recip[x].value;
         const recip = recipiente[x].value;
 
-        if (recip !== "" && ps != "") {
+        if (recip !== "" && ps !== "") {
             const arg1 = parseFloat(ps);
             const arg2 = parseFloat(recip);
             if (!isNaN(arg1) && !isNaN(arg2)) {
@@ -71,8 +98,6 @@ function calcular_peso_seco(ps_mas_recip, recipiente_input, peso_seco) {
             }
         }
     }
-    
-
 }
 function calcular_agua(pw_mas_recip, ps_mas_recip, agua) {
 

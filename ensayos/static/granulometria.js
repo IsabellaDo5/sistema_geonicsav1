@@ -1,16 +1,30 @@
 function graficar(event) {
     const mallas_medidas = document.getElementsByName("PRPMM");
-    const pesos = document.getElementsByName("PQP");
+    const pesos_t1 = document.getElementsByName("PQP");
+    const pesos_t2 = document.getElementsByName("PQPL");
+
+
     let mallas_lista = [];
     let pesos_lista = [];
+    let contador_t2 = 0;
 
     for (let i = 0; i < mallas_medidas.length; i++) {
-
-        if (mallas_medidas[i].value != "") {
-
+        if (mallas_medidas[i].value && mallas_medidas[i].value > 2) {
+            console.log("primer tabla");
+            console.log(mallas_medidas[i].value)
+            console.log(pesos_t1[i].value)
             mallas_lista.push(mallas_medidas[i].value.trim());
-            pesos_lista.push(pesos[i].value.trim());
+            pesos_lista.push(pesos_t1[i].value.trim());
         }
+        else if(mallas_medidas[i].value && mallas_medidas[i].value <= 2){
+            console.log("segunda tabla")
+            console.log(mallas_medidas[i].value)
+            console.log(pesos_t2[contador_t2].value)
+            mallas_lista.push(mallas_medidas[i].value.trim());
+            pesos_lista.push(pesos_t2[contador_t2].value.trim());
+            contador_t2 += 1;
+        }
+        
     }
 
     console.log(mallas_lista);
@@ -158,22 +172,3 @@ function sumaPRP(event, PRP, sumaPRP_) {
     sumaPRP.textContent = sumador.toFixed(3); // Formatea el resultado a dos decimales
 
 }
-
-/*function sumaPRP(PRP, sumaPRP_) {
-    const PRP_lista = document.getElementsByName(PRP);
-    let sumaPRP = document.getElementById(sumaPRP_);
-    let sumador = 0.0;
-
-    for (let x = 0; x < PRP_lista.length; x++) {
-        const value = PRP_lista[x].value;
-        if (value !== "") {
-            const peso = parseFloat(value);
-            if (!isNaN(peso)) {
-                sumador += peso;
-            }
-        }
-    }
-
-    sumaPRP.textContent = sumador.toFixed(3); // Formatea el resultado a dos decimales
-
-}*/

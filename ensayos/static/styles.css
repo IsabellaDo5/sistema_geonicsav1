@@ -1,11 +1,11 @@
 .container{
     margin-top: 5vh !important;
     margin-bottom: 5vh !important;
-    
-
 }
-
-@media only screen and (max-width: 600px) {
+.bi-person-fill {
+    color: #0B263D !important;
+}
+@media only screen and (max-width: 760px) {
 
     td > input {
         width: 5rem !important;
