@@ -159,7 +159,7 @@ function sumaPRP(event, PRP, sumaPRP_) {
 
 }
 
-function sumaPRP(PRP, sumaPRP_) {
+/*function sumaPRP(PRP, sumaPRP_) {
     const PRP_lista = document.getElementsByName(PRP);
     let sumaPRP = document.getElementById(sumaPRP_);
     let sumador = 0.0;
@@ -176,4 +176,4 @@ function sumaPRP(PRP, sumaPRP_) {
 
     sumaPRP.textContent = sumador.toFixed(3); // Formatea el resultado a dos decimales
 
-}
+}*/

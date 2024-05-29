@@ -23,14 +23,35 @@ function obtenerFactor(no_golpes_id, factor_id){
         });
         
 }
-function limite_liquido(event, no_golpes, no_recipiente, pw_recip, ps_recip, agua, recipiente, peso_seco, pte_agua, factor) {
+function limite_liquido(event, no_golpes, no_recipiente, pw_recip, ps_recip, agua, recipiente, peso_seco, pte_agua, factor, ll_input) {
     calcular_agua(pw_recip, ps_recip, agua);
     calcular_peso_seco(ps_recip, recipiente, peso_seco);
     calcular_pte_agua(agua, peso_seco, pte_agua);
+    calcular_limite_liquido(factor, pte_agua, ll_input);
 }
 
 function limite_plastico(event, pw_recip, ps_recip, agua, recipiente, peso_seco, pte_agua, factor){
     calcular_agua(pw_recip, ps_recip, agua);
+}
+function calcular_limite_liquido(factor_input, pte_agua, ll_input){
+    const factor = document.getElementsByName(factor_input)
+    const pce_agua = document.getElementsByName(pte_agua);
+    const LL = document.getElementsByName(ll_input)
+
+
+    for (let x = 0; x < pce_agua.length; x++) {
+        LL[x].value = "";
+        const factor_value = factor[x].value;
+        const pte_agua = pce_agua[x].value;
+
+        if (factor_value !== "" && pte_agua != "") {
+            const arg1 = parseFloat(factor_value);
+            const arg2 = parseFloat(pte_agua);
+            if (!isNaN(arg1) && !isNaN(arg2)) {
+                LL[x].value = (arg1*arg2).toFixed(2);
+            }
+        }
+    }
 }
 function calcular_peso_seco(ps_mas_recip, recipiente_input, peso_seco) {
     const ps_recip = document.getElementsByName(ps_mas_recip);
@@ -50,6 +71,7 @@ function calcular_peso_seco(ps_mas_recip, recipiente_input, peso_seco) {
             }
         }
     }
+    
 
 }
 function calcular_agua(pw_mas_recip, ps_mas_recip, agua) {
@@ -94,4 +116,5 @@ function calcular_pte_agua(agua_i, peso_seco_i, pct_agua_i) {
             }
         }
     }
+
 }

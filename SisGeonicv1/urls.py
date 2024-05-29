@@ -21,6 +21,8 @@ import ensayos.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ensayos.views.index),
+    # ELIMINAR REPORTES
+    path('granulometria/eliminar/<int:id_ensayo>/', ensayos.views.eliminar_granulometria, name="eliminar-granulometria"),
     # LISTAR REPORTES
     path('granulometria/reportes/', ensayos.views.reportes_granulometria, name="reportes-granulometria"),
     path('limites-de-atterberg/reportes/', ensayos.views.reportes_limites_atterberg, name="reportes-limite-atterberg"),

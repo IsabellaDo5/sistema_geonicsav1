@@ -9,12 +9,34 @@ Granulometria
   <div class="p-2">
     <h3>Granulometria</h3>
   </div>
-  <div class="p-2 ms-auto"><button type="button" class="btn btn-dark"><i class="bi bi-pencil-square"></i>
-      Editar</button></div>
+  <div class="p-2 ms-auto"> 
+    <a href=""> <button type="button" class="btn btn-dark"><i class="bi bi-pencil-square"></i>
+      Editar</button></a>
+
+       <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-trash-fill"></i>
+        Eliminar</button>
+    </div>
+
 
 </div>
 
-
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Precaución!</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Estás a punto de eliminar este ensayo, ¿Estás seguro de hacerlo?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <a href="{% url 'eliminar-granulometria' id_ensayo %}"><button type="button" class="btn btn-danger">Eliminar</button></a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <form action="/granulometria/modificar/" method="POST">
   {% csrf_token %}
@@ -37,16 +59,16 @@ Granulometria
 
     <div class="col-md">
       <label class="form-label">Sondeo No.</label>
-      <input type="text" name="no_sondeo" class="form-control">
+      <input type="text" name="no_sondeo" class="form-control" disabled readonly>
 
       <label class="form-label">Muestra No.</label>
-      <input type="text" name="no_muestra" class="form-control">
+      <input type="text" name="no_muestra" class="form-control" disabled readonly>
 
       <label class="form-label">Profundidad</label>
-      <input type="text" name="profundidad" class="form-control">
+      <input type="text" name="profundidad" class="form-control" disabled readonly>
 
       <label class="form-label">Fecha</label>
-      <input type="date" name="fecha_ensayo" class="form-control">
+      <input type="date" name="fecha_ensayo" value="{{item.7|date:"Y-m-d"}}" class="form-control" disabled readonly>
     </div>
     {% endfor %}
   </div>
@@ -91,10 +113,11 @@ Granulometria
             {% endif %}
           </tr>
           {% endfor %}
-          {% endfor %}
+          {% endfor %}"
+          
           <tr>
             <th>Suma</th>
-            <td id="sumaPRP"> </td>
+            <td id="sumaPRP">{{t1_suma}}</td>
             <td id="sumaPeRP"></td>
             <td></td>
           </tr>
@@ -216,9 +239,6 @@ Granulometria
 
   <img src="" alt="" srcset="" id="grafica">
 
-  <div class="d-grid gap-2">
-    <button class="btn  btn-success" type="submit">Guardar</button>
-  </div>
 </form>
 
 {% endblock %}

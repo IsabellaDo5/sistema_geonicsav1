@@ -153,14 +153,13 @@ def registrar_granulometria(request):
         print("ensayo: "+str(id_ensayo[0][0]))
         with connection.cursor() as cursor:
             for id_malla, peso, pr, perrp, perra, pp in zip(mallas, peso_retenido,peso_retenido, pce_retenido_parcial, pce_retenido_acumulado, pce_que_pasa):
-                if peso != "":
-                    print("PESO RETENIDO: "+str(pr)+" PORCENTAJE PESO RETENIDO: "+str(perrp)+" PCE RETENIDO ACUMULADO: "+str(perra)+" PORCENTAJE QUE PASA: "+str(pp))
-                    sql_granulometria_t1= "INSERT INTO ensayos_granulometria(PRP, PeRP,PRA, PeQP, id_ensayo_id, id_malla_id) VALUES(%s, %s, %s, %s, %s, %s )"
-                    insertar_granulometria =(pr,perrp,perra,pp, id_ensayo[0][0], id_malla)
-                    cursor.execute(sql_granulometria_t1, insertar_granulometria)
+                print("PESO RETENIDO: "+str(pr)+" PORCENTAJE PESO RETENIDO: "+str(perrp)+" PCE RETENIDO ACUMULADO: "+str(perra)+" PORCENTAJE QUE PASA: "+str(pp))
+                sql_granulometria_t1= "INSERT INTO ensayos_granulometria(PRP, PeRP,PRA, PeQP, id_ensayo_id, id_malla_id) VALUES(%s, %s, %s, %s, %s, %s )"
+                insertar_granulometria =(pr,perrp,perra,pp, id_ensayo[0][0], id_malla)
+                cursor.execute(sql_granulometria_t1, insertar_granulometria)
 
 
-        return redirect('/reportes-granulometria/')
+        return redirect('/granulometria/reportes/')
     else:
         mallas = models.Mallas.objects.values_list('medida', 'medida_mm', 'id_malla')
         print(mallas)
@@ -173,7 +172,7 @@ def detalle_granulometria(request, id_ensayo):
         with connection.cursor() as cursor:
             mallas = cursor.execute("SELECT * FROM ensayos_mallas").fetchall()
 
-            suma = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE id_ensayo_id = %s AND id_malla_id < 10", (id_ensayo,)).fetchall()
+            suma = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE id_ensayo_id = %s AND id_malla_id < 10 or id_malla_id = 13", (id_ensayo,)).fetchall()
             sql_encabezado = "SELECT * FROM ensayos_ensayo WHERE id = %s"
             sql_granulometria = "SELECT * FROM  ensayos_granulometria WHERE id_ensayo_id = %s"
             parametros=(id_ensayo,)
@@ -193,8 +192,17 @@ def detalle_granulometria(request, id_ensayo):
             return render(request, 'detalle_granulometria.html', context={
                 'encabezado': encabezado_ensayo,
                 'detalle_ensayo': tablas_ensayo,
+                't1_suma':suma[0][0],
                 'mallas': mallas,
+                'id_ensayo': encabezado_ensayo[0][0],
             })  
+
+def eliminar_granulometria(request, id_ensayo):
+    with connection.cursor() as cursor:
+        cursor.execute("DELETE FROM ensayos_granulometria WHERE id_ensayo_id = %s", (id_ensayo,))
+        cursor.execute("DELETE FROM ensayos_ensayo WHERE id = %s", (id_ensayo,))
+    connection.commit()
+    return redirect('/granulometria/reportes/')
 
 
 # LIMITES DE ATTERBERG
@@ -210,7 +218,54 @@ def reportes_limites_atterberg(request):
 
 def registrar_limites_atterberg(request):
     if request.method == 'POST':
-        return redirect('/')
+
+        # LIMITE LIQUIDO
+        no_golpesLL= request.POST.getlist("no_golpes_LL")
+        no_recipienteLL = request.POST.getlist("recipiente_no_LL")
+        pw_mas_recipLL = request.POST.getlist("pw_mas_recip_LL")
+        ps_mas_recipLL = request.POST.getlist("ps_mas_recip_LL")
+        aguaLL = request.POST.getlist("agua_LL")
+        recipienteLL= request.POST.getlist("recipiente_LL")
+        peso_secoLL = request.POST.getlist("peso_seco_LL")
+        pce_aguaLL = request.POST.getlist("Pe_agua_LL")
+        factorLL = request.POST.getlist("factor_LL")
+        limite_liquido = request.POST.getlist("Limite_liquido")
+
+        # LIMITE PLASTICO
+        no_recipienteLP = request.POST.getlist("recipiente_no_LL")
+        pw_mas_recipLP = request.POST.getlist("pw_mas_recip_LP")
+        ps_mas_recipLP = request.POST.getlist("ps_mas_recip_LP")
+        aguaLP = request.POST.getlist("agua_LP")
+        recipienteLP = request.POST.getlist("recipiente_LP")
+        limite_plastico = request.POST.getlist("Limite_Plastico")
+
+        id_ensayo = registrar_ensayo(request)
+
+        for i in range(len(no_golpesLL)):
+            if len(no_golpesLL[i])!= 0:
+                
+                with connection.cursor() as cursor:
+                    cursor.execute('''
+                        INSERT INTO ensayos_limiteliquido (
+                            no_golpes, recipiente_no, pw_mas_recip, ps_mas_recip, agua, 
+                            recipiente, peso_seco, Pe_agua, factor, limite_liquido, id_ensayo_id
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ''', [no_golpesLL[i], no_recipienteLL[i],  pw_mas_recipLL[i], ps_mas_recipLL[i], aguaLL[i], 
+                         recipienteLL[i], peso_secoLL[i], pce_aguaLL[i], factorLL[i], limite_liquido[i], id_ensayo])
+        
+        for i in range(len(no_recipienteLP)):
+
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                    INSERT INTO ensayos_limiteplastico (
+                        recipiente_no, pw_mas_recip, ps_mas_recip, agua, 
+                        recipiente, limite_plastico, id_ensayo_id
+                    ) VALUES (%s, %s, %s, %s, %s, %s)
+                ''', [no_recipienteLP[i], pw_mas_recipLP[i], ps_mas_recipLP[i], aguaLP[i], 
+                      recipienteLP[i], limite_plastico[i], id_ensayo])    
+        print(id_ensayo)
+        
+        return redirect('/limites-de-atterberg/reportes/')
     else:
         with connection.cursor() as cursor:
             limite_L = cursor.execute("SELECT * FROM ensayos_limiteliquido").fetchall()
@@ -221,3 +276,29 @@ def registrar_limites_atterberg(request):
             'limiteLiquido': limite_L,
             'limitePlastico': limite_P,
         })
+    
+
+# NO SON VISTAS     
+def registrar_ensayo(request):
+    # INFORMACION DEL ENSAYO
+        nombre_proyecto = request.POST['nombre_proyecto']
+        cliente = request.POST['cliente']
+        operador = request.POST['operador']
+        descripcion = request.POST['descripcion']
+        no_sondeo = request.POST['no_sondeo']
+        no_muestra = request.POST['no_muestra']
+        profundidad = request.POST['profundidad']
+        fecha_ensayo = request.POST['fecha_ensayo']
+
+        with connection.cursor() as cursor:
+
+            sql_info_ensayo = "INSERT INTO ensayos_ensayo(nombre_proyecto, cliente,operador,descripcion, no_sondeo, profundidad, fecha, tipo, codigo_area_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            insertar_valores = (nombre_proyecto,cliente,operador,descripcion,no_sondeo,profundidad,fecha_ensayo,"",2)
+            cursor.execute(sql_info_ensayo, insertar_valores)
+            id_ensayo = cursor.execute("SELECT id FROM ensayos_ensayo ORDER BY id DESC LIMIT 1;").fetchall()
+
+        connection.commit()
+
+        return id_ensayo[0][0]
+
+        return nombre_proyecto    

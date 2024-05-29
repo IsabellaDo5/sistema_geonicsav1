@@ -1,4 +1,8 @@
 {% extends "layout.html" %}
+
+{% block title %}
+Reportes {{nombre_ensayo}}
+{% endblock %}
 {% block content %}
 
 <div class="hstack gap-3">
@@ -31,9 +35,9 @@
                 <p class="card-text">{{ensayo.4}}</p>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Profundidad: {{x.6}}</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">Fecha: {{x.7 | date:"Y/M/D"}} </li>
+                <li class="list-group-item">Profundidad: {{ensayo.6}}</li>
+                <li class="list-group-item">Muestra no: {{ensayo.9}}</li>
+                <li class="list-group-item">Fecha: {{ensayo.7}} </li>
             </ul>
             <div class="card-body">
                 <a href="{% url 'detalle-granulometria' ensayo.0 %}" class="btn btn-primary">Ver detalles</a>
