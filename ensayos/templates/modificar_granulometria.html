@@ -5,68 +5,52 @@ Granulometria
 
 {% block content %}
 
-<div class="hstack gap-3">
-  <div class="p-2">
-    <h3>Granulometria</h3>
-  </div>
-  <div class="p-2 ms-auto"> 
-    <a href="{% url 'modificar-granulometria' id_ensayo %}"> <button type="button" class="btn btn-dark"><i class="bi bi-pencil-square"></i>
-      Editar</button></a>
 
-       <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-trash-fill"></i>
-        Eliminar</button>
+
+
+<form action="{% url 'modificar-granulometria' id_ensayo %}" method="POST">
+  {% csrf_token %}
+  <div class="hstack gap-3">
+    <div class="p-2">
+      <h3>Granulometria</h3>
     </div>
-
-
-</div>
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Precaución!</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="p-2 ms-auto"> 
+    <button type="submit" class="btn btn-dark"><i class="bi bi-pencil-square"></i>
+        Guardar</button>
       </div>
-      <div class="modal-body">
-        Estás a punto de eliminar este ensayo, ¿Estás seguro de hacerlo?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <a href="{% url 'eliminar-granulometria' id_ensayo %}"><button type="button" class="btn btn-danger">Eliminar</button></a>
-      </div>
-    </div>
+  
   </div>
-</div>
 
+  
   <div class="row">
     {% for item in encabezado %}
     <div class="col-md">
       <label class="form-label">Proyecto</label>
-      <input type="text" name="nombre_proyecto" value="{{item.1}}" class="form-control" disabled readonly>
+      <input type="text" name="nombre_proyecto" value="{{item.1}}" class="form-control" >
 
       <label class="form-label">Cliente</label>
-      <input type="text" name="cliente" value="{{item.2}}" class="form-control" disabled readonly>
+      <input type="text" name="cliente" value="{{item.2}}" class="form-control" >
 
       <label class="form-label">Operador</label>
-      <input type="text" name="operador" value="{{item.3}}" class="form-control" disabled readonly>
+      <input type="text" name="operador" value="{{item.3}}" class="form-control" >
 
       <label class="form-label">Descripción</label>
-      <input type="text" name="descripcion" value="{{item.4}}" class="form-control" disabled readonly>
+      <input type="text" name="descripcion" value="{{item.4}}" class="form-control" >
 
     </div>
 
     <div class="col-md">
       <label class="form-label">Sondeo No.</label>
-      <input type="text" name="no_sondeo" value="{{item.5}}" class="form-control" disabled readonly>
+      <input type="text" name="no_sondeo" value="{{item.5}}" class="form-control" >
 
       <label class="form-label">Muestra No.</label>
-      <input type="text" name="no_muestra"value="{{item.9}}" class="form-control" disabled readonly>
+      <input type="text" name="no_muestra" value="{{item.9}}" class="form-control" >
 
       <label class="form-label">Profundidad</label>
-      <input type="text" name="profundidad"value="{{item.6}}" class="form-control" disabled readonly>
+      <input type="text" name="profundidad" value="{{item.6}}" class="form-control" >
 
       <label class="form-label">Fecha</label>
-      <input type="date" name="fecha_ensayo" value="{{item.7|date:"Y-m-d"}}" class="form-control" disabled readonly>
+      <input type="date" name="fecha_ensayo" value="{{item.7|date:"Y-m-d"}}" class="form-control" >
     </div>
     {% endfor %}
   </div>
@@ -123,7 +107,9 @@ Granulometria
       </table>
     </div>
   </div>
-  <!--<button type="button" class="btn btn-primary">Calcular</button>-->
+  <button type="button" class="btn btn-primary"
+    onclick="calcTabla1(event, 'PRP' ,'PeRP', 'PeRA', 'PQP', 'sumaPRP', 'sumaPeRP')">Calcular</button>
+  <br>
   <br>
 
 
@@ -176,7 +162,9 @@ Granulometria
 
 
   </div>
-  <!--<button type="button" class="btn btn-primary" id="calcular_granulometria">Calcular</button>-->
+  <button type="button" class="btn btn-primary"
+    onclick="calcTabla2(event, 'PRPL' ,'PeRPL', 'PeRAL', 'PQPL', 'sumaPRPL', 'sumaPeRPL')"
+    id="calcular_granulometria">Calcular</button>
 
   <br>
   <!--Tercera tabla -->
@@ -234,8 +222,10 @@ Granulometria
       </div>
     </div>
   </div>
-<button type="button" onclick="graficar(event)">Ver la grafica</button>
-  <img src="" alt="" srcset="" id="grafica">
+  <div class="d-grid gap-2">
+    <button class="btn  btn-success" type="submit">Guardar</button>
+  </div>
+</form>
 {% endblock %}
 
 {% block scripts %}

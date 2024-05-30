@@ -57,9 +57,9 @@ function calcTabla1(event, prp, perp, pera, pqp, sumaprp, sumaperp) {
 }
 
 function calcTabla2(event, prp, perp, pera, pqp, sumaprp, sumaperp) {
-    calcularPeRP(prp, perp, sumaprp, sumaperp);
+    calcularPeRPL(prp, perp, sumaprp, sumaperp);
     calcularPeRA(perp, pera);
-    calcularPQP(pera, pqp);
+    calcularPQPL(pera, pqp);
     tabla_lavado();
     fracciones_muestra();
 }
@@ -112,7 +112,32 @@ function calcularPeRP(prp, perp, sumaPRP, sumaperp) {
 
     }
 }
+function calcularPeRPL(prp, perp, sumaPRP, sumaperp) {
 
+    console.log(prp, perp, sumaperp, sumaPRP);
+    const PRPInput = document.getElementsByName(prp);
+    const PeRPInput = document.getElementsByName(perp);
+    let sumarPRP = document.getElementById(sumaPRP).textContent;
+    const totalPeRP = document.getElementById(sumaperp);
+    const pqp_t1 = document.getElementById("PQP9");
+    let sumador = 0.0;
+
+
+    for (let x = 0; x < PRPInput.length; x++) {
+        PeRPInput[x].value = "";
+        const value = PRPInput[x].value;
+        if (value !== "") {
+            const peso = parseFloat(value);
+            if (!isNaN(peso)) {
+                PeRPInput[x].value = Math.round(peso/sumarPRP*pqp_t1.value);
+                sumador += parseFloat(PeRPInput[x].value);
+            }
+        }
+
+        totalPeRP.textContent = sumador;
+
+    }
+}
 
 function calcularPeRA(perp_, pera_) {
     const PeRP = document.getElementsByName(perp_);
@@ -137,20 +162,51 @@ function calcularPQP(pera_, pqp_) {
 
     const PeRA = document.getElementsByName(pera_);
     const PQP = document.getElementsByName(pqp_);
+    const prpmm = document.getElementsByName("PRPMM");
+
     for (let x = 0; x < PeRA.length; x++) {
         PQP[x].value = "";
         let value = PeRA[x].value;
 
-        if (value !== "") {
+        if (prpmm[x].value && value !== "") {
             const peso = parseFloat(value);
             if (!isNaN(peso)) {
                 PQP[x].value = Math.round(100 - peso);
             }
             
         }
-        else{
+        else if(prpmm[x].value){
             PQP[x].value = 100;
         }
+    }
+
+}
+
+function calcularPQPL(pera_, pqp_) {
+
+    const PeRA = document.getElementsByName(pera_);
+    const PQP = document.getElementsByName(pqp_);
+    const prpmm = document.getElementsByName("PRPMM");
+    const pqp_t1 = document.getElementById("PQP9");
+
+    let contador = 10;
+    for (let x = 0; x < PeRA.length; x++) {
+        PQP[x].value = "";
+        let valor = PeRA[x].value;
+        console.log(valor);
+        if (prpmm[contador].value && valor != "" ) {
+            const peso = parseFloat(valor);
+
+            console.log(prpmm[contador].value);
+            if (!isNaN(peso)) {
+                PQP[x].value = Math.round(pqp_t1.value - peso);
+            }
+            
+        }
+        else if(prpmm[contador].value){
+            PQP[x].value = 100;
+        }
+        contador +=1;
     }
 
 }
