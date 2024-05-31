@@ -33,6 +33,7 @@ urlpatterns = [
     path('limites-de-atterberg/nuevo/', ensayos.views.registrar_limites_atterberg, name="registrar-limites-de-attemberg"),
     #DETALLE
     path('granulometria/reporte/<int:id_ensayo>/',ensayos.views.detalle_granulometria, name="detalle-granulometria"),
+    path('granulometria/reporte/<int:id_ensayo>/',ensayos.views.detalle_limites_de_attergberg, name="detalle-limites-de-atterberg"),
     # ASINCRONO
     path('ajax/obtener_factores/', ensayos.views.obtener_factores, name='obtener_factores'),
     path('ajax/obtener_grafica/', ensayos.views.obtener_grafica, name="obtener-grafica"),

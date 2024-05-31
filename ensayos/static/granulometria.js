@@ -9,26 +9,17 @@ function graficar(event) {
     let contador_t2 = 0;
 
     for (let i = 0; i < mallas_medidas.length; i++) {
-        if (mallas_medidas[i].value && mallas_medidas[i].value > 2) {
-            console.log("primer tabla");
-            console.log(mallas_medidas[i].value)
-            console.log(pesos_t1[i].value)
+        if (mallas_medidas[i].value && mallas_medidas[i].value > 2 && mallas_medidas[i].value != 5) {
             mallas_lista.push(mallas_medidas[i].value.trim());
             pesos_lista.push(pesos_t1[i].value.trim());
         }
-        else if(mallas_medidas[i].value && mallas_medidas[i].value <= 2){
-            console.log("segunda tabla")
-            console.log(mallas_medidas[i].value)
-            console.log(pesos_t2[contador_t2].value)
+        else if(mallas_medidas[i].value && mallas_medidas[i].value <= 2 && mallas_medidas[i].value != 0.08){
             mallas_lista.push(mallas_medidas[i].value.trim());
             pesos_lista.push(pesos_t2[contador_t2].value.trim());
             contador_t2 += 1;
         }
         
     }
-
-    console.log(mallas_lista);
-    console.log(pesos_lista);
 
     axios.get('/ajax/obtener_grafica/', {
         params: {
@@ -163,19 +154,20 @@ function calcularPQP(pera_, pqp_) {
     const PeRA = document.getElementsByName(pera_);
     const PQP = document.getElementsByName(pqp_);
     const prpmm = document.getElementsByName("PRPMM");
+    const id = document.getElementsByName("ID_MALLA");
 
     for (let x = 0; x < PeRA.length; x++) {
         PQP[x].value = "";
         let value = PeRA[x].value;
 
-        if (prpmm[x].value && value !== "") {
+        if (prpmm[x].value && value !== "" && id[x].value < 13) {
             const peso = parseFloat(value);
             if (!isNaN(peso)) {
                 PQP[x].value = Math.round(100 - peso);
             }
             
         }
-        else if(prpmm[x].value){
+        else if(prpmm[x].value && id[x].value < 13){
             PQP[x].value = 100;
         }
     }
@@ -188,13 +180,14 @@ function calcularPQPL(pera_, pqp_) {
     const PQP = document.getElementsByName(pqp_);
     const prpmm = document.getElementsByName("PRPMM");
     const pqp_t1 = document.getElementById("PQP9");
+    const id = document.getElementsByName("ID_MALLA");
 
     let contador = 10;
     for (let x = 0; x < PeRA.length; x++) {
         PQP[x].value = "";
         let valor = PeRA[x].value;
         console.log(valor);
-        if (prpmm[contador].value && valor != "" ) {
+        if (prpmm[contador].value && valor != "" && id[x].value < 13) {
             const peso = parseFloat(valor);
 
             console.log(prpmm[contador].value);
@@ -203,7 +196,7 @@ function calcularPQPL(pera_, pqp_) {
             }
             
         }
-        else if(prpmm[contador].value){
+        else if(prpmm[contador].value && id[x].value < 13){
             PQP[x].value = 100;
         }
         contador +=1;
