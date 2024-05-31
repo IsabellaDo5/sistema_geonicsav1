@@ -141,7 +141,7 @@ def reportes_granulometria(request):
         connection.commit()
 
         print("Ensayos:" + str(ensayos))
-    return render(request, 'reportes.html', context={
+    return render(request, 'ensayos/reportes.html', context={
         'info': ensayos,
         'link': "detalle-granulometria",
         'nombre_ensayo': "Granulometría",
@@ -207,11 +207,11 @@ def detalle_granulometria(request, id_ensayo):
             print(tablas_ensayo)
 
         if len(encabezado_ensayo) == 0:
-            return render(request, 'error.html', context={
+            return render(request, 'ensayos/error.html', context={
                 'mensaje': "Ups, parece que ha ocurrido un error",
             })
         else:
-            return render(request, 'detalle_granulometria.html', context={
+            return render(request, 'ensayos/detalle_granulometria.html', context={
                 'encabezado': encabezado_ensayo,
                 'detalle_ensayo': tablas_ensayo,
                 't1_suma':suma_PRP[0][0],
@@ -265,7 +265,7 @@ def modificar_granulometria(request, id_ensayo):
             encabezado_ensayo = cursor.execute(sql_encabezado, parametros).fetchall()
 
             connection.commit()
-        return render(request, 'modificar_granulometria.html', context={
+        return render(request, 'ensayos/modificar_granulometria.html', context={
             'encabezado': encabezado_ensayo,
             'detalle_ensayo': tablas_ensayo,
             'mallas': mallas,
@@ -288,7 +288,7 @@ def reportes_limites_atterberg(request):
         with connection.cursor() as cursor:
             ensayos = cursor.execute("SELECT * FROM ensayos_ensayo WHERE tipo='LIMITES DE ATTERBERG'").fetchall()
         connection.commit()
-        return render(request, 'reportes.html', context={
+        return render(request, 'ensayos/reportes.html', context={
             'nombre_ensayo': "Límites de Atterberg",
             'link':  "detalle-limites-de-atterberg",
             'info': ensayos,
@@ -358,13 +358,13 @@ def registrar_limites_atterberg(request):
             limite_P = cursor.execute("SELECT * FROM ensayos_limiteplastico").fetchall()
 
 
-        return render(request, 'registrar_limites_atterberg.html', context={
+        return render(request, 'ensayos/registrar_limites_atterberg.html', context={
             'limiteLiquido': limite_L,
             'limitePlastico': limite_P,
         })
     
-def detalle_limites_de_attergberg(request):
-    return render(request, 'error.html')
+def detalle_limites_de_attergberg(request, id_ensayo):
+    return render(request, 'ensayos/error.html')
 ##############################################################################################
 # NO SON VISTAS     
 def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):

@@ -30,6 +30,25 @@
             </a>
           </li>
           <li class="sidebar-header">
+            Admin
+          </li>
+
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link collapsed" data-bs-target="#proyectos" data-bs-toggle="collapse"
+              aria-expanded="false"><i class="fa-solid fa-file-lines pe-2"></i>
+              Proyectos
+            </a>
+            <ul id="proyectos" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+              <li class="sidebar-item ">
+                <a href="{% url 'listar-proyectos' %}" class="sidebar-link "> <i class="bi bi-list-task"></i>Proyectos actuales</a>
+              </li>
+              <li class="sidebar-item">
+                <a href="{% url 'registrar-proyecto' %}" class="sidebar-link"><i class="bi bi-file-earmark-plus"></i>Añadir</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="sidebar-header">
             Ensayos
           </li>
 

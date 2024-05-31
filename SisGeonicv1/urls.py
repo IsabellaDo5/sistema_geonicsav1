@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import ensayos.views 
+import proyectos.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,7 +34,12 @@ urlpatterns = [
     path('limites-de-atterberg/nuevo/', ensayos.views.registrar_limites_atterberg, name="registrar-limites-de-attemberg"),
     #DETALLE
     path('granulometria/reporte/<int:id_ensayo>/',ensayos.views.detalle_granulometria, name="detalle-granulometria"),
-    path('granulometria/reporte/<int:id_ensayo>/',ensayos.views.detalle_limites_de_attergberg, name="detalle-limites-de-atterberg"),
+    path('limites-atterberg/reporte/<int:id_ensayo>/',ensayos.views.detalle_limites_de_attergberg, name="detalle-limites-de-atterberg"),
+
+    #PROYECTOS
+
+    path('proyectos/nuevo/', proyectos.views.registrar_proyecto, name="registrar-proyecto"),
+    path('proyectos/ver/', proyectos.views.listar_proyectos, name="listar-proyectos"),
     # ASINCRONO
     path('ajax/obtener_factores/', ensayos.views.obtener_factores, name='obtener_factores'),
     path('ajax/obtener_grafica/', ensayos.views.obtener_grafica, name="obtener-grafica"),
