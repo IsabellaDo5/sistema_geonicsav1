@@ -5,9 +5,19 @@
 .bi-person-fill {
     color: #0B263D !important;
 }
+.granulometria_chart{
+    width:50vw !important;
+}
+canvas{
+    width: 100% !important;
+    height: 100% !important;
+}
 @media only screen and (max-width: 760px) {
 
     td > input {
         width: 5rem !important;
+    }
+    .granulometria_chart{
+        width:100% !important;
     }
 }

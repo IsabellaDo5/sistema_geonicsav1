@@ -21,7 +21,10 @@ function graficar(event) {
         
     }
 
-    axios.get('/ajax/obtener_grafica/', {
+    GraficaItemsMasVendidos(mallas_lista, pesos_lista, document.getElementById("granulometria_chart"))
+}
+/*
+axios.get('/ajax/obtener_grafica/', {
         params: {
             mallas_lista: JSON.stringify(mallas_lista),
             pesos_lista: JSON.stringify(pesos_lista)
@@ -37,10 +40,7 @@ function graficar(event) {
         .catch(function (error) {
             console.error('Error al obtener la gráfica:', error);
         });
-}
-
-
-
+*/
 function calcTabla1(event, prp, perp, pera, pqp, sumaprp, sumaperp) {
     calcularPeRP(prp, perp, sumaprp, sumaperp);
     calcularPeRA(perp, pera);
@@ -221,3 +221,62 @@ function sumaPRP(event, PRP, sumaPRP_) {
     sumaPRP.textContent = sumador.toFixed(3); // Formatea el resultado a dos decimales
 
 }
+
+// GRAFICAR
+function GraficaItemsMasVendidos(x_label, y_label, ctx) {
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: x_label,
+            datasets: [
+                {
+                    label: "% que pasa",
+                    backgroundColor: escogerColor(),
+                    borderColor: escogerColor(),
+                    data: y_label
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Curva Granulometrica' // Puedes personalizar este texto
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Mallas(mm)' // Título del eje X
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '% que pasa' // Título del eje Y
+                    }
+                }
+            },
+            
+        }
+    });
+}
+
+
+function escogerColor() {
+    var colorList = ["#a2d2ff", "#d62828", "#0077b6", "#83c5be", "#e76f51"];
+
+    
+    if (colorList && colorList.length > 0) {
+        // Generar un número aleatorio entre 0 y la longitud de la lista de colores
+        var randomIndex = Math.floor(Math.random() * colorList.length);
+        // Devolver el color seleccionado aleatoriamente
+        return colorList[randomIndex];
+    } else {
+        // Si la lista de colores está vacía, devolver un mensaje de error
+        return "Error: La lista de colores está vacía";
+    }
+}
+

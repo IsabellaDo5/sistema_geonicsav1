@@ -236,7 +236,12 @@ Granulometria
     </div>
   </div>
 <button type="button" class="btn btn-primary" onclick="graficar(event)">Ver la grafica</button>
-  <img src="" alt="" srcset="" id="grafica" style="width:100%";>
+<div class="row">
+  <div class="col-md-8 granulometria_chart">
+    <canvas id="granulometria_chart" aria-label="Hello ARIA World" role="img"></canvas>
+  </div>
+
+</div>
 {% endblock %}
 
 {% block scripts %}
