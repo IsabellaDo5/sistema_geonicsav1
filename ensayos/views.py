@@ -184,7 +184,7 @@ def registrar_granulometria(request):
     else:
         mallas = models.Mallas.objects.values_list('medida', 'medida_mm', 'id_malla')
         print(mallas)
-        return render(request, 'registrar_granulometria.html', context={
+        return render(request, 'ensayos/registrar_granulometria.html', context={
             'mallas': mallas,
         })
 
