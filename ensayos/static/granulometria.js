@@ -330,13 +330,19 @@ function calcular_cu(){
     console.log("RESULTADO D60: "+resultado);
 
 }
-function calcular_d_x(d1, d2, x){
-    // dx[0] = diametro
-    // dx[1] = % PQP
-    console.log("Entró a calcular_dx");
-    console.log("D1 y %1: "+d1);
-    console.log("D2 y %2: "+d2);
-    dx = ((d2[0]-d1[0])/(Math.log(d2[1])-Math.log(d1[1])))*(Math.log(x)-Math.log(d1[1]))+d1[0];
+function calcular_d_x( d1_, d2_, x){
+    let dx = 0.0;
+    let d1 = parseFloat(d1_[0]);
+    let d2 = parseFloat(d2_[0]);
+
+    let d1_pce = parseFloat(d1_[1]);
+    let d2_pce = parseFloat(d2_[1]);
+
+    if(d1 && d2){
+
+         dx = ((d2-d1)/(Math.log10(d2_pce)-Math.log10(d1_pce)))*Math.log10(parseFloat(x))-Math.log10(d1_pce)+d1;
+    }
+
     return dx;
 }
 
@@ -399,17 +405,20 @@ function mayor_masCercano(pce_pasa,prp, num){
     for (let i = 0; i < pce_pasa.length; i++) {
 
         if(pce_pasa != ""){
-            if (pce_pasa[i] == num) {
-            return pce_pasa[i];
-            } 
-            else if(pce_pasa[i] > num)
+           
+            if(pce_pasa[i] > num)
             {
-                if(Math.abs(pce_pasa[i]-num)<diferencia){
+                if (diferencia == 0) {
+                    i+= 1;
+                } 
+                else if(Math.abs(pce_pasa[i]-num)<diferencia){
                     cercano=pce_pasa[i];
                     d1 = prp[i];
                     diferencia = Math.abs(pce_pasa[i]-num);
                 }
+                
             }
+            
         }
         
     }
