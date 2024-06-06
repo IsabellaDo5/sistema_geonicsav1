@@ -12,12 +12,12 @@ function graficar(event) {
             mallas_lista.push(mallas_medidas[i].value.trim());
             pesos_lista.push(pesos_t1[i].value.trim());
         }
-        else if(mallas_medidas[i].value && mallas_medidas[i].value <= 2 && mallas_medidas[i].value != 0.08){
+        else if (mallas_medidas[i].value && mallas_medidas[i].value <= 2 && mallas_medidas[i].value != 0.08) {
             mallas_lista.push(mallas_medidas[i].value.trim());
             pesos_lista.push(pesos_t2[contador_t2].value.trim());
             contador_t2 += 1;
         }
-        
+
     }
 
     curvaGranulometrica(mallas_lista, pesos_lista, document.getElementById("granulometria_chart"))
@@ -119,7 +119,7 @@ function calcularPeRPL(prp, perp, sumaPRP, sumaperp) {
         if (value !== "") {
             const peso = parseFloat(value);
             if (!isNaN(peso)) {
-                PeRPInput[x].value = Math.round(peso/sumarPRP*pqp_t1.value);
+                PeRPInput[x].value = Math.round(peso / sumarPRP * pqp_t1.value);
                 sumador += parseFloat(PeRPInput[x].value);
             }
         }
@@ -164,9 +164,9 @@ function calcularPQP(pera_, pqp_) {
             if (!isNaN(peso)) {
                 PQP[x].value = Math.round(100 - peso);
             }
-            
+
         }
-        else if(prpmm[x].value && id[x].value < 13){
+        else if (prpmm[x].value && id[x].value < 13) {
             PQP[x].value = 100;
         }
     }
@@ -193,12 +193,12 @@ function calcularPQPL(pera_, pqp_) {
             if (!isNaN(peso)) {
                 PQP[x].value = Math.round(pqp_t1.value - peso);
             }
-            
+
         }
-        else if(prpmm[contador].value && id[x].value < 13){
+        else if (prpmm[contador].value && id[x].value < 13) {
             PQP[x].value = 100;
         }
-        contador +=1;
+        contador += 1;
     }
 
 }
@@ -258,7 +258,7 @@ function curvaGranulometrica(x_label, y_label, ctx) {
                     }
                 }
             },
-            
+
         }
     });
 }
@@ -267,7 +267,7 @@ function curvaGranulometrica(x_label, y_label, ctx) {
 function escogerColor() {
     var colorList = ["#a2d2ff", "#d62828", "#0077b6", "#83c5be", "#e76f51"];
 
-    
+
     if (colorList && colorList.length > 0) {
         // Generar un número aleatorio entre 0 y la longitud de la lista de colores
         var randomIndex = Math.floor(Math.random() * colorList.length);
@@ -279,58 +279,102 @@ function escogerColor() {
     }
 }
 
-function lista_porcentaje_pasa(){
+function lista_porcentaje_pasa() {
     let pce_pasa = document.getElementsByName("PQP");
     let pce_pasa_lavado = document.getElementsByName("PQPL");
     let lista_completa = [];
     let y = 0;
-    for (let  x= 0; x <= 14; x++){
-        
+    for (let x = 0; x <= 14; x++) {
 
-        try{
+
+        try {
             lista_completa.push(pce_pasa[x].value)
-          } 
-        catch{
-            try{
+        }
+        catch {
+            try {
                 lista_completa.push(pce_pasa_lavado[y].value)
                 y++;
             }
-            catch{
+            catch {
                 console.log("Error: El elemento en nodelist tenia value vacio.");
             }
-            
-          }  
+
+        }
     }
     console.log(lista_completa);
     return lista_completa;
 }
 
-function calcular_cu(){
-    let lista_mallas=  lista_de_mallas()
+function calcular_cu() {
+
+    const contenedor = document.getElementById("tabla_coeficientes");
+    let lista_mallas = lista_de_mallas()
+
+    let resultado_d10 = 0.0;
+    let resultado_d30 = 0.0;
+    let resultado_d60 = 0.0;
+    let cu = 0.0;
+    let cc = 0.0;
+
     // calcular D10
     let lista_pce = lista_porcentaje_pasa();
-    let menor=  menor_masCercano(lista_pce,lista_mallas, 10);
-    let mayor = mayor_masCercano(lista_pce,lista_mallas, 10);
-    let resultado = 0.0;
-    resultado = calcular_d_x(mayor,menor,10);
-    console.log("RESULTADO D10: "+resultado);
+    let menor = menor_masCercano(lista_pce, lista_mallas, 10);
+    let mayor = mayor_masCercano(lista_pce, lista_mallas, 10);
+    console.log("D10: menor: " + menor + " mayor: " + mayor)
+
+    resultado_d10 = calcular_d_x(mayor, menor, 10);
+    console.log("RESULTADO D10: " + resultado_d10);
 
     // calcular D30
-    menor=  menor_masCercano(lista_pce, lista_mallas, 30);
-    mayor = mayor_masCercano(lista_pce,lista_mallas, 30);
-    resultado = 0.0;
-    resultado = calcular_d_x(mayor,menor,30);
-    console.log("RESULTADO D30: "+resultado);
+    menor = menor_masCercano(lista_pce, lista_mallas, 30);
+    mayor = mayor_masCercano(lista_pce, lista_mallas, 30);
+    console.log("D30: menor: " + menor + " mayor: " + mayor)
+    resultado_d30 = calcular_d_x(mayor, menor, 30);
+    console.log("RESULTADO D30: " + resultado_d30);
 
     // calcular D60
-    menor=  menor_masCercano(lista_pce,lista_mallas, 60);
-    mayor = mayor_masCercano(lista_pce,lista_mallas, 60);
-    resultado = 0.0;
-    resultado = calcular_d_x(mayor,menor,60);
-    console.log("RESULTADO D60: "+resultado);
+    menor = menor_masCercano(lista_pce, lista_mallas, 60);
+    mayor = mayor_masCercano(lista_pce, lista_mallas, 60);
+    resultado_d60 = calcular_d_x(mayor, menor, 60);
+    console.log("RESULTADO D60: " + resultado_d60);
+    cu = resultado_d60 / resultado_d10;
+    cc = Math.pow(resultado_d30, 2) / (resultado_d60 * resultado_d10);
+
+    contenedor.innerHTML = `
+    <table class="table table-bordered border-dark-subtle">
+  <tbody>
+    <tr>
+    <th scope="col">D10</th>
+      <td>`+ resultado_d10 + `</td>
+      
+    </tr>
+    
+    <tr>
+        <th scope="col">D30</th>
+        <td>`+ resultado_d30 + `</td> 
+    </tr>
+    <tr>
+        <th scope="col">D60</th>
+        <td>`+ resultado_d60 + `</td>
+
+    </tr>
+
+    <tr>
+    <th scope="col">Coeficiente de uniformidad (Cu):</th>
+      <td>`+ cu + `</td>
+      
+    </tr>
+    
+    <tr>
+        <th scope="col">Coeficiente de curvatura</th>
+        <td>`+ cc + `</td> 
+    </tr>
+  </tbody>
+</table>
+    `
 
 }
-function calcular_d_x( d1_, d2_, x){
+/*function calcular_d_x(d1_, d2_, x) {
     let dx = 0.0;
     let d1 = parseFloat(d1_[0]);
     let d2 = parseFloat(d2_[0]);
@@ -338,56 +382,88 @@ function calcular_d_x( d1_, d2_, x){
     let d1_pce = parseFloat(d1_[1]);
     let d2_pce = parseFloat(d2_[1]);
 
-    if(d1 && d2){
+    if (d1 && d2) {
 
-         dx = ((d2-d1)/(Math.log10(d2_pce)-Math.log10(d1_pce)))*Math.log10(parseFloat(x))-Math.log10(d1_pce)+d1;
+        dx = ((d2 - d1) / (Math.log10(d2_pce) - Math.log10(d1_pce))) * (Math.log10(parseFloat(x)) - Math.log10(d1_pce)) + d1;
+    }
+
+    return dx;
+}*/
+
+function calcular_d_x(d1_, d2_, x) {
+    let dx = 0.0;
+    let d1 = parseFloat(d1_[0]);
+    let d2 = parseFloat(d2_[0]);
+
+    let d1_pce = parseFloat(d1_[1]);
+    let d2_pce = parseFloat(d2_[1]);
+
+    if (d1 && d2) {
+
+        dx = ((d2 - d1) / ( (d2_pce) -  (d1_pce))) * ( (parseFloat(x)) -  (d1_pce)) + d1;
     }
 
     return dx;
 }
+/*function calcular_d_x( d1_, d2_, x){
+    let dx = 0.0;
+    let d1 = parseFloat(d1_[0]);
+    let d2 = parseFloat(d2_[0]);
+    let y = 0.0;
+    let d1_pce = parseFloat(d1_[1]);
+    let d2_pce = parseFloat(d2_[1]);
 
-function lista_de_mallas(){
+    if(d1 && d2){
+
+        y = (((Math.log10(d1)-Math.log10(d2))/(d1_pce-d2_pce))*(x-d1_pce))+Math.log10(d1);
+
+        dx = Math.pow(x, y);
+    }
+
+    return dx;
+}*/
+function lista_de_mallas() {
     let lista_de_mallas = document.getElementsByName("PRPMM");
     let lista_completa = [];
     let y = 0;
-    for (let  x= 0; x <= 14; x++){
-        
+    for (let x = 0; x <= 14; x++) {
 
-        try{
+
+        try {
             lista_completa.push(lista_de_mallas[x].value)
-          } 
-        catch{
-            
-          }  
+        }
+        catch {
+
+        }
     }
     console.log(lista_completa);
 
     return lista_completa;
 }
 
-function menor_masCercano(pce_pasa,prp, num){
+function menor_masCercano(pce_pasa, prp, num) {
 
     let cercano = 0;
-    let diferencia = 100; 
+    let diferencia = 100;
     let d2 = 0;
 
     let info_menor = []
     for (let i = 0; i < pce_pasa.length; i++) {
 
-        if(pce_pasa != ""){
+        if (pce_pasa != "") {
             if (pce_pasa[i] == num) {
-            return pce_pasa[i];
-            } 
-            else if(pce_pasa[i] < num)
-            {
-                if(Math.abs(pce_pasa[i]-num)<diferencia){
-                    cercano=pce_pasa[i];
+                cercano = pce_pasa[i];
+                d2 = prp[i];
+            }
+            else if (pce_pasa[i] < num) {
+                if (Math.abs(pce_pasa[i] - num) < diferencia) {
+                    cercano = pce_pasa[i];
                     d2 = prp[i];
-                    diferencia = Math.abs(pce_pasa[i]-num);
+                    diferencia = Math.abs(pce_pasa[i] - num);
                 }
             }
         }
-        
+
     }
     info_menor.push(d2);
     info_menor.push(cercano);
@@ -395,32 +471,31 @@ function menor_masCercano(pce_pasa,prp, num){
     return info_menor;
 }
 // NUmero mayor más cercano
-function mayor_masCercano(pce_pasa,prp, num){
+function mayor_masCercano(pce_pasa, prp, num) {
 
     let cercano = 0;
-    let diferencia = 100; 
+    let diferencia = 100;
     let d1 = 0;
 
     let info_mayor = []
     for (let i = 0; i < pce_pasa.length; i++) {
 
-        if(pce_pasa != ""){
-           
-            if(pce_pasa[i] > num)
-            {
+        if (pce_pasa != "") {
+
+            if (pce_pasa[i] > num) {
                 if (diferencia == 0) {
-                    i+= 1;
-                } 
-                else if(Math.abs(pce_pasa[i]-num)<diferencia){
-                    cercano=pce_pasa[i];
-                    d1 = prp[i];
-                    diferencia = Math.abs(pce_pasa[i]-num);
+                    i += 1;
                 }
-                
+                else if (Math.abs(pce_pasa[i] - num) < diferencia) {
+                    cercano = pce_pasa[i];
+                    d1 = prp[i];
+                    diferencia = Math.abs(pce_pasa[i] - num);
+                }
+
             }
-            
+
         }
-        
+
     }
     info_mayor.push(d1);
     info_mayor.push(cercano);
