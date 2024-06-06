@@ -24,8 +24,11 @@ urlpatterns = [
     path('', ensayos.views.index),
     # ELIMINAR ENSAYOS
     path('granulometria/eliminar/<int:id_ensayo>/', ensayos.views.eliminar_granulometria, name="eliminar-granulometria"),
+    path('limites-de-atterberg/eliminar/<int:id_ensayo>/', ensayos.views.eliminar_limites_de_atterberg, name="eliminar-limites-de-atterberg"),
+    
     # MODIFICAR ENSAYO
     path('granulometria/modificar/<int:id_ensayo>/', ensayos.views.modificar_granulometria, name="modificar-granulometria"),
+    path('limites-de-atterberg/modificar/<int:id_ensayo>/', ensayos.views.modificar_limites_atterberg, name="modificar-limites-de-atterberg"),
     # LISTAR ENSAYOS
     path('granulometria/reportes/', ensayos.views.reportes_granulometria, name="reportes-granulometria"),
     path('limites-de-atterberg/reportes/', ensayos.views.reportes_limites_atterberg, name="reportes-limite-atterberg"),

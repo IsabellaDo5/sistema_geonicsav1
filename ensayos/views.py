@@ -193,8 +193,8 @@ def detalle_granulometria(request, id_ensayo):
         with connection.cursor() as cursor:
             mallas = cursor.execute("SELECT * FROM ensayos_mallas").fetchall()
 
-            suma_PRP = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE id_ensayo_id = %s AND id_malla_id BETWEEN 4 AND 13", (id_ensayo,)).fetchall()
-            suma_PRPL = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE id_ensayo_id = %s AND id_malla_id < 4 or id_malla_id = 14", (id_ensayo,)).fetchall()
+            suma_PRP = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE (id_malla_id BETWEEN 1 AND 9 OR id_malla_id = 13) AND id_ensayo_id = %s", (id_ensayo,)).fetchall()
+            suma_PRPL = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE (id_malla_id BETWEEN 10 AND 12 OR id_malla_id = 14) AND id_ensayo_id = %s", (id_ensayo,)).fetchall()
             
             sql_encabezado = "SELECT * FROM ensayos_ensayo WHERE id = %s"
             sql_granulometria = "SELECT * FROM  ensayos_granulometria WHERE id_ensayo_id = %s"
@@ -364,7 +364,28 @@ def registrar_limites_atterberg(request):
         })
     
 def detalle_limites_de_attergberg(request, id_ensayo):
-    return render(request, 'ensayos/error.html')
+    if request.method == 'GET':
+        with connection.cursor() as cursor:
+            encabezado_ensayo = cursor.execute("SELECT * FROM ensayos_ensayo WHERE id = %s", (id_ensayo,)).fetchall()
+            limite_liquido = cursor.execute("SELECT * FROM ensayos_limiteliquido WHERE id_ensayo_id = %s", (id_ensayo,)).fetchall()
+            limite_plastico = cursor.execute("SELECT * FROM ensayos_limiteplastico WHERE id_ensayo_id = %s", (id_ensayo,)).fetchall()
+        connection.commit()
+
+        print(limite_liquido)
+    return render(request, 'ensayos/detalle_limites_atterberg.html', context={
+        'encabezado': encabezado_ensayo,
+        'limite_liquido': limite_liquido,
+        'limite_plastico':limite_plastico,
+        'id_ensayo': id_ensayo,
+    })
+
+def modificar_limites_atterberg(request, id_ensayo):
+
+    return render(request, 'ensayos/modificar_limites_atterberg.html')
+
+def eliminar_limites_de_atterberg(request, id_ensayo):
+    
+    return redirect('/proyectos/ver/')
 ##############################################################################################
 # NO SON VISTAS     
 def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):

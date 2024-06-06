@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 {% load static %}
 {% block title %}
@@ -6,207 +5,259 @@ Límites de Atterberg
 {% endblock %}
 
 {% block content %}
-<h1> Límites de atterberg </h1>
+
+
+<div class="hstack gap-3">
+  <div class="p-2">
+    <h3>Límites de Atterberg</h3>
+  </div>
+  <div class="p-2 ms-auto">
+    <a href="{% url 'modificar-limites-de-atterberg' id_ensayo %}"> <button type="button" class="btn btn-dark"><i
+          class="bi bi-pencil-square"></i>
+        Editar</button></a>
+
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
+        class="bi bi-trash-fill"></i>
+      Eliminar</button>
+  </div>
+
+
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Precaución!</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Estás a punto de eliminar este ensayo, ¿Estás seguro de hacerlo?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <a href="{% url 'eliminar-limites-de-atterberg' id_ensayo %}"><button type="button"
+            class="btn btn-danger">Eliminar</button></a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <hr>
 <form action="/limites_atterberg/" method="POST">
   {% csrf_token %}
   <div class="row">
+    {% for item in encabezado %}
     <div class="col-md">
       <label class="form-label">Proyecto</label>
-      <input type="text" name="nombre_proyecto" class="form-control">
+      <input type="text" name="nombre_proyecto" value="{{item.1}}" class="form-control" disabled readonly>
 
       <label class="form-label">Cliente</label>
-      <input type="text" name="cliente" class="form-control">
+      <input type="text" name="cliente" value="{{item.2}}" class="form-control" disabled readonly>
 
       <label class="form-label">Operador</label>
-      <input type="text" name="operador" class="form-control">
+      <input type="text" name="operador" value="{{item.3}}" class="form-control" disabled readonly>
 
       <label class="form-label">Descripción</label>
-      <input type="text" name="descripcion" class="form-control">
+      <input type="text" name="descripcion" value="{{item.4}}" class="form-control" disabled readonly>
 
     </div>
 
     <div class="col-md">
       <label class="form-label">Sondeo No.</label>
-      <input type="text" name="no_sondeo" class="form-control">
+      <input type="text" name="no_sondeo" value="{{item.5}}" class="form-control" disabled readonly>
 
       <label class="form-label">Muestra No.</label>
-      <input type="text" name="no_muestra" class="form-control">
+      <input type="text" name="no_muestra" value="{{item.9}}" class="form-control" disabled readonly>
 
       <label class="form-label">Profundidad</label>
-      <input type="text" name="profundidad" class="form-control">
+      <input type="text" name="profundidad" value="{{item.6}}" class="form-control" disabled readonly>
 
       <label class="form-label">Fecha</label>
-      <input type="date" name="fecha_ensayo" class="form-control">
+      <input type="date" name="fecha_ensayo" value="{{item.7|date:" Y-m-d"}}" class="form-control" disabled readonly>
     </div>
+    {% endfor %}
   </div>
   <hr>
   <div class="row ">
-    <h1>Limite líquido</h1>
-    <div class="table-responsive">
-      <table class="table table-bordered border-dark-subtle">
-        <tbody>
-          <tr>
+    <div class="col-md">
+      <h2>Limite líquido</h2>
 
-            <th scope="row">Numero de golpes N.</th>
+      <div class="table-responsive">
+        <table class="table table-bordered border-dark-subtle">
+          <tbody>
 
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL1', 'factor_LL1')" type="number" step="0.01" value="" id="no_golpes_LL1"> </td>
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL2', 'factor_LL2')" type="number" step="0.01" value="" id="no_golpes_LL2"> </td>
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL3', 'factor_LL3')" type="number" step="0.01" value="" id="no_golpes_LL3"> </td>
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL4', 'factor_LL4')" type="number" step="0.01" value="" id="no_golpes_LL4"> </td>
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL5', 'factor_LL5')" type="number" step="0.01" value="" id="no_golpes_LL5"> </td>
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL5', 'factor_LL5')" type="number" step="0.01" value="" id="no_golpes_LL6"> </td>
-          </tr>
+            <tr>
 
-          <tr>
+              <th scope="row">Numero de golpes N.</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control" name="no_golpes_LL" type="number" step="0.01" value="{{info.1}}"
+                  id="no_golpes_LL1" disabled readonly> </td>
+              {% endfor %}
+            </tr>
 
-            <th scope="row">Recipiente no.</th>
+            <tr>
 
-            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
-          </tr>
+              <th scope="row">Recipiente no.</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="{{info.2}}" id=""
+                  disabled readonly> </td>
+              {% endfor %}
+            </tr>
 
-          <tr>
+            <tr>
 
-            <th scope="row">Pw más recipiente:</th>
+              <th scope="row">Pw más recipiente:</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="{{info.3}}" id=""
+                  disabled readonly> </td>
 
-            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-          <tr>
+              {% endfor %}
+            </tr>
 
-            <th scope="row">Ps más recipiente</th>
+            <tr>
 
-            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-          </tr>
+              <th scope="row">Ps más recipiente</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="{{info.4}}" id=""
+                  disabled readonly> </td>
 
-          <tr>
+              {% endfor %}
+            </tr>
 
-            <th scope="row">Agua</th>
+            <tr>
 
-            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
-            </td>
-            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
-            </td>
-            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
-            </td>
-            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
-            </td>
-            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
-            </td>
+              <th scope="row">Agua</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="{{info.5}}"
+                  id="" disabled readonly>
+              </td>
+              {% endfor %}
+            </tr>
 
-            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
-            </td>
-          </tr>
+            <tr>
 
-          <tr>
+              <th scope="row">Recipiente</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="{{info.6}}" id="">
+              </td>
+              {% endfor %}
 
-            <th scope="row">Recipiente</th>
+            </tr>
 
-            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
-          </tr>
+            <tr>
 
-          <tr>
+              <th scope="row">Peso seco (Ps)</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="{{info.7}}"
+                  id="" disabled readonly> </td>
+              {% endfor %}
 
-            <th scope="row">Peso seco (Ps)</th>
+            </tr>
 
-            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
+            <tr>
 
-          </tr>
+              <th scope="row">% de agua</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="{{info.8}}"
+                  id="" disabled readonly> </td>
 
-          <tr>
-
-            <th scope="row">% de agua</th>
-
-            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-
-          </tr>
+              {% endfor %}
+            </tr>
 
 
-          <tr>
+            <tr>
 
-            <th scope="row">Factor</th>
+              <th scope="row">Factor</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="{{info.11}}"
+                  id="factor_LL1" disabled readonly> </td>
+              {%endfor%}
+            </tr>
 
-            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL1"
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL2"
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL3"
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL4"
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL5"
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL6"
-                readonly> </td>
+            <tr>
 
-          </tr>
+              <th scope="row">Limite Liquido</th>
+              {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01"
+                  value="{{info.9}}" id="" readonly> </td>
+              {% endfor %}
+            </tr>
 
-          <tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md">
+      <h2>Limite Plástico</h2>
+      <div class="table-responsive">
+        <table class="table table-bordered border-dark-subtle">
+          <tbody>
 
-            <th scope="row">Limite Liquido</th>
+            <tr>
 
-            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
-                readonly> </td>
+              <th scope="row">Recipiente no.</th>
+              {% for info in limite_plastico %}
+              <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value="{{info.1}}" id="" disabled readonly> </td>
+              {% endfor %}
+              
+            </tr>
 
-          </tr>
-        </tbody>
-      </table>
+            <tr>
+
+              <th scope="row">Pw más recipiente:</th>
+              {% for info in limite_plastico %}
+              <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value="{{info.2}}" id="" disabled readonly> </td>
+              {% endfor %}
+            </tr>
+            <tr>
+
+              <th scope="row">Ps más recipiente</th>
+              {% for info in limite_plastico %}
+              <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="{{info.3}}" id="" disabled readonly> </td>
+              {% endfor %}
+            </tr>
+
+            <tr>
+
+              <th scope="row">Agua</th>
+              {% for info in limite_plastico %}
+              <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="{{info.4}}" id=""
+                disabled readonly>
+              </td>
+              {% endfor %}
+            </tr>
+
+            <tr>
+
+              <th scope="row">Recipiente</th>
+              {% for info in limite_plastico %}
+              <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value="{{info.5}}" id="" disabled readonly> </td>
+              {% endfor %}
+
+            </tr>
+
+            <tr>
+
+              <th scope="row">Peso seco (Ps)</th>
+              {% for info in limite_plastico %}
+              <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="{{info.6}}" id=""
+                  readonly> </td>
+                  {%endfor%}
+              <tr>
+
+              <th scope="row">Limite Plástico</th>
+              {% for info in limite_plastico %}
+              <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="{{info.7}}" id=""
+                  readonly> </td>
+              {% endfor %}
+            
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-  <button type="button" class="btn btn-primary"
-    onclick="limite_liquido(event, 'no_golpes_LL', 'recipiente_no_LL', 'pw_mas_recip_LL', 'ps_mas_recip_LL', 'agua_LL', 'recipiente_LL', 'peso_seco_LL' ,'Pe_agua_LL', 'factor_LL')" id="LL">Calcular</button>
   <br>
 
 
@@ -214,144 +265,69 @@ Límites de Atterberg
 
 
   <div class="row ">
-    <div class="col-md">
-    <h2>Limite Plástico</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered border-dark-subtle">
-        <tbody>
+    <div class="col-md-4">
+      <h2>Contracción Lineal</h2>
+      <div class="table-responsive">
+        <table class="table table-bordered border-dark-subtle">
+          <tbody>
 
-          <tr>
+            <tr>
 
-            <th scope="row">Recipiente no.</th>
+              <th scope="row">Molde no.</th>
 
-            <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
+              <td><input class="form-control" name="molde_no" type="number" step="0.01" value="" id=""> </td>
+              <td><input class="form-control" name="molde_no" type="number" step="0.01" value="" id=""> </td>
+            </tr>
 
-          <tr>
+            <tr>
 
-            <th scope="row">Pw más recipiente:</th>
+              <th scope="row">Long. molde (mm):</th>
 
-            <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-          <tr>
+              <td><input class="form-control" name="long_molde"" type=" number" step="0.01" value="" id=""> </td>
+              <td><input class="form-control" name="long_molde"" type=" number" step="0.01" value="" id=""> </td>
 
-            <th scope="row">Ps más recipiente</th>
+            </tr>
+            <tr>
 
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
+              <th scope="row">Long. Mat. Seco (mm):</th>
 
-          <tr>
+              <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+              <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+            </tr>
+            <tr>
 
-            <th scope="row">Agua</th>
+              <th scope="row">Cont. Lineal:</th>
 
-            <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" id="" readonly>
-            </td>
-            <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" id="" readonly>
-            </td>
-          </tr>
+              <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+              <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
+            </tr>
+            <tr>
+              <th colspan="3" class="text-center"> RESULTADO </th>
+            </tr>
+            <tr>
+              <th>L. L</th>
+              <td colspan="2"></td>
+            </tr>
+            <tr>
+              <th>L. p</th>
+              <td colspan="2"></td>
+            </tr>
+            <tr>
+              <th>I. P</th>
+              <td colspan="2"></td>
+            </tr>
+            <tr>
+              <th>C. L</th>
+              <td colspan="2"></td>
+            </tr>
 
-          <tr>
+          </tbody>
+        </table>
+      </div>
 
-            <th scope="row">Recipiente</th>
-
-            <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-
-          <tr>
-          
-            <th scope="row">Peso seco (Ps)</th>
-            <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" id=""
-              readonly> </td>
-          <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" id=""
-              readonly> </td>
-          <tr>
-
-            <th scope="row">Limite Plástico</th>
-
-            <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" id=""
-                readonly> </td>
-
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 
-  <div class="col-md">
-    <h2>Contracción Lineal</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered border-dark-subtle">
-        <tbody>
-
-          <tr>
-
-            <th scope="row">Molde no.</th>
-
-            <td><input class="form-control" name="molde_no" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="molde_no" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-
-          <tr>
-
-            <th scope="row">Long. molde (mm):</th>
-
-            <td><input class="form-control" name="long_molde"" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="long_molde"" type="number" step="0.01" value="" id=""> </td>
-            
-          </tr>
-          <tr>
-
-            <th scope="row">Long. Mat. Seco (mm):</th>
-
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-          <tr>
-
-          <th scope="row">Cont. Lineal:</th>
-
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="" id=""> </td>
-          </tr>
-          <tr>
-            <th colspan="3" class="text-center"> RESULTADO </th>
-          </tr>
-          <tr>
-            <th>L. L</th>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th>L. p</th>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th>I. P</th>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th>C. L</th>
-            <td colspan="2"></td>
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-  </div>
-  <button type="button" class="btn btn-primary"
-  onclick= "limite_plastico(event, 'pw_mas_recip_LP', 'ps_mas_recip_LP', 'agua_LP', 'recipiente_LP', 'peso_seco_LP' ,'Pe_agua_LP', 'factor_LP')"
-    id="calcular_granulometria">Calcular</button>
-
-
-  </div>
-  <button type="submit" class="btn btn-outline-success">Guardar</button>
 </form>
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
 

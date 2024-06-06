@@ -232,7 +232,8 @@ function curvaGranulometrica(x_label, y_label, ctx) {
                     label: "% que pasa",
                     backgroundColor: escogerColor(),
                     borderColor: escogerColor(),
-                    data: y_label
+                    data: y_label,
+                    fill: false
                 }
             ]
         },
@@ -244,7 +245,9 @@ function curvaGranulometrica(x_label, y_label, ctx) {
             },
             scales: {
                 x: {
+                    type: 'logarithmic', // Cambia el tipo de escala a logarítmica
                     display: true,
+                    reverse: true,
                     title: {
                         display: true,
                         text: 'Mallas(mm)' // Título del eje X
@@ -257,11 +260,11 @@ function curvaGranulometrica(x_label, y_label, ctx) {
                         text: '% que pasa' // Título del eje Y
                     }
                 }
-            },
-
+            }
         }
     });
 }
+
 
 
 function escogerColor() {
@@ -361,13 +364,13 @@ function calcular_cu() {
 
     <tr>
     <th scope="col">Coeficiente de uniformidad (Cu):</th>
-      <td>`+ cu + `</td>
+      <td>`+ cu.toFixed(3) + `</td>
       
     </tr>
     
     <tr>
         <th scope="col">Coeficiente de curvatura</th>
-        <td>`+ cc + `</td> 
+        <td>`+ cc.toFixed(3) + `</td> 
     </tr>
   </tbody>
 </table>
@@ -400,10 +403,10 @@ function calcular_d_x(d1_, d2_, x) {
 
     if (d1 && d2) {
 
-        dx = ((d2 - d1) / ( (d2_pce) -  (d1_pce))) * ( (parseFloat(x)) -  (d1_pce)) + d1;
+        dx = ((d2 - d1) / ( (d2_pce) -  (d1_pce))).toFixed(3) * ( (parseFloat(x)) -  (d1_pce)).toFixed(3) + d1;
     }
 
-    return dx;
+    return dx.toFixed(3);
 }
 /*function calcular_d_x( d1_, d2_, x){
     let dx = 0.0;
