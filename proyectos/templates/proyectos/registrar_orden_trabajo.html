@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Inicio {% endblock %}
+{% block content %}
+<div class="row">
+    <h3>Nueva órden de trabajo</h3>
+    <div class="col-md">
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Proyecto</label>
+            <select class="form-select" aria-label="Default select example" required>
+                <option disabled selected>ELegir proyecto</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput2" class="form-label">Orden de trabajo # </label>
+            <input type="number" class="form-control" id="exampleFormControlInput2" >
+        </div>
+          
+    </div>
+
+    <div class="col-md">
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Descripcion</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+          </div>
+    </div>
+</div>
+{% endblock %}

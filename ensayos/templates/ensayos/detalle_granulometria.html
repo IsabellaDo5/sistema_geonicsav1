@@ -10,11 +10,9 @@ Granulometria
     <h3>Granulometria</h3>
   </div>
   <div class="p-2 ms-auto"> 
-    <a href="{% url 'modificar-granulometria' id_ensayo %}"> <button type="button" class="btn btn-dark"><i class="bi bi-pencil-square"></i>
-      Editar</button></a>
+    <a href="{% url 'modificar-granulometria' id_ensayo %}"> <button type="button" class="btn btn-dark"><i class="bi bi-pencil-square"></i></button></a>
 
-       <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-trash-fill"></i>
-        Eliminar</button>
+       <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-trash-fill"></i></button>
     </div>
 
 
@@ -169,6 +167,7 @@ Granulometria
             <td id="sumaPRPL">{{t2_suma}}</td>
             <td id="sumaPeRPL"></td>
             <td></td>
+            <td></td>
           </tr>
         </tbody>
       </table>
@@ -240,7 +239,7 @@ Granulometria
   </div>
 <button type="button" class="btn btn-primary" onclick="graficar(event)">Ver la grafica</button>
 <div class="row">
-  <div class="col-md-8 granulometria_chart">
+  <div class="col-md granulometria_chart">
     <canvas id="granulometria_chart" aria-label="Grafica de curva granulometrica" role="img"></canvas>
   </div>
   

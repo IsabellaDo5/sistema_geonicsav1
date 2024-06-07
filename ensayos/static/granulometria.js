@@ -248,6 +248,7 @@ function curvaGranulometrica(x_label, y_label, ctx) {
                     type: 'logarithmic', // Cambia el tipo de escala a logarítmica
                     display: true,
                     reverse: true,
+                    suggestedMax: 100,
                     title: {
                         display: true,
                         text: 'Mallas(mm)' // Título del eje X
@@ -255,6 +256,7 @@ function curvaGranulometrica(x_label, y_label, ctx) {
                 },
                 y: {
                     display: true,
+                    suggestedMin: 0,
                     title: {
                         display: true,
                         text: '% que pasa' // Título del eje Y
@@ -363,14 +365,14 @@ function calcular_cu() {
     </tr>
 
     <tr>
-    <th scope="col">Coeficiente de uniformidad (Cu):</th>
-      <td>`+ cu.toFixed(3) + `</td>
+    <th scope="col" class="table-active">Coeficiente de uniformidad (Cu):</th>
+      <td class="table-active">`+ cu.toFixed(3) + `</td>
       
     </tr>
     
     <tr>
-        <th scope="col">Coeficiente de curvatura</th>
-        <td>`+ cc.toFixed(3) + `</td> 
+        <th scope="col" class="table-active">Coeficiente de curvatura</th>
+        <td class="table-active">`+ cc.toFixed(3) + `</td> 
     </tr>
   </tbody>
 </table>
