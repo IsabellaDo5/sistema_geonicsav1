@@ -21,7 +21,7 @@ import proyectos.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', ensayos.views.index),
+    path('', proyectos.views.index),
     # ELIMINAR ENSAYOS
     path('granulometria/eliminar/<int:id_ensayo>/', ensayos.views.eliminar_granulometria, name="eliminar-granulometria"),
     path('limites-de-atterberg/eliminar/<int:id_ensayo>/', ensayos.views.eliminar_limites_de_atterberg, name="eliminar-limites-de-atterberg"),
@@ -44,7 +44,10 @@ urlpatterns = [
     path('proyectos/nuevo/', proyectos.views.registrar_proyecto, name="registrar-proyecto"),
     path('proyectos/ver/', proyectos.views.listar_proyectos, name="listar-proyectos"),
     path('ordenes-de-trabajo/nuevo/', proyectos.views.registrar_orden_trabajo, name="registrar-orden-de-trabajo"),
-    path('ordenes-de-trabajo/ver/', proyectos.views.listar_proyectos, name="listar-orden-de-trabajo"),
+    path('ordenes-de-trabajo/ver/', proyectos.views.listar_ordenes_trabajo, name="listar-orden-de-trabajo"),
+    path('ordenes-de-trabajo/modificar/<int:id_orden>/', proyectos.views.modificar_orden_trabajo, name="modificar-orden-de-trabajo"),
+    
+    
     # ASINCRONO
     path('ajax/obtener_factores/', ensayos.views.obtener_factores, name='obtener_factores'),
     path('ajax/obtener_grafica/', ensayos.views.obtener_grafica, name="obtener-grafica"),

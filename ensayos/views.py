@@ -117,19 +117,6 @@ def obtener_grafica(request):
 
 ''' FUNCIONES NORMALES '''
 
-def index(request):
-    '''with connection.cursor() as cursor:
-        cursor.execute("UPDATE ensayos_ensayo SET tipo = 'GRANULOMETRIA'")
-    connection.commit()'''
-    '''with connection.cursor() as cursor:
-        cursor.execute("delete from ensayos_limiteliquido")
-        cursor.execute("delete from ensayos_limiteplastico")
-        cursor.execute("delete from ensayos_ensayo where tipo = 'LIMITES DE ATTERBERG'")
-        
-
-    connection.commit()'''
-    return render(request,'index.html')
-
 
 ##############################################################################################
 # GRANULOMETRIA
@@ -183,9 +170,14 @@ def registrar_granulometria(request):
         return redirect('/granulometria/reportes/')
     else:
         mallas = models.Mallas.objects.values_list('medida', 'medida_mm', 'id_malla')
+
+        with connection.cursor() as cursor:
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordentrabajo O ON P.id_proyecto = O.proyecto_id WHERE estado='activo' ").fetchall()
+        connection.commit()
         print(mallas)
         return render(request, 'ensayos/registrar_granulometria.html', context={
             'mallas': mallas,
+            'proyectos':proyectos,
         })
 
 def detalle_granulometria(request, id_ensayo):
@@ -199,9 +191,10 @@ def detalle_granulometria(request, id_ensayo):
             sql_encabezado = "SELECT * FROM ensayos_ensayo WHERE id = %s"
             sql_granulometria = "SELECT * FROM  ensayos_granulometria WHERE id_ensayo_id = %s"
             parametros=(id_ensayo,)
+
             tablas_ensayo = cursor.execute(sql_granulometria, parametros).fetchall()
             encabezado_ensayo = cursor.execute(sql_encabezado, parametros).fetchall()
-
+            
             print("ID: "+str(id_ensayo))
             print("encabezado: "+str(encabezado_ensayo))
             print(tablas_ensayo)
@@ -263,11 +256,13 @@ def modificar_granulometria(request, id_ensayo):
             parametros=(id_ensayo,)
             tablas_ensayo = cursor.execute(sql_granulometria, parametros).fetchall()
             encabezado_ensayo = cursor.execute(sql_encabezado, parametros).fetchall()
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos").fetchall()
 
             connection.commit()
         return render(request, 'ensayos/modificar_granulometria.html', context={
             'encabezado': encabezado_ensayo,
             'detalle_ensayo': tablas_ensayo,
+            'proyectos':proyectos,
             'mallas': mallas,
             'id_ensayo': encabezado_ensayo[0][0],
         })

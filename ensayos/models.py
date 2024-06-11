@@ -1,5 +1,6 @@
 # Create your models here.
 from django.db import models
+from proyectos.models import Proyectos
 
 class Area(models.Model):
     codigo_area = models.CharField(max_length=255, unique=True)
@@ -7,6 +8,7 @@ class Area(models.Model):
 
 class Ensayo(models.Model):
     codigo_area = models.ForeignKey(Area, on_delete=models.CASCADE)
+    id_proyecto = models.ForeignKey(Proyectos, on_delete=models.CASCADE, null=True)
     nombre_proyecto = models.TextField()
     cliente = models.TextField(null=True)
     operador = models.TextField(null=True)
@@ -33,6 +35,14 @@ class Granulometria(models.Model):
     PRA = models.DecimalField(max_digits=10, decimal_places=2)
     PeQP = models.DecimalField(max_digits=10, decimal_places=2)
 
+
+class DiametrosCoeficiente(models.Model):
+    d10 = models.DecimalField(max_digits=10, decimal_places=2)
+    d30 = models.DecimalField(max_digits=10, decimal_places=2)
+    d60 = models.DecimalField(max_digits=10, decimal_places=2)
+    cu = models.DecimalField(max_digits=10, decimal_places=2)
+    cc = models.DecimalField(max_digits=10, decimal_places=2)
+    id_ensayo = models.ForeignKey(Ensayo, on_delete=models.CASCADE, null=True)
 
 class FactoresLL(models.Model):
     id_factor = models.IntegerField(primary_key=True)

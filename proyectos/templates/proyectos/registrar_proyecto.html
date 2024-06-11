@@ -4,10 +4,43 @@
 Registrar un proyecto
 {% endblock %}
 {% block content %}
+
+<form action="/proyectos/nuevo/" method="POST">
+    {% csrf_token %}
 <div class="row">
+
+    <h3>Nuevo proyecto</h3>
     <div class="col-md">
-        <h2>Hola</h2>
-       
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Cliente</label>
+            <select class="form-select" name="cliente" aria-label="Default select example" required>
+                <option disabled selected>Buscar cliente</option>
+                <option value="VACSA">VACSA</option>
+                <option value="ISABELLA">Ingenieros civiles SA</option>
+                <option value="DELIPOLLO">DELIPOLLO</option>
+              </select>
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput2" class="form-label">Nombre del proyecto </label>
+            <input type="text" name="nombre_proyecto" class="form-control" id="exampleFormControlInput2" >
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleFormControlInput3" class="form-label">Telefono </label>
+            <input type="tel" name="telefono" maxlength="8" class="form-control" pattern="[0-9]{8}" id="exampleFormControlInput3" >
+        </div>
+          
     </div>
+
+    <div class="col-md">
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Descripcion</label>
+            <textarea class="form-control" name="descripcion" id="exampleFormControlTextarea1" rows="3"></textarea>
+          </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
 </div>
+
+</form>
 {% endblock %}

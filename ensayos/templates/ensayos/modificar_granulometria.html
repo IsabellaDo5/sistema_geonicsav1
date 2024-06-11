@@ -25,10 +25,20 @@ Granulometria
   <div class="row">
     {% for item in encabezado %}
     <div class="col-md">
-      <label class="form-label">Proyecto</label>
-      <input type="text" name="nombre_proyecto" value="{{item.1}}" class="form-control" >
+      <label for="exampleFormControlInput1" class="form-label">Proyecto</label>
+            <select class="form-select" name="nombre_proyecto" aria-label="Default select example" required>
 
-      <label class="form-label">Cliente</label>
+              {% for x in proyectos %}
+              {% if x.1 == item.1 %}
+                <option selected value="{{item.1}}">{{item.1}}</option>
+              {% else %}
+              <option selected value="{{item.1}}">{{item.1}}</option>
+                <option value="{{x.1}}">{{x.1}}</option>
+                {%endif%}
+              {% endfor %}
+
+              </select>
+                    <label class="form-label">Cliente</label>
       <input type="text" name="cliente" value="{{item.2}}" class="form-control" >
 
       <label class="form-label">Operador</label>

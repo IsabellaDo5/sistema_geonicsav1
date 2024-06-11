@@ -350,29 +350,29 @@ function calcular_cu() {
   <tbody>
     <tr>
     <th scope="col">D10</th>
-      <td>`+ resultado_d10 + `</td>
+    <td > <input class="form-control-plaintext" name = "d10" type="text" value=" `+ resultado_d10 + `" aria-label="Disabled input example" disabled readonly></td>
       
     </tr>
     
     <tr>
         <th scope="col">D30</th>
-        <td>`+ resultado_d30 + `</td> 
+        <td > <input class="form-control-plaintext" name = "d30" type="text" value=" `+ resultado_d30 + `" aria-label="Disabled input example" disabled readonly></td>
     </tr>
     <tr>
         <th scope="col">D60</th>
-        <td>`+ resultado_d60 + `</td>
+        <td > <input class="form-control-plaintext" name = "d60" type="text" value=" `+ resultado_d60 + `" aria-label="Disabled input example" disabled readonly></td>
 
     </tr>
 
     <tr>
     <th scope="col" class="table-active">Coeficiente de uniformidad (Cu):</th>
-      <td class="table-active">`+ cu.toFixed(3) + `</td>
+    <td class="table-active"> <input class="form-control-plaintext" type="text" name="cu" value="`+ cu.toFixed(3) + `" aria-label="Disabled input example" disabled readonly></td>
       
     </tr>
     
     <tr>
         <th scope="col" class="table-active">Coeficiente de curvatura</th>
-        <td class="table-active">`+ cc.toFixed(3) + `</td> 
+        <td class="table-active"> <input class="form-control-plaintext" type="text" name="cc" value="`+ cc.toFixed(3) + `" aria-label="Disabled input example" disabled readonly></td> 
     </tr>
   </tbody>
 </table>

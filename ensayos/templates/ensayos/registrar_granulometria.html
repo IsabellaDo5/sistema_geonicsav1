@@ -10,8 +10,15 @@ Granulometria
   {% csrf_token %}
   <div class="row">
     <div class="col-md">
-      <label class="form-label">Proyecto</label>
-      <input type="text" name="nombre_proyecto" class="form-control">
+        <label for="exampleFormControlInput1" class="form-label">Proyecto</label>
+              <select class="form-select" name="nombre_proyecto" aria-label="Default select example" required>
+                <option disabled selected value="">Buscar un proyecto</option>
+                {% for x in proyectos %}
+                  <option value="{{x.1}}">{{x.1}}</option>
+                {% endfor %}
+  
+              </select>
+      
 
       <label class="form-label">Cliente</label>
       <input type="text" name="cliente" class="form-control">

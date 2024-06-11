@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}Modificar orden de trabajo {% endblock %}
+{% block content %}
+
+<form action="{% url 'modificar-orden-de-trabajo' id_orden %}" method="POST">
+    {% csrf_token %}
+    {% for x in info_orden %}
+    <div class="row">
+        <h3>Modificar órden de trabajo</h3>
+        <div class="col-md">
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Proyecto</label>
+                <select class="form-select" name="id_proyecto" aria-label="Default select example" required>
+                    <option selected value="{{x.2}}">{{x.1}}</option>
+                    {% for y in proyectos %}
+                        <option value="{{y.0}}">{{y.1}}</option>
+     
+                    {% endfor %}
+                </select>
+                <div class="form-text" id="basic-addon4">¿No encuentras el proyecto que estás buscando? Registralo ahora
+                    haciendo click <a href="{% url 'registrar-proyecto' %}">aquí</a></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput2" class="form-label">Orden de trabajo # </label>
+                <input type="number" name="no_orden" class="form-control" id="exampleFormControlInput2">
+            </div>
+
+        </div>
+
+        <div class="col-md">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" name="estado_orden" id="flexSwitchCheckChecked" value="on">
+                <label class="form-check-label" for="flexSwitchCheckChecked" id="switchStatus">Orden de trabajo {{x.3}}</label>
+              </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </div>
+    {% endfor %}
+</form>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const switchElement = document.getElementById('flexSwitchCheckChecked');
+      const switchStatus = document.getElementById('switchStatus');
+
+      switchElement.addEventListener('change', () => {
+        if (switchElement.checked) {
+          switchStatus.textContent = 'Orden de trabajo activa';
+          switchElement.value= 'on';
+        } else {
+          switchStatus.textContent = 'Orden de trabajo inactiva';
+          switchElement.value= 'off';
+        }
+      });
+    });
+  </script>
+
+{% endblock %}

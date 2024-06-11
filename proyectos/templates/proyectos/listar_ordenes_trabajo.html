@@ -4,23 +4,16 @@ Proyectos
 {% endblock %}
 {% block content %}
 <div class="row">
+    {% for x in ordenes_trabajo %}
     <div class="col-sm-6 mb-3 mb-sm-0">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">// nombre proyecto aquí</h5>
-          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
+          <h5 class="card-title">Orden de trabajo no. {{x.1}}</h5>
+          <p class="card-text">{{x.2}}</p>
+          <a href="{% url 'modificar-orden-de-trabajo' x.0 %}" class="btn btn-primary">Modificar</a>
         </div>
       </div>
     </div>
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
+    {% endfor %}
   </div>
-  {% endblock %}
+{% endblock %}
