@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load static %}
 {% block title %}
 Granulometria
 {% endblock %}
@@ -26,20 +27,20 @@ Granulometria
     {% for item in encabezado %}
     <div class="col-md">
       <label for="exampleFormControlInput1" class="form-label">Proyecto</label>
-            <select class="form-select" name="nombre_proyecto" aria-label="Default select example" required>
+            <select class="form-select" name="nombre_proyecto" aria-label="Default select example" id="nombre_proyecto" onchange="obtenerCliente('nombre_proyecto', 'cliente')" required>
 
               {% for x in proyectos %}
               {% if x.1 == item.1 %}
                 <option selected value="{{item.1}}">{{item.1}}</option>
               {% else %}
-              <option selected value="{{item.1}}">{{item.1}}</option>
                 <option value="{{x.1}}">{{x.1}}</option>
                 {%endif%}
               {% endfor %}
 
               </select>
-                    <label class="form-label">Cliente</label>
-      <input type="text" name="cliente" value="{{item.2}}" class="form-control" >
+
+      <label class="form-label">Cliente</label>
+      <input type="text" name="cliente" value="{{item.2}}" id="cliente" class="form-control" readonly>
 
       <label class="form-label">Operador</label>
       <input type="text" name="operador" value="{{item.3}}" class="form-control" >
@@ -249,4 +250,5 @@ document.addEventListener("DOMContentLoaded", () => {
   fracciones_muestra();
 });
 </script>
+<script src="{% static 'general.js' %}"></script>
 {% endblock %}

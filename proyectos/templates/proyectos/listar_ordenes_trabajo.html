@@ -1,19 +1,73 @@
 {% extends "layout.html" %}
+{% load static %}
 {% block title %}
-Proyectos
+Ordenes de trabajo
 {% endblock %}
 {% block content %}
-<div class="row">
-    {% for x in ordenes_trabajo %}
-    <div class="col-sm-6 mb-3 mb-sm-0">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Orden de trabajo no. {{x.1}}</h5>
-          <p class="card-text">{{x.2}}</p>
-          <a href="{% url 'modificar-orden-de-trabajo' x.0 %}" class="btn btn-primary">Modificar</a>
+
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="activa" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab"
+      aria-controls="home" aria-selected="true">Órdenes activas</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="menu1-tab" data-bs-toggle="tab" data-bs-target="#menu1" type="button" role="tab"
+      aria-controls="menu1" aria-selected="false">Órdenes inactivas</button>
+  </li>
+
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="activa">
+
+    <div class="row">
+      {% for x in ordenes_trabajo %}
+      {% if x.3 != '0' %}
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Orden de trabajo no. {{x.1}}</h5>
+            <p class="card-text">{{x.2}} {{x.3}}</p>
+            <div class="d-grid gap-2 d-md-block">
+              <a href="{% url 'modificar-orden-de-trabajo' x.0 %}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+              {% csrf_token %}
+              <a class="btn btn-danger" onclick="desactivar_orden({{x.0}}, this)"><i class="bi bi-eye-slash-fill"></i></a>
+            </div>
+          </div>
         </div>
       </div>
+      {% endif %}
+      {% endfor %}
     </div>
-    {% endfor %}
+    
   </div>
+  <div class="tab-pane fade" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
+    <div class="row">
+      {% for y in ordenes_trabajo %}
+      {% if y.3 == '0' %}
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Orden de trabajo no. {{y.1}}</h5>
+            <p class="card-text">{{y.2}} {{y.3}}</p>
+            {% csrf_token %}
+            <a class="btn btn-success" onclick="activar_orden({{y.0}}, this)"><i class="bi bi-eye-fill"></i></a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+  var orden_url = "{% url 'desactivar_orden' %}";
+  var activar_orden_url = "{% url 'activar_orden' %}";
+</script>
+<script src="{% static 'ordenes_trabajo.js' %}"></script>
 {% endblock %}

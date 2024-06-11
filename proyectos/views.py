@@ -1,4 +1,6 @@
-from django.db import connection
+import json
+from django.db import OperationalError, connection
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 # Create your views here.
@@ -15,7 +17,7 @@ def index(request):
 
     connection.commit()'''
     with connection.cursor() as cursor:
-        ordenes_trabajo =cursor.execute("SELECT O.no_orden, P.nombre FROM proyectos_ordentrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.proyecto_id").fetchall()
+        ordenes_trabajo =cursor.execute("SELECT O.no_orden, P.nombre FROM proyectos_ordentrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.proyecto_id WHERE O.estado == 1").fetchall()
     connection.commit()
 
     return render(request,'index.html', context={
@@ -50,7 +52,7 @@ def listar_proyectos(request):
 def registrar_orden_trabajo(request):
     if request.method == 'POST':
         with connection.cursor() as cursor:
-            proyectos=cursor.execute("INSERT INTO proyectos_ordentrabajo(no_orden, proyecto_id) VALUES(%s, %s)", (request.POST['id_proyecto'], request.POST['no_orden'])).fetchall()
+            proyectos=cursor.execute("INSERT INTO proyectos_ordentrabajo(no_orden, proyecto_id, estado) VALUES(%s, %s, %s)", ( request.POST['no_orden'],request.POST['id_proyecto'], '1')).fetchall()
         connection.commit()
 
         return redirect('/ordenes-de-trabajo/ver/')    
@@ -88,9 +90,43 @@ def modificar_orden_trabajo(request, id_orden):
 def listar_ordenes_trabajo(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            ordenes_trabajo =cursor.execute("SELECT id_ordenTrabajo, O.no_orden, P.nombre FROM proyectos_ordentrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.proyecto_id").fetchall()
+            ordenes_trabajo =cursor.execute("SELECT id_ordenTrabajo, O.no_orden, P.nombre, O.estado FROM proyectos_ordentrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.proyecto_id").fetchall()
         connection.commit()
 
+        print(ordenes_trabajo)
         return render(request, 'proyectos/listar_ordenes_trabajo.html', context={
             'ordenes_trabajo': ordenes_trabajo,
         })
+
+def desactivar_orden_trabajo(request):
+    if request.method == 'POST':
+        try:    
+            data = json.loads(request.body)
+            id = data.get('id_orden')
+            print("ID DE LA ORDEN QUE ACABO DE DESACTIVAR:"+str(id))
+
+            with connection.cursor() as cursor:
+                    cursor.execute("UPDATE proyectos_ordentrabajo SET estado = %s WHERE id_ordenTrabajo= %s", (0, id,))
+            connection.commit()
+        except OperationalError as e:
+            # Envia un error si la consulta falla
+            return JsonResponse({'error': str(e)}, status=500)
+        # Devuelve los datos como JSON
+        return JsonResponse('completao',safe=False)
+
+def activar_orden_trabajo(request):
+    if request.method == 'POST':
+        try:    
+            data = json.loads(request.body)
+            id = data.get('id_orden')
+            
+            print("ID DE LA ORDEN QUE ACABO DE ACTIVAR:"+str(id))
+
+            with connection.cursor() as cursor:
+                    cursor.execute("UPDATE proyectos_ordentrabajo SET estado = %s WHERE id_ordenTrabajo= %s", (1, id,))
+            connection.commit()
+        except OperationalError as e:
+            # Envia un error si la consulta falla
+            return JsonResponse({'error': str(e)}, status=500)
+        # Devuelve los datos como JSON
+        return JsonResponse('completao',safe=False)        

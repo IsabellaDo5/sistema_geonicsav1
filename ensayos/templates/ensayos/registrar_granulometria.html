@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load static %}
 {% block title %}
 Granulometria
 {% endblock %}
@@ -11,7 +12,7 @@ Granulometria
   <div class="row">
     <div class="col-md">
         <label for="exampleFormControlInput1" class="form-label">Proyecto</label>
-              <select class="form-select" name="nombre_proyecto" aria-label="Default select example" required>
+              <select class="form-select" name="nombre_proyecto" aria-label="Default select example" onchange="obtenerCliente('nombre_proyecto', 'cliente')" id="nombre_proyecto"  required>
                 <option disabled selected value="">Buscar un proyecto</option>
                 {% for x in proyectos %}
                   <option value="{{x.1}}">{{x.1}}</option>
@@ -21,7 +22,7 @@ Granulometria
       
 
       <label class="form-label">Cliente</label>
-      <input type="text" name="cliente" class="form-control">
+      <input type="text" name="cliente" id="cliente" class="form-control" readonly>
 
       <label class="form-label">Operador</label>
       <input type="text" name="operador" class="form-control">
@@ -208,5 +209,8 @@ Granulometria
 
 {% endblock %}
 {% block scripts %}
-
+<script>
+var obtenerClienteUrl = "{% url 'obtener_cliente' %}";
+</script>
+<script src="{% static 'general.js' %}"></script>
 {% endblock %}

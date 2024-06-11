@@ -57,7 +57,25 @@ def obtener_factores(request):
     # Devuelve los datos como JSON
     return JsonResponse(rows, safe=False)
 
+def obtener_cliente(request):
+    try:
+        proyecto = request.GET.get('proyecto')
+        print(proyecto)
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT cliente FROM proyectos_proyectos WHERE nombre= %s", (proyecto,))
+            # Obtiene los nombres de las columnas, 
+            columns = [col[0] for col in cursor.description]
+            # Obtener todos los resultados de la consulta como una lista de diccionarios [{"key":value, "key2": value2}]
+            rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            print(columns)
+            print(rows)
+    except OperationalError as e:
+        # Envia un error si la consulta falla
+        return JsonResponse({'error': str(e)}, status=500)
+    # Devuelve los datos como JSON
+    return JsonResponse(rows, safe=False)
 
+'''
 def obtener_grafica(request):
         if request.method == 'GET':
 
@@ -71,14 +89,6 @@ def obtener_grafica(request):
             print("MEDIDAS MALLAS:", mallas_lista)
             print("PESOS LISTA:", pesos_lista)
 
-
-            '''plt.xlabel('Diámetro de particulas (mm)')
-            plt.ylabel('% que pasa')
-            plt.title('Curva granulométrica')
-
-            xpoints = np.array(mallas_lista)
-            ypoints = np.array(pesos_lista)
-            plt.plot(xpoints, ypoints)'''
 
             # Crear la figura y el eje
             fig, ax = plt.subplots()
@@ -113,7 +123,7 @@ def obtener_grafica(request):
             
             print(buf)
             return HttpResponse(buf, content_type='image/png')
-
+'''
 
 ''' FUNCIONES NORMALES '''
 
@@ -172,7 +182,7 @@ def registrar_granulometria(request):
         mallas = models.Mallas.objects.values_list('medida', 'medida_mm', 'id_malla')
 
         with connection.cursor() as cursor:
-            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordentrabajo O ON P.id_proyecto = O.proyecto_id WHERE estado='activo' ").fetchall()
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordentrabajo O ON P.id_proyecto = O.proyecto_id WHERE estado='1' ").fetchall()
         connection.commit()
         print(mallas)
         return render(request, 'ensayos/registrar_granulometria.html', context={
@@ -256,7 +266,7 @@ def modificar_granulometria(request, id_ensayo):
             parametros=(id_ensayo,)
             tablas_ensayo = cursor.execute(sql_granulometria, parametros).fetchall()
             encabezado_ensayo = cursor.execute(sql_encabezado, parametros).fetchall()
-            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos").fetchall()
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordentrabajo O ON P.id_proyecto = O.proyecto_id WHERE estado='1' ").fetchall()
 
             connection.commit()
         return render(request, 'ensayos/modificar_granulometria.html', context={

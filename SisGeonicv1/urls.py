@@ -50,5 +50,7 @@ urlpatterns = [
     
     # ASINCRONO
     path('ajax/obtener_factores/', ensayos.views.obtener_factores, name='obtener_factores'),
-    path('ajax/obtener_grafica/', ensayos.views.obtener_grafica, name="obtener-grafica"),
+    path('ajax/obtener_cliente/', ensayos.views.obtener_cliente, name='obtener_cliente'),
+    path('ajax/desactivar_orden/', proyectos.views.desactivar_orden_trabajo , name='desactivar_orden'),
+    path('ajax/activar_orden/', proyectos.views.activar_orden_trabajo , name='activar_orden'),
 ]
