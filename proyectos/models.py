@@ -5,7 +5,7 @@ class Proyectos(models.Model):
     nombre = models.CharField(max_length=255)
     ubicacion = models.CharField(max_length=255)
     descripcion = models.TextField()
-    id_cliente = models.ForeignKey('clientes.Cliente', on_delete=models.CASCADE)
+    id_cliente = models.ForeignKey('clientes.Clientes', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nombre

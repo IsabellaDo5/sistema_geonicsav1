@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 import ensayos.views 
 import proyectos.views
+import clientes.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,7 +48,9 @@ urlpatterns = [
     path('ordenes-de-trabajo/ver/', proyectos.views.listar_ordenes_trabajo, name="listar-orden-de-trabajo"),
     path('ordenes-de-trabajo/modificar/<int:id_orden>/', proyectos.views.modificar_orden_trabajo, name="modificar-orden-de-trabajo"),
     
-    
+    #CLIENTES
+    path('clientes/nuevo/', clientes.views.registrar_cliente, name="registrar-cliente"),
+    path('clientes/ver/', clientes.views.ver_clientes, name="ver-clientes"),
     # ASINCRONO
     path('ajax/obtener_factores/', ensayos.views.obtener_factores, name='obtener_factores'),
     path('ajax/obtener_cliente/', ensayos.views.obtener_cliente, name='obtener_cliente'),

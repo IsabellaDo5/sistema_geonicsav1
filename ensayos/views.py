@@ -134,7 +134,7 @@ def obtener_grafica(request):
 def reportes_granulometria(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            ensayos = cursor.execute("SELECT * FROM ensayos_ensayo WHERE tipo='GRANULOMETRIA'").fetchall()
+            ensayos = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE tipo='GRANULOMETRIA'").fetchall()
         connection.commit()
 
         print("Ensayos:" + str(ensayos))
@@ -182,7 +182,7 @@ def registrar_granulometria(request):
         mallas = models.Mallas.objects.values_list('medida', 'medida_mm', 'id_malla')
 
         with connection.cursor() as cursor:
-            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordentrabajo O ON P.id_proyecto = O.proyecto_id WHERE estado='1' ").fetchall()
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordendetrabajo O ON P.id_proyecto = O.id_proyecto_id WHERE estado='1' ").fetchall()
         connection.commit()
         print(mallas)
         return render(request, 'ensayos/registrar_granulometria.html', context={
@@ -198,7 +198,7 @@ def detalle_granulometria(request, id_ensayo):
             suma_PRP = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE (id_malla_id BETWEEN 1 AND 9 OR id_malla_id = 13) AND id_ensayo_id = %s", (id_ensayo,)).fetchall()
             suma_PRPL = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE (id_malla_id BETWEEN 10 AND 12 OR id_malla_id = 14) AND id_ensayo_id = %s", (id_ensayo,)).fetchall()
             
-            sql_encabezado = "SELECT * FROM ensayos_ensayo WHERE id = %s"
+            sql_encabezado = "SELECT * FROM ensayos_ensayoslaboratorio WHERE id = %s"
             sql_granulometria = "SELECT * FROM  ensayos_granulometria WHERE id_ensayo_id = %s"
             parametros=(id_ensayo,)
 
@@ -261,12 +261,12 @@ def modificar_granulometria(request, id_ensayo):
     else:
         with connection.cursor() as cursor:
             mallas = cursor.execute("SELECT * FROM ensayos_mallas").fetchall()
-            sql_encabezado = "SELECT * FROM ensayos_ensayo WHERE id = %s"
+            sql_encabezado = "SELECT * FROM ensayos_ensayoslaboratorio WHERE id = %s"
             sql_granulometria = "SELECT * FROM  ensayos_granulometria WHERE id_ensayo_id = %s"
             parametros=(id_ensayo,)
             tablas_ensayo = cursor.execute(sql_granulometria, parametros).fetchall()
             encabezado_ensayo = cursor.execute(sql_encabezado, parametros).fetchall()
-            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordentrabajo O ON P.id_proyecto = O.proyecto_id WHERE estado='1' ").fetchall()
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordendetrabajo O ON P.id_proyecto = O.id_proyecto_id WHERE estado='1' ").fetchall()
 
             connection.commit()
         return render(request, 'ensayos/modificar_granulometria.html', context={
@@ -281,7 +281,7 @@ def modificar_granulometria(request, id_ensayo):
 def eliminar_granulometria(request, id_ensayo):
     with connection.cursor() as cursor:
         cursor.execute("DELETE FROM ensayos_granulometria WHERE id_ensayo_id = %s", (id_ensayo,))
-        cursor.execute("DELETE FROM ensayos_ensayo WHERE id = %s", (id_ensayo,))
+        cursor.execute("DELETE FROM ensayos_ensayoslaboratorio WHERE id = %s", (id_ensayo,))
     connection.commit()
     return redirect('/granulometria/reportes/')
 
@@ -291,7 +291,7 @@ def eliminar_granulometria(request, id_ensayo):
 def reportes_limites_atterberg(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            ensayos = cursor.execute("SELECT * FROM ensayos_ensayo WHERE tipo='LIMITES DE ATTERBERG'").fetchall()
+            ensayos = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE tipo='LIMITES DE ATTERBERG'").fetchall()
         connection.commit()
         return render(request, 'ensayos/reportes.html', context={
             'nombre_ensayo': "Límites de Atterberg",
@@ -371,7 +371,7 @@ def registrar_limites_atterberg(request):
 def detalle_limites_de_attergberg(request, id_ensayo):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            encabezado_ensayo = cursor.execute("SELECT * FROM ensayos_ensayo WHERE id = %s", (id_ensayo,)).fetchall()
+            encabezado_ensayo = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE id = %s", (id_ensayo,)).fetchall()
             limite_liquido = cursor.execute("SELECT * FROM ensayos_limiteliquido WHERE id_ensayo_id = %s", (id_ensayo,)).fetchall()
             limite_plastico = cursor.execute("SELECT * FROM ensayos_limiteplastico WHERE id_ensayo_id = %s", (id_ensayo,)).fetchall()
         connection.commit()
@@ -408,10 +408,10 @@ def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
         if accion == 1:
             with connection.cursor() as cursor:
 
-                sql_info_ensayo = "INSERT INTO ensayos_ensayo(nombre_proyecto, cliente,operador,descripcion, no_sondeo, profundidad, fecha, tipo, codigo_area_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                sql_info_ensayo = "INSERT INTO ensayos_ensayoslaboratorio(nombre_proyecto, cliente,operador,descripcion, no_sondeo, profundidad, fecha, tipo, codigo_area_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 insertar_valores = (nombre_proyecto,cliente,operador,descripcion,no_sondeo,profundidad,fecha_ensayo,tipo_ensayo,2)
                 cursor.execute(sql_info_ensayo, insertar_valores)
-                id_ensayo = cursor.execute("SELECT id FROM ensayos_ensayo ORDER BY id DESC LIMIT 1;").fetchall()
+                id_ensayo = cursor.execute("SELECT id FROM ensayos_ensayoslaboratorio ORDER BY id DESC LIMIT 1;").fetchall()
             connection.commit()
 
             return id_ensayo[0][0]
@@ -420,7 +420,7 @@ def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
             with connection.cursor() as cursor:
                 print("PROFNDIDAD: "+profundidad)
                 
-                sql_query= "UPDATE ensayos_ensayo SET nombre_proyecto = %s, cliente = %s, operador = %s, descripcion = %s, no_sondeo = %s, profundidad = %s, fecha = %s, tipo = %s, codigo_area_id = %s, no_muestra = %s WHERE id = %s"
+                sql_query= "UPDATE ensayos_ensayoslaboratorio SET nombre_proyecto = %s, cliente = %s, operador = %s, descripcion = %s, no_sondeo = %s, profundidad = %s, fecha = %s, tipo = %s, codigo_area_id = %s, no_muestra = %s WHERE id = %s"
                 insertar_valores = (nombre_proyecto,cliente,operador,descripcion,no_sondeo,profundidad,fecha_ensayo,tipo_ensayo,2, no_muestra, ensayo_id)
                 cursor.execute(sql_query, insertar_valores)
             connection.commit()

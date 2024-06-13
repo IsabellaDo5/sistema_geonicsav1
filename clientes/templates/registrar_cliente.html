@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}Registrar nuevo cliente {% endblock %}
+{% block content %}
+
+<form action="{% url 'registrar-cliente' %}" method="post">
+    {% csrf_token %}
+    <div class="row">
+        <h3>Registrar un nuevo cliente</h3>
+        <div class="col ">
+            
+                <label for="exampleInputEmail1" class="form-label">Nombre *</label>
+                <input type="text" class="form-control" name="nombre" id="nombre_cliente" aria-describedby="emailHelp" required>
+
+        </div>
+        <div class="col">
+            <label for="telefono_cliente" class="form-label">Número de telefono (+505)</label>
+            <input type="tel" class="form-control" maxlength="8" name="telefono" pattern="[0-9]{8}" id="telefono_cliente" required>
+            <div id="emailHelp" class="form-text">Formato: 0000XXXX</div>
+
+        </div>
+        
+    </div>
+    <div class="row">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+    </div>
+</form>
+{% endblock%}

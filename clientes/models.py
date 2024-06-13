@@ -1,10 +1,9 @@
 from django.db import models
 
 # Create your models here.
-class Cliente(models.Model):
+class Clientes(models.Model):
     id_cliente = models.AutoField(primary_key=True)
-    nombres = models.CharField(max_length=255)
-    apellidos = models.CharField(max_length=255)
+    nombre = models.CharField(max_length=50)
     telefono = models.IntegerField()
 
     def __str__(self):

@@ -14,19 +14,18 @@ class Servicio(models.Model):
     def __str__(self):
         return self.servicio
 
-
-class Ensayo(models.Model):
-    codigo_area = models.ForeignKey(Area, on_delete=models.CASCADE)
-    id_proyecto = models.ForeignKey(Proyectos, on_delete=models.CASCADE, null=True)
-    nombre_proyecto = models.TextField()
-    cliente = models.TextField(null=True)
-    operador = models.TextField(null=True)
-    descripcion = models.TextField()
+class EnsayosLaboratorio(models.Model):
+    id_ensayo = models.AutoField(primary_key=True)
+    id_cliente = models.ForeignKey('clientes.Clientes', on_delete=models.CASCADE)
+    operador = models.CharField(max_length=255)
+    descripcion_visual = models.TextField()
     no_sondeo = models.IntegerField()
-    no_muestra = models.IntegerField(null=True)
-    profundidad = models.DecimalField(max_digits=10, decimal_places=2)
+    profundidad = models.IntegerField()
     fecha = models.DateField()
-    tipo = models.TextField(null=True)
+    id_proyecto = models.ForeignKey('proyectos.Proyectos', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Ensayo {self.id_ensayo} - Proyecto {self.id_proyecto}"
 
 class Mallas(models.Model):
     id_malla = models.IntegerField(primary_key=True)
@@ -37,7 +36,7 @@ class Mallas(models.Model):
         return f'{self.id_malla}, {self.medida}, {self.medida_mm}'
 
 class Granulometria(models.Model):
-    id_ensayo = models.ForeignKey(Ensayo, on_delete=models.CASCADE)
+    id_ensayo = models.ForeignKey(EnsayosLaboratorio, on_delete=models.CASCADE)
     id_malla = models.ForeignKey(Mallas, on_delete=models.CASCADE)
     PRP = models.DecimalField(max_digits=10, decimal_places=2)
     PeRP = models.DecimalField(max_digits=10, decimal_places=2)
@@ -51,7 +50,7 @@ class DiametrosCoeficiente(models.Model):
     d60 = models.DecimalField(max_digits=10, decimal_places=2)
     cu = models.DecimalField(max_digits=10, decimal_places=2)
     cc = models.DecimalField(max_digits=10, decimal_places=2)
-    id_ensayo = models.ForeignKey(Ensayo, on_delete=models.CASCADE, null=True)
+    id_ensayo = models.ForeignKey(EnsayosLaboratorio, on_delete=models.CASCADE, null=True)
 
 class FactoresLL(models.Model):
     id_factor = models.IntegerField(primary_key=True)
@@ -59,7 +58,7 @@ class FactoresLL(models.Model):
     K = models.DecimalField(max_digits=10, decimal_places=3)
 
 class LimiteLiquido(models.Model):
-    id_ensayo = models.ForeignKey(Ensayo, on_delete=models.CASCADE)
+    id_ensayo = models.ForeignKey(EnsayosLaboratorio, on_delete=models.CASCADE)
     no_golpes = models.IntegerField()
     recipiente_no = models.IntegerField()
     pw_mas_recip = models.FloatField()
@@ -73,7 +72,7 @@ class LimiteLiquido(models.Model):
     limite_liquido = models.FloatField()
 
 class LimitePlastico(models.Model):
-    id_ensayo = models.ForeignKey(Ensayo, on_delete=models.CASCADE)
+    id_ensayo = models.ForeignKey(EnsayosLaboratorio, on_delete=models.CASCADE)
     recipiente_no = models.IntegerField()
     pw_mas_recip = models.FloatField()
     ps_mas_recip = models.FloatField()
