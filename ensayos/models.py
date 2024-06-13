@@ -6,6 +6,15 @@ class Area(models.Model):
     codigo_area = models.CharField(max_length=255, unique=True)
     nombre_area = models.TextField()
 
+class Servicio(models.Model):
+    id_servicio = models.AutoField(primary_key=True)
+    servicio = models.CharField(max_length=255)
+    codigo_area = models.ForeignKey(Area, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.servicio
+
+
 class Ensayo(models.Model):
     codigo_area = models.ForeignKey(Area, on_delete=models.CASCADE)
     id_proyecto = models.ForeignKey(Proyectos, on_delete=models.CASCADE, null=True)
