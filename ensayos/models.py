@@ -22,6 +22,7 @@ class EnsayosLaboratorio(models.Model):
     no_sondeo = models.IntegerField()
     profundidad = models.IntegerField()
     fecha = models.DateField()
+    id_servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
     id_proyecto = models.ForeignKey('proyectos.Proyectos', on_delete=models.CASCADE)
 
     def __str__(self):

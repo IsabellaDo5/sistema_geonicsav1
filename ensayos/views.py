@@ -15,10 +15,10 @@ from . import models
 # Create your views here.
 
 def querys_utiles():
-    mm= models.Mallas.objects.get(id_malla=13)
+    '''mm= models.Mallas.objects.get(id_malla=13)
     #mm.medida = "No. 4"
     mm.medida_mm = 5
-    mm.save()
+    mm.save()'''
 
     '''SomeModel.objects.filter(id=id).delete()'''
 
@@ -26,7 +26,13 @@ def querys_utiles():
         medida ="Pasa No. 200"
     )
     nueva_malla.save()'''
-
+    mallas_mm = [ 75, 63, 50, 37.5,25,19,12.5,9.5,4.75, 2.00, 0.425,0.075, 5, 0.080]
+    mallas_pulg= ["3", "2 1/2", "2", "1 1/2", "1", "3/4", "1/2", "3/8", "No. 4", "No. 10", "No. 40", "No. 200", "Pasa No. 4", "Pasa No. 200"]
+    
+    for mm, pulg in zip(mallas_mm, mallas_pulg):
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO ensayos_mallas(medida,medida_mm) VALUES("+pulg+""+mm+") ")
+    
     # PARA ALMACENAR LOS FACTORES EN MI TABLA FACTORESLL
     factores = [0.895,0.909, 0.915, 0.924, 0.932, 0.940, 0.947, 0.954,0.961, 0.967, 0.973, 0.979, 0.985, 0.990, 0.995, 1.000, 1.005,1.009,1.014,1.018,1.022, 1.026, 1.030, 1.034, 1.038,1.000, 1.005, 1.009, 1.014, 1.018]
     
@@ -62,7 +68,7 @@ def obtener_cliente(request):
         proyecto = request.GET.get('proyecto')
         print(proyecto)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT cliente FROM proyectos_proyectos WHERE nombre= %s", (proyecto,))
+            cursor.execute("SELECT C.nombre FROM clientes_clientes C INNER JOIN proyectos_proyectos P ON C.id_cliente = P.id_cliente_id WHERE P.nombre= %s", (proyecto,))
             # Obtiene los nombres de las columnas, 
             columns = [col[0] for col in cursor.description]
             # Obtener todos los resultados de la consulta como una lista de diccionarios [{"key":value, "key2": value2}]
@@ -134,7 +140,7 @@ def obtener_grafica(request):
 def reportes_granulometria(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            ensayos = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE tipo='GRANULOMETRIA'").fetchall()
+            ensayos = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE id_servicio_id=1").fetchall()
         connection.commit()
 
         print("Ensayos:" + str(ensayos))
@@ -166,7 +172,7 @@ def registrar_granulometria(request):
         pce_retenido_acumulado = PerRA+PerRAL
         pce_que_pasa = PQP+PQPL
 
-        id_ensayo= info_encabezado_ensayo(request,1,0, "GRANULOMETRIA")
+        id_ensayo= info_encabezado_ensayo(request,1,0, 1)
 
         print("ensayo: "+str(id_ensayo))
         with connection.cursor() as cursor:
@@ -230,7 +236,7 @@ def modificar_granulometria(request, id_ensayo):
     if request.method == 'POST':
 
 
-        id= info_encabezado_ensayo(request,2,id_ensayo, "GRANULOMETRIA")
+        id= info_encabezado_ensayo(request,2,id_ensayo, 1)
                 # GRANULOMETRIA
         PRP = request.POST.getlist('PRP')
         PerRP = request.POST.getlist('PeRP')
@@ -291,7 +297,7 @@ def eliminar_granulometria(request, id_ensayo):
 def reportes_limites_atterberg(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            ensayos = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE tipo='LIMITES DE ATTERBERG'").fetchall()
+            ensayos = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE id_servicio_id=2").fetchall()
         connection.commit()
         return render(request, 'ensayos/reportes.html', context={
             'nombre_ensayo': "Límites de Atterberg",
@@ -324,7 +330,7 @@ def registrar_limites_atterberg(request):
         recipienteLP = request.POST.getlist("recipiente_LP")
         limite_plastico = request.POST.getlist("Limite_Plastico")
 
-        id_ensayo = info_encabezado_ensayo(request,1 ,0, "LIMITES DE ATTERBERG")
+        id_ensayo = info_encabezado_ensayo(request,1 ,0, 2)
 
         for i in range(len(no_golpesLL)):
 
@@ -408,7 +414,7 @@ def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
         if accion == 1:
             with connection.cursor() as cursor:
 
-                sql_info_ensayo = "INSERT INTO ensayos_ensayoslaboratorio(nombre_proyecto, cliente,operador,descripcion, no_sondeo, profundidad, fecha, tipo, codigo_area_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                sql_info_ensayo = "INSERT INTO ensayos_ensayoslaboratorio(nombre_proyecto, cliente,operador,descripcion, no_sondeo, profundidad, fecha, id_servicio_id, codigo_area_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 insertar_valores = (nombre_proyecto,cliente,operador,descripcion,no_sondeo,profundidad,fecha_ensayo,tipo_ensayo,2)
                 cursor.execute(sql_info_ensayo, insertar_valores)
                 id_ensayo = cursor.execute("SELECT id FROM ensayos_ensayoslaboratorio ORDER BY id DESC LIMIT 1;").fetchall()
@@ -420,7 +426,7 @@ def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
             with connection.cursor() as cursor:
                 print("PROFNDIDAD: "+profundidad)
                 
-                sql_query= "UPDATE ensayos_ensayoslaboratorio SET nombre_proyecto = %s, cliente = %s, operador = %s, descripcion = %s, no_sondeo = %s, profundidad = %s, fecha = %s, tipo = %s, codigo_area_id = %s, no_muestra = %s WHERE id = %s"
+                sql_query= "UPDATE ensayos_ensayoslaboratorio SET nombre_proyecto = %s, cliente = %s, operador = %s, descripcion = %s, no_sondeo = %s, profundidad = %s, fecha = %s, id_servicio_id = %s, codigo_area_id = %s, no_muestra = %s WHERE id = %s"
                 insertar_valores = (nombre_proyecto,cliente,operador,descripcion,no_sondeo,profundidad,fecha_ensayo,tipo_ensayo,2, no_muestra, ensayo_id)
                 cursor.execute(sql_query, insertar_valores)
             connection.commit()

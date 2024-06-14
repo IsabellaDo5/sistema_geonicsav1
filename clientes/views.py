@@ -18,11 +18,20 @@ def registrar_cliente(request):
 def ver_clientes(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM clientes_clientes").fetchall()
+            clientes= cursor.execute("SELECT * FROM clientes_clientes").fetchall()
         connection.commit()
 
-        return render(request, 'ver_clientes.html')
+        return render(request, 'ver_clientes.html', context={
+            'clientes': clientes,
+        })
 
-def detalle_cliente(request):
+def detalle_cliente(request, id_cliente):
     if request.method == 'GET':
-        return render(request, 'detalle_cliente.html')         
+        with connection.cursor() as cursor:
+            cliente = cursor.execute("SELECT * FROM clientes_clientes C LEFT JOIN proyectos_proyectos P ON C.id_cliente = P.id_cliente_id WHERE C.id_cliente = %s", (id_cliente,)).fetchall()
+        connection.commit()
+
+        print(cliente)
+        return render(request, 'detalle_cliente.html', context={
+            'cliente': cliente,
+        })         

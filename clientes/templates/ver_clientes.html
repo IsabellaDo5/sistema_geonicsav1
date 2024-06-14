@@ -1,4 +1,17 @@
 {% extends "layout.html" %}
 {% block title %}Clientes {% endblock %}
 {% block content %}
+
+<div class="row">
+    <h3>Clientes</h3>
+    {% for cliente in clientes %}
+    <div class="col">
+        <strong>{{cliente.2}}</strong>
+        <br>
+        <strong>Número de telefono: </strong><span>{{cliente.1}}</span>
+
+        <a href="{% url 'detalle-cliente' cliente.0 %}" class="btn btn-outline-success">Ver detalles</a>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

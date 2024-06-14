@@ -4,8 +4,25 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 # Create your views here.
+def querys_utiles():
+    '''mm= models.Mallas.objects.get(id_malla=13)
+    #mm.medida = "No. 4"
+    mm.medida_mm = 5
+    mm.save()'''
 
-def index(request):
+    '''SomeModel.objects.filter(id=id).delete()'''
+
+    '''nueva_malla = models.Mallas(
+        medida ="Pasa No. 200"
+    )
+    nueva_malla.save()'''
+    '''mallas_mm = [ 75, 63, 50, 37.5,25,19,12.5,9.5,4.75, 2.00, 0.425,0.075, 5, 0.080]
+    mallas_pulg= ["3", "2 1/2", "2", "1 1/2", "1", "3/4", "1/2", "3/8", "No. 4", "No. 10", "No. 40", "No. 200", "Pasa No. 4", "Pasa No. 200"]
+    
+    for mm, pulg in zip(mallas_mm, mallas_pulg):
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO ensayos_mallas(medida,medida_mm) VALUES(%s, %s) ", (pulg, mm,))
+    '''
     '''with connection.cursor() as cursor:
         cursor.execute("UPDATE ensayos_ensayoslaboratorio SET tipo = 'GRANULOMETRIA'")
     connection.commit()'''
@@ -16,14 +33,29 @@ def index(request):
         
 
     connection.commit()'''
+    # PARA ALMACENAR LOS FACTORES EN MI TABLA FACTORESLL
+    factores = [0.895,0.909, 0.915, 0.924, 0.932, 0.940, 0.947, 0.954,0.961, 0.967, 0.973, 0.979, 0.985, 0.990, 0.995, 1.000, 1.005,1.009,1.014,1.018,1.022, 1.026, 1.030, 1.034, 1.038,1.000, 1.005, 1.009, 1.014, 1.018]
+    
+    id = 1
+    N = 10
+    for valor in factores:
+        
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO ensayos_factoresll(N,K) VALUES(%s, %s) ", (N, valor,))
+        N+=1
+        id+=1
+    return N
 
+
+def index(request):
     with connection.cursor() as cursor:
         ordenes_trabajo =cursor.execute("SELECT O.no_orden, P.nombre FROM proyectos_ordendetrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.id_proyecto_id WHERE O.estado == 1").fetchall()
     connection.commit()
-
     return render(request,'index.html', context={
         'ordenes_trabajo': ordenes_trabajo,
     })
+
+
 def registrar_proyecto(request):
     if request.method == 'POST':
 
@@ -31,19 +63,67 @@ def registrar_proyecto(request):
         proyecto = request.POST["nombre_proyecto"]
         ubicacion = request.POST["ubicacion"]
         descripcion = request.POST["descripcion"]
+        servicios = request.POST.getlist("servicio")
 
+        print("SERVICIOS ELEGIDOS: "+str(servicios))
+        
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO proyectos_proyectos(nombre,id_cliente_id,ubicacion,descripcion) VALUES(%s,%s,%s,%s)", (proyecto,cliente,ubicacion,descripcion))
+            id_proyecto = cursor.execute("SELECT id_proyecto FROM proyectos_proyectos ORDER BY id_proyecto DESC LIMIT 1;")
+            
+            for x in servicios:
+                cursor.execute("INSERT INTO proyectos_serviciosporproyecto(id_proyecto_id,id_servicio_id) VALUES(%s,%s,)", (id_proyecto, x))
         connection.commit()
         return redirect('/proyectos/ver/')
     else:
         with connection.cursor() as cursor:
             clientes = cursor.execute("SELECT * FROM clientes_clientes").fetchall()
+            servicios = cursor.execute("SELECT * FROM ensayos_servicio").fetchall()
         connection.commit()
         return render(request, 'proyectos/registrar_proyecto.html', context={
             'clientes': clientes,
+            'servicios': servicios,
         })
-    
+
+def modificar_proyecto(request, id_proyecto):
+    if request.method == 'POST':
+
+        cliente = request.POST["cliente"]
+        proyecto = request.POST["nombre_proyecto"]
+        ubicacion = request.POST["ubicacion"]
+        descripcion = request.POST["descripcion"]
+        servicios = request.POST.getlist("servicio")
+
+        print("SERVICIOS ELEGIDOS: "+str(servicios))
+        
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE proyectos_proyectos SET nombre = %s ,id_cliente_id= %s ,ubicacion = %s ,descripcion= %s WHERE id_proyecto = %s", (proyecto,cliente,ubicacion,descripcion, id_proyecto))
+            cursor.execute("DELETE FROM proyectos_serviciosporproyecto WHERE id_proyecto_id = %s", (id_proyecto,))
+            
+            for servicio in servicios:
+                cursor.execute("INSERT INTO proyectos_serviciosporproyecto(id_proyecto_id,id_servicio_id,) VALUES(%s,%s,)", (id_proyecto, servicio))
+        connection.commit()
+        return redirect('/proyectos/ver/')
+    else:
+        with connection.cursor() as cursor:
+            clientes = cursor.execute("SELECT * FROM clientes_clientes").fetchall()
+            servicios = cursor.execute("SELECT * FROM ensayos_servicio ").fetchall()
+            servicios_proyecto = cursor.execute("SELECT * FROM proyectos_serviciosporproyecto WHERE id_proyecto_id = %s", (id_proyecto,)).fetchall()
+            info_proyecto = cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN clientes_clientes C ON C.id_cliente = P.id_cliente_id WHERE P.id_proyecto = %s", (id_proyecto,)).fetchall()
+        connection.commit()
+
+        print("Info del proyecto: "+str(info_proyecto))
+        print("Clientes: "+str(clientes))
+        print("Servicios asociados al proyecto: "+str(servicios_proyecto))
+
+        return render(request, 'proyectos/modificar_proyecto.html', context={
+            'id_proyecto': id_proyecto,
+            'clientes': clientes,
+            'servicios_general': servicios,
+            'servicios': servicios_proyecto,
+            'info_proyecto': info_proyecto,
+        })
+
 def listar_proyectos(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:

@@ -1,45 +1,47 @@
 
 {% extends "layout.html" %}
 {% block title %}
-Registrar un proyecto
+Modificar un proyecto
 {% endblock %}
 {% block content %}
 
-<form action="/proyectos/nuevo/" method="POST">
+<form action="/proyectos/modificar/{{id_proyecto}}" method="POST">
     {% csrf_token %}
 <div class="row">
-
-    <h3>Nuevo proyecto</h3>
+    {% for info in info_proyecto%}
+    <h3>Modificar</h3>
     <div class="col-md">
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Cliente</label>
             <select class="form-select" name="cliente" aria-label="Default select example" required>
-                <option disabled selected>Buscar cliente</option>
             {% for item in clientes %}
+                {% if info.4 == item.0 %}
+                <option selected value="{{item.0}}">{{item.2}}</option>
+                {% else %}
                 <option value="{{item.0}}">{{item.2}}</option>
+                {% endif %}
             {% endfor %}
               </select>
         </div>
         <div class="mb-3">
             <label for="exampleFormControlInput2" class="form-label">Nombre del proyecto </label>
-            <input type="text" name="nombre_proyecto" class="form-control" id="exampleFormControlInput2" >
+            <input type="text" name="nombre_proyecto" value="{{info.1}}" class="form-control" id="exampleFormControlInput2" >
         </div>
 
         <div class="mb-3">
             <label for="ubicacion_proyecto" class="form-label">Ubicacion</label>
-            <textarea class="form-control" name="ubicacion" id="ubicacion_proyecto" rows="2"></textarea>
+            <textarea class="form-control" name="ubicacion" value="" id="ubicacion_proyecto" rows="2">{{info.2}}</textarea>
           </div>
         <div class="mb-3">
             <label for="descripcion_proyecto" class="form-label">Descripcion</label>
-            <textarea class="form-control" name="descripcion" id="descripcion_proyecto" rows="2"></textarea>
+            <textarea class="form-control" name="descripcion" value="{{info.3}}" id="descripcion_proyecto" rows="2">{{info.3}}</textarea>
           </div>  
     </div>
 
     <div class="col-md">
         <h3>Elegir servicios</h3>
-        {% for item in servicios %}
+        {% for item in servicios_general %}
             {% if item.2 == 1 %}
-                
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="servicio"  value="{{item.0}}" id="defaultCheck1">
                     <label class="form-check-label" for="defaultCheck1">
@@ -58,7 +60,7 @@ Registrar un proyecto
         
         {% endfor %}
     </div>
-
+{% endfor %}
     <button type="submit" class="btn btn-primary">Guardar</button>
 </div>
 

@@ -15,7 +15,7 @@ function obtenerCliente(proyecto_nombre, cliente_input){
 
         // Iterar sobre cada objeto en el array recibido
         catalogo_factores.forEach(function (info) {
-            cliente.value = info.cliente;
+            cliente.value = info.nombre;
         });
 
         return cliente.value;

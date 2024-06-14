@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Clientes {% endblock %}
+{% block content %}
+
+<div class="row">
+    
+    {% for info in cliente %}
+    <div class="col">
+        <h3>Información general</h3>
+        <strong>{{info.2}}</strong>
+        <br>
+        <strong>Número de telefono: </strong><span>{{info.1}}</span>
+
+    </div>
+    
+
+    <div class="col">
+        <h3>Proyectos</h3>
+
+        {% if not info.4 %}
+        <p>Parece que este cliente no tiene ningún proyecto registrado.</p>
+        {% else %}
+        <strong>{{info.4}}</strong>
+        {% endif %}
+    </div>
+    
+    {% endfor %}
+</div>
+{% endblock %}

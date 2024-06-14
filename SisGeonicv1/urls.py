@@ -43,6 +43,7 @@ urlpatterns = [
     #PROYECTOS
 
     path('proyectos/nuevo/', proyectos.views.registrar_proyecto, name="registrar-proyecto"),
+    path('proyectos/modificar/<int:id_proyecto>', proyectos.views.modificar_proyecto, name="modificar-proyecto"),
     path('proyectos/ver/', proyectos.views.listar_proyectos, name="listar-proyectos"),
     path('ordenes-de-trabajo/nuevo/', proyectos.views.registrar_orden_trabajo, name="registrar-orden-de-trabajo"),
     path('ordenes-de-trabajo/ver/', proyectos.views.listar_ordenes_trabajo, name="listar-orden-de-trabajo"),
@@ -51,6 +52,7 @@ urlpatterns = [
     #CLIENTES
     path('clientes/nuevo/', clientes.views.registrar_cliente, name="registrar-cliente"),
     path('clientes/ver/', clientes.views.ver_clientes, name="ver-clientes"),
+    path('clientes/detalle/<int:id_cliente>', clientes.views.detalle_cliente, name="detalle-cliente"),
     # ASINCRONO
     path('ajax/obtener_factores/', ensayos.views.obtener_factores, name='obtener_factores'),
     path('ajax/obtener_cliente/', ensayos.views.obtener_cliente, name='obtener_cliente'),
