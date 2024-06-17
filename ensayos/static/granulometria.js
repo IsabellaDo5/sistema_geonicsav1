@@ -73,7 +73,7 @@ function tabla_lavado() {
 
 
     peso_seco.value = document.getElementById("sumaPRPL").textContent;
-    diferencia.textContent = document.getElementById("PRPL14").value;
+    diferencia.textContent = document.getElementById("PRPL15").value;
     peso_seco_lavado.textContent = parseFloat(peso_seco.value) - parseFloat(diferencia.textContent);
 
 }

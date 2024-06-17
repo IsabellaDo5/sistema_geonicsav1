@@ -188,9 +188,11 @@ def registrar_granulometria(request):
         mallas = models.Mallas.objects.values_list('medida', 'medida_mm', 'id_malla')
 
         with connection.cursor() as cursor:
-            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordendetrabajo O ON P.id_proyecto = O.id_proyecto_id WHERE estado='1' ").fetchall()
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordendetrabajo O ON P.id_proyecto = O.id_proyecto_id INNER JOIN proyectos_serviciosporproyecto S ON P.id_proyecto = S.id_proyecto_id WHERE estado= 1 AND S.id_servicio_id = 1").fetchall()
+            
         connection.commit()
         print(mallas)
+        print("PROYECTOS Y ORDENES DE TRABAJO ACTIVAS :"+str(proyectos))
         return render(request, 'ensayos/registrar_granulometria.html', context={
             'mallas': mallas,
             'proyectos':proyectos,
@@ -402,7 +404,6 @@ def eliminar_limites_de_atterberg(request, id_ensayo):
 def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
     # INFORMACION DEL ENSAYO
         nombre_proyecto = request.POST['nombre_proyecto']
-        cliente = request.POST['cliente']
         operador = request.POST['operador']
         descripcion = request.POST['descripcion']
         no_sondeo = request.POST['no_sondeo']
@@ -410,14 +411,18 @@ def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
         profundidad = request.POST['profundidad']
         fecha_ensayo = request.POST['fecha_ensayo']
 
-        
+        with connection.cursor() as cursor:
+            info_proyecto = cursor.execute("SELECT id_cliente_id, id_proyecto FROM proyectos_proyectos WHERE nombre = %s", (nombre_proyecto,)).fetchall()
+        connection.commit()
+
+
         if accion == 1:
             with connection.cursor() as cursor:
 
-                sql_info_ensayo = "INSERT INTO ensayos_ensayoslaboratorio(nombre_proyecto, cliente,operador,descripcion, no_sondeo, profundidad, fecha, id_servicio_id, codigo_area_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                insertar_valores = (nombre_proyecto,cliente,operador,descripcion,no_sondeo,profundidad,fecha_ensayo,tipo_ensayo,2)
+                sql_info_ensayo = "INSERT INTO ensayos_ensayoslaboratorio(operador,descripcion_visual, no_sondeo, profundidad, fecha, id_cliente_id, id_proyecto_id, id_servicio_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+                insertar_valores = (operador,descripcion,no_sondeo,profundidad,fecha_ensayo,info_proyecto[0][0],info_proyecto[0][1],tipo_ensayo)
                 cursor.execute(sql_info_ensayo, insertar_valores)
-                id_ensayo = cursor.execute("SELECT id FROM ensayos_ensayoslaboratorio ORDER BY id DESC LIMIT 1;").fetchall()
+                id_ensayo = cursor.execute("SELECT id_ensayo FROM ensayos_ensayoslaboratorio ORDER BY id DESC LIMIT 1;").fetchall()
             connection.commit()
 
             return id_ensayo[0][0]
@@ -426,8 +431,8 @@ def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
             with connection.cursor() as cursor:
                 print("PROFNDIDAD: "+profundidad)
                 
-                sql_query= "UPDATE ensayos_ensayoslaboratorio SET nombre_proyecto = %s, cliente = %s, operador = %s, descripcion = %s, no_sondeo = %s, profundidad = %s, fecha = %s, id_servicio_id = %s, codigo_area_id = %s, no_muestra = %s WHERE id = %s"
-                insertar_valores = (nombre_proyecto,cliente,operador,descripcion,no_sondeo,profundidad,fecha_ensayo,tipo_ensayo,2, no_muestra, ensayo_id)
+                sql_query= "UPDATE ensayos_ensayoslaboratorio SET id_cliente_id = %s,id_proyecto_id=%s, operador = %s, descripcion_visual = %s, no_sondeo = %s, profundidad = %s, fecha = %s, id_servicio_id = %s, no_muestra = %s WHERE id = %s"
+                insertar_valores = (info_proyecto[0][1],info_proyecto[0][0],operador,descripcion,no_sondeo,profundidad,fecha_ensayo,tipo_ensayo, no_muestra, ensayo_id)
                 cursor.execute(sql_query, insertar_valores)
             connection.commit()
             return "Se actualizó el encabezado"

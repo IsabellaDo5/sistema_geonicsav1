@@ -39,26 +39,37 @@ Modificar un proyecto
     </div>
 
     <div class="col-md">
-        <h3>Elegir servicios</h3>
+        <h4>Elegir servicios</h4>
+        <hr>
+        <h4>Estudios de suelos</h4>
         {% for item in servicios_general %}
             {% if item.2 == 1 %}
+
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="servicio"  value="{{item.0}}" id="defaultCheck1">
-                    <label class="form-check-label" for="defaultCheck1">
-                      {{item.1}}
-                    </label>
-                  </div> 
-            {% elif item.2 == 2 %}
-     
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="servicio" value="{{item.0}}" id="defaultCheck1">
-                    <label class="form-check-label" for="defaultCheck1">
-                    {{item.1}}
-                    </label>
-                </div> 
-            {% endif %}
-        
+         
+                    <input class="form-check-input" type="checkbox" name="servicio"  value="{{item.0}}" id="defaultCheck{{item.0}}" {{item.3}} >
+                    <label class="form-check-label" for="defaultCheck{{item.0}}">
+                        {{item.1}}
+                      </label>
+                    
+                  </div>
+            {% endif %} 
         {% endfor %}
+        <hr>
+        <h4>Control de calidad</h4>
+        {% for item in servicios_general %}
+
+        {% if item.2 == 2 %}
+ 
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="servicio" value="{{item.0}}" id="defaultCheck{{item.0}}" {{item.3}}>
+                <label class="form-check-label" for="defaultCheck{{item.0}}">
+                {{item.1}}
+                </label>
+            </div> 
+        {% endif %}
+    {% endfor %}
+
     </div>
 {% endfor %}
     <button type="submit" class="btn btn-primary">Guardar</button>

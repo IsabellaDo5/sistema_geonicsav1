@@ -55,7 +55,10 @@ def index(request):
         'ordenes_trabajo': ordenes_trabajo,
     })
 
-
+def reportes_granulometria_limites_por_proyecto(request):
+    if request.method == 'GET':
+        return render(request, 'reportes_GL_proyecto.html')
+        
 def registrar_proyecto(request):
     if request.method == 'POST':
 
@@ -101,10 +104,13 @@ def modificar_proyecto(request, id_proyecto):
             cursor.execute("DELETE FROM proyectos_serviciosporproyecto WHERE id_proyecto_id = %s", (id_proyecto,))
             
             for servicio in servicios:
-                cursor.execute("INSERT INTO proyectos_serviciosporproyecto(id_proyecto_id,id_servicio_id,) VALUES(%s,%s,)", (id_proyecto, servicio))
+                print("SERVICIO"+str(servicio))
+                print("ID PROYECTO: "+str(id_proyecto))
+                cursor.execute("INSERT INTO proyectos_serviciosporproyecto(id_proyecto_id,id_servicio_id) VALUES(%s,%s)", (id_proyecto, servicio,))
         connection.commit()
         return redirect('/proyectos/ver/')
     else:
+        servicios_lista= []
         with connection.cursor() as cursor:
             clientes = cursor.execute("SELECT * FROM clientes_clientes").fetchall()
             servicios = cursor.execute("SELECT * FROM ensayos_servicio ").fetchall()
@@ -112,6 +118,15 @@ def modificar_proyecto(request, id_proyecto):
             info_proyecto = cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN clientes_clientes C ON C.id_cliente = P.id_cliente_id WHERE P.id_proyecto = %s", (id_proyecto,)).fetchall()
         connection.commit()
 
+        for x in range(len(servicios)):
+            
+            try:
+                if servicios[x][0] == servicios_proyecto[x][2]:
+                    servicios_lista.append((servicios[x][0],servicios[x][1], servicios[x][2], "checked",))
+            except:
+                servicios_lista.append((servicios[x][0],servicios[x][1], servicios[x][2], "",))    
+
+        print(servicios_lista)        
         print("Info del proyecto: "+str(info_proyecto))
         print("Clientes: "+str(clientes))
         print("Servicios asociados al proyecto: "+str(servicios_proyecto))
@@ -119,7 +134,7 @@ def modificar_proyecto(request, id_proyecto):
         return render(request, 'proyectos/modificar_proyecto.html', context={
             'id_proyecto': id_proyecto,
             'clientes': clientes,
-            'servicios_general': servicios,
+            'servicios_general': servicios_lista,
             'servicios': servicios_proyecto,
             'info_proyecto': info_proyecto,
         })
