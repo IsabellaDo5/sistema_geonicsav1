@@ -50,13 +50,20 @@ def querys_utiles():
 def index(request):
     with connection.cursor() as cursor:
         ordenes_trabajo =cursor.execute("SELECT O.no_orden, P.nombre FROM proyectos_ordendetrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.id_proyecto_id WHERE O.estado == 1").fetchall()
+        
     connection.commit()
+   
+
     return render(request,'index.html', context={
         'ordenes_trabajo': ordenes_trabajo,
+        
     })
 
-def reportes_granulometria_limites_por_proyecto(request):
+def reportes_GL_por_proyecto(request, id_proyecto):
     if request.method == 'GET':
+        with connection.cursor() as cursor:
+            e_granulometria = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio E INNER JOIN ensayos_granulometria G ON E.id_ensayo = G.id_ensayo_id WHERE E.id_proyecto_id = %s", (id_proyecto,)).fetchall()
+        print(e_granulometria)
         return render(request, 'reportes_GL_proyecto.html')
         
 def registrar_proyecto(request):
@@ -175,16 +182,29 @@ def modificar_orden_trabajo(request, id_orden):
             proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P LEFT JOIN proyectos_ordendetrabajo O ON P.id_proyecto = O.id_proyecto_id WHERE O.id_proyecto_id IS NULL").fetchall()
             orden_trabajo =cursor.execute("SELECT O.no_orden, P.nombre, O.id_proyecto_id, O.estado FROM proyectos_ordendetrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.id_proyecto_id WHERE id_ordenTrabajo = %s", (id_orden,)).fetchall()
         connection.commit()
-        
+        estado = orden_trabajo[0][3]
+
         print(proyectos)
         print(orden_trabajo)
         return render(request, 'proyectos/modificar_orden_trabajo.html', context={
             'id_orden': id_orden,
             'proyectos': proyectos,
             'info_orden': orden_trabajo,
+            'estado': estado,
         })
     if request.method == 'POST':
-        print(request.POST.get("estado_orden"))
+        estado_orden = request.POST.get("estado_orden")
+        id_proyecto = request.POST["id_proyecto"]
+        no_orden = request.POST["no_orden"]
+
+        if estado_orden == "on":
+            estado = 1
+        elif estado_orden == "off":
+            estado = 0
+
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE proyectos_ordendetrabajo SET no_orden = %s, estado = %s, id_proyecto_id = %s WHERE id_ordenTRabajo = %s ", (no_orden, estado, id_proyecto, id_orden))
+        connection.commit()
         return redirect('/')
 
 
@@ -230,4 +250,9 @@ def activar_orden_trabajo(request):
             # Envia un error si la consulta falla
             return JsonResponse({'error': str(e)}, status=500)
         # Devuelve los datos como JSON
-        return JsonResponse('completao',safe=False)        
+        return JsonResponse('completao',safe=False)
+    
+def obtener_ensayos_orden(request):
+    if request.method == "GET":
+        with connection.cursor() as cursor:
+            ensayos_por_orden = cursor.execute("SELECT P.id_proyecto, S.servicio FROM proyectos_proyectos P INNER JOIN proyectos_serviciosporproyecto SP ON P.id_proyecto = SP.id_proyecto_id INNER JOIN ensayos_servicio S ON SP.id_servicio_id = S.id_servicio").fetchall()

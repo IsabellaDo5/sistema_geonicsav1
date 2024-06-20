@@ -48,7 +48,7 @@ urlpatterns = [
     path('ordenes-de-trabajo/nuevo/', proyectos.views.registrar_orden_trabajo, name="registrar-orden-de-trabajo"),
     path('ordenes-de-trabajo/ver/', proyectos.views.listar_ordenes_trabajo, name="listar-orden-de-trabajo"),
     path('ordenes-de-trabajo/modificar/<int:id_orden>/', proyectos.views.modificar_orden_trabajo, name="modificar-orden-de-trabajo"),
-    path('proyectos/reporte-granulometria/<int:id_proyecto>', proyectos.views.reportes_granulometria_limites_por_proyecto, name="reportes-granulometria"),
+    path('proyectos/reporte-granulometria/<int:id_proyecto>', proyectos.views.reportes_GL_por_proyecto, name="reportes-granulometria"),
     #CLIENTES
     path('clientes/nuevo/', clientes.views.registrar_cliente, name="registrar-cliente"),
     path('clientes/ver/', clientes.views.ver_clientes, name="ver-clientes"),

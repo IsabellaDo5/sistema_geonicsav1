@@ -11,8 +11,9 @@
                 <div class="card-body">
                   <h5 class="card-title">Orden de trabajo no. {{x.0}}</h5>
                   <p class="card-text">{{x.1}}</p>
+                  <p class="card-text" id="id_orden">{{x.0}}</p>
                   <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="btn_verEnsayo">
                         Agregar ensayo
                     </button>
                 </div>
@@ -37,9 +38,11 @@
             <div class="col">
                 <h3>Ensayos de laboratorio</h3>
                 <hr>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="/granulometria/nuevo/">Granulometria</a></li>
-                    <li class="list-group-item">Límites de Atterberg</li>
+                <ul class="list-group list-group-flush" id="listar_ensayos">
+                  {% for x in ensayos %}
+                    <li class="list-group-item"><a href="">{{x.1}}</a></li>
+                  {% endfor %}
+                    
                 </ul>
             </div>
           </div>
@@ -50,4 +53,40 @@
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block scripts%}
+<script>
+  let btn_ensayo =  document.getElementById("btn_verEnsayos");
+  let id_orden = document.getElementById("id_orden");
+  let ul_ensayos = document.getElementById("listar_ensayos");
+  let obtener_EnsayosURL = "";
+  btn_ensayo.element.addEventListener("click", listarEnsayos);
+
+  function listarEnsayos() {
+
+    axios.get(obtener_EnsayosURL, {
+        params: {
+            id_orden: id_orden
+        }
+    })
+    .then(function (response) {
+        const catalogo_factores = response.data;
+
+        // Limpiar el contenedor antes de imprimir el cliente
+        ul_ensayos.value = "";
+
+        // Iterar sobre cada objeto en el array recibido
+        catalogo_factores.forEach(function (info) {
+          ul_ensayos.innerHTML = "Hello World";
+        });
+
+        return ul_ensayos.value;
+    })
+    .catch(function (error) {
+        console.log('Error:', error);
+    });
+  
+}
+</script>
 {% endblock %}

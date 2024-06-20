@@ -20,6 +20,7 @@ class EnsayosLaboratorio(models.Model):
     operador = models.CharField(max_length=255)
     descripcion_visual = models.TextField()
     no_sondeo = models.IntegerField()
+    no_muestra = models.IntegerField()
     profundidad = models.IntegerField()
     fecha = models.DateField()
     id_servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)

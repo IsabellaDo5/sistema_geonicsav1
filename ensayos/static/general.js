@@ -24,3 +24,10 @@ function obtenerCliente(proyecto_nombre, cliente_input){
         console.log('Error:', error);
     });
 }
+
+function setFecha(){
+    input_fecha = document.getElementById("fecha");
+
+    input_fecha.valueAsDate = new Date();
+
+}

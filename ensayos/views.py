@@ -140,7 +140,7 @@ def obtener_grafica(request):
 def reportes_granulometria(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            ensayos = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE id_servicio_id=1").fetchall()
+            ensayos = cursor.execute("SELECT E.id_ensayo, P.nombre, C.nombre, E.profundidad, E.no_muestra, E.fecha FROM ensayos_ensayoslaboratorio E INNER JOIN clientes_clientes C ON E.id_cliente_id = C.id_cliente INNER JOIN proyectos_proyectos P ON P.id_proyecto = E.id_proyecto_id WHERE E.id_servicio_id=1").fetchall()
         connection.commit()
 
         print("Ensayos:" + str(ensayos))
@@ -205,8 +205,8 @@ def detalle_granulometria(request, id_ensayo):
 
             suma_PRP = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE (id_malla_id BETWEEN 1 AND 9 OR id_malla_id = 13) AND id_ensayo_id = %s", (id_ensayo,)).fetchall()
             suma_PRPL = cursor.execute("SELECT SUM(PRP) FROM ensayos_granulometria WHERE (id_malla_id BETWEEN 10 AND 12 OR id_malla_id = 14) AND id_ensayo_id = %s", (id_ensayo,)).fetchall()
-            
-            sql_encabezado = "SELECT * FROM ensayos_ensayoslaboratorio WHERE id = %s"
+
+            sql_encabezado ="SELECT E.id_ensayo, P.nombre, C.nombre, E.operador, E.descripcion_visual,E.no_sondeo, E.no_muestra, E.profundidad, E.fecha FROM ensayos_ensayoslaboratorio E INNER JOIN clientes_clientes C ON E.id_cliente_id = C.id_cliente INNER JOIN proyectos_proyectos P ON P.id_proyecto = E.id_proyecto_id WHERE E.id_ensayo=%s"
             sql_granulometria = "SELECT * FROM  ensayos_granulometria WHERE id_ensayo_id = %s"
             parametros=(id_ensayo,)
 
@@ -269,7 +269,7 @@ def modificar_granulometria(request, id_ensayo):
     else:
         with connection.cursor() as cursor:
             mallas = cursor.execute("SELECT * FROM ensayos_mallas").fetchall()
-            sql_encabezado = "SELECT * FROM ensayos_ensayoslaboratorio WHERE id = %s"
+            sql_encabezado ="SELECT E.id_ensayo, P.nombre, C.nombre, E.operador, E.descripcion_visual, E.no_sondeo, E.no_muestra, E.profundidad, E.fecha FROM ensayos_ensayoslaboratorio E INNER JOIN clientes_clientes C ON E.id_cliente_id = C.id_cliente INNER JOIN proyectos_proyectos P ON P.id_proyecto = E.id_proyecto_id WHERE E.id_ensayo=%s"
             sql_granulometria = "SELECT * FROM  ensayos_granulometria WHERE id_ensayo_id = %s"
             parametros=(id_ensayo,)
             tablas_ensayo = cursor.execute(sql_granulometria, parametros).fetchall()
@@ -419,10 +419,10 @@ def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
         if accion == 1:
             with connection.cursor() as cursor:
 
-                sql_info_ensayo = "INSERT INTO ensayos_ensayoslaboratorio(operador,descripcion_visual, no_sondeo, profundidad, fecha, id_cliente_id, id_proyecto_id, id_servicio_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-                insertar_valores = (operador,descripcion,no_sondeo,profundidad,fecha_ensayo,info_proyecto[0][0],info_proyecto[0][1],tipo_ensayo)
+                sql_info_ensayo = "INSERT INTO ensayos_ensayoslaboratorio(operador,descripcion_visual, no_sondeo,no_muestra, profundidad, fecha, id_cliente_id, id_proyecto_id, id_servicio_id) VALUES(%s, %s, %s,%s, %s, %s, %s, %s, %s)"
+                insertar_valores = (operador,descripcion,no_sondeo,no_muestra,profundidad,fecha_ensayo,info_proyecto[0][0],info_proyecto[0][1],tipo_ensayo)
                 cursor.execute(sql_info_ensayo, insertar_valores)
-                id_ensayo = cursor.execute("SELECT id_ensayo FROM ensayos_ensayoslaboratorio ORDER BY id DESC LIMIT 1;").fetchall()
+                id_ensayo = cursor.execute("SELECT id_ensayo FROM ensayos_ensayoslaboratorio ORDER BY id_ensayo DESC LIMIT 1;").fetchall()
             connection.commit()
 
             return id_ensayo[0][0]
@@ -431,8 +431,8 @@ def info_encabezado_ensayo(request, accion, ensayo_id, tipo_ensayo):
             with connection.cursor() as cursor:
                 print("PROFNDIDAD: "+profundidad)
                 
-                sql_query= "UPDATE ensayos_ensayoslaboratorio SET id_cliente_id = %s,id_proyecto_id=%s, operador = %s, descripcion_visual = %s, no_sondeo = %s, profundidad = %s, fecha = %s, id_servicio_id = %s, no_muestra = %s WHERE id = %s"
-                insertar_valores = (info_proyecto[0][1],info_proyecto[0][0],operador,descripcion,no_sondeo,profundidad,fecha_ensayo,tipo_ensayo, no_muestra, ensayo_id)
+                sql_query= "UPDATE ensayos_ensayoslaboratorio SET id_cliente_id = %s,id_proyecto_id=%s, operador = %s, descripcion_visual = %s, no_sondeo = %s,no_muestra=%s, profundidad = %s, fecha = %s, id_servicio_id = %s, no_muestra = %s WHERE id = %s"
+                insertar_valores = (info_proyecto[0][1],info_proyecto[0][0],operador,descripcion,no_sondeo, no_muestra, profundidad,fecha_ensayo,tipo_ensayo, no_muestra, ensayo_id)
                 cursor.execute(sql_query, insertar_valores)
             connection.commit()
             return "Se actualizó el encabezado"

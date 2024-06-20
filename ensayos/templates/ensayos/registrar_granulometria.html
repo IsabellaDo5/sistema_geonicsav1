@@ -43,7 +43,7 @@ Granulometria
       <input type="text" name="profundidad" class="form-control">
 
       <label class="form-label">Fecha</label>
-      <input type="date" name="fecha_ensayo" class="form-control">
+      <input type="date" name="fecha_ensayo" class="form-control" id="fecha">
     </div>
   </div>
   <hr>
@@ -213,4 +213,12 @@ Granulometria
 var obtenerClienteUrl = "{% url 'obtener_cliente' %}";
 </script>
 <script src="{% static 'general.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+setFecha();
+
+});
+
+</script>
+
 {% endblock %}
