@@ -2,6 +2,7 @@ import json
 from django.db import OperationalError, connection
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+import xlsxwriter
 
 # Create your views here.
 def querys_utiles():
@@ -49,23 +50,16 @@ def querys_utiles():
 
 def index(request):
     with connection.cursor() as cursor:
-        ordenes_trabajo =cursor.execute("SELECT O.no_orden, P.nombre FROM proyectos_ordendetrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.id_proyecto_id WHERE O.estado == 1").fetchall()
+        ordenes_trabajo =cursor.execute("SELECT O.id_ordenTrabajo, O.no_orden, P.nombre FROM proyectos_ordendetrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.id_proyecto_id WHERE O.estado == 1").fetchall()
         
     connection.commit()
    
-
     return render(request,'index.html', context={
         'ordenes_trabajo': ordenes_trabajo,
         
     })
 
-def reportes_GL_por_proyecto(request, id_proyecto):
-    if request.method == 'GET':
-        with connection.cursor() as cursor:
-            e_granulometria = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio E INNER JOIN ensayos_granulometria G ON E.id_ensayo = G.id_ensayo_id WHERE E.id_proyecto_id = %s", (id_proyecto,)).fetchall()
-        print(e_granulometria)
-        return render(request, 'reportes_GL_proyecto.html')
-        
+
 def registrar_proyecto(request):
     if request.method == 'POST':
 
@@ -253,6 +247,37 @@ def activar_orden_trabajo(request):
         return JsonResponse('completao',safe=False)
     
 def obtener_ensayos_orden(request):
-    if request.method == "GET":
-        with connection.cursor() as cursor:
-            ensayos_por_orden = cursor.execute("SELECT P.id_proyecto, S.servicio FROM proyectos_proyectos P INNER JOIN proyectos_serviciosporproyecto SP ON P.id_proyecto = SP.id_proyecto_id INNER JOIN ensayos_servicio S ON SP.id_servicio_id = S.id_servicio").fetchall()
+    if request.method == 'GET':
+        try:
+            id_orden = request.GET.get('id_orden')
+            with connection.cursor() as cursor:
+                ensayos_por_orden = cursor.execute('''SELECT P.id_proyecto, S.servicio FROM proyectos_proyectos P 
+                                                   INNER JOIN proyectos_serviciosporproyecto SP ON P.id_proyecto = SP.id_proyecto_id 
+                                                   INNER JOIN ensayos_servicio S ON SP.id_servicio_id = S.id_servicio 
+                                                   INNER JOIN proyectos_ordendetrabajo O ON O.id_proyecto_id = P.id_proyecto 
+                                                   WHERE id_ordenTrabajo = %s''', (id_orden,))
+                columns = [col[0] for col in cursor.description]
+                # Obtener todos los resultados de la consulta como una lista de diccionarios [{"key":value, "key2": value2}]
+                rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        except OperationalError as e:
+            # Envia un error si la consulta falla
+            return JsonResponse({'error': str(e)}, status=500)
+        # Devuelve los datos como JSON
+        return JsonResponse(rows, safe=False)   
+    
+def reportes_GL_por_proyecto(request, id_proyecto):
+    if request.method == 'GET':
+        try: 
+            id_proyecto = request.GET.get('id_proyecto')   
+            with connection.cursor() as cursor:
+                e_granulometria = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio E INNER JOIN ensayos_granulometria G ON E.id_ensayo = G.id_ensayo_id WHERE E.id_proyecto_id = %s", (id_proyecto,))
+                columns = [col[0] for col in cursor.description]
+                # Obtener todos los resultados de la consulta como una lista de diccionarios [{"key":value, "key2": value2}]
+                rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+                print(rows)
+        except OperationalError as e:
+            # Envia un error si la consulta falla
+            return JsonResponse({'error': str(e)}, status=500)
+        # Devuelve los datos como JSON
+        return JsonResponse(rows, safe=False)

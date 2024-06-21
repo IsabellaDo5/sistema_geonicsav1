@@ -1,3 +1,3 @@
-Django==3.2
-djangorestframework
-matplotlib
+Django==4.2.13
+numpy==1.24.4
+XlsxWriter==3.2.0

@@ -9,11 +9,11 @@
             <div class="col-sm-6 mb-3 mb-sm-0">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">Orden de trabajo no. {{x.0}}</h5>
-                  <p class="card-text">{{x.1}}</p>
+                  <h5 class="card-title">Orden de trabajo no. {{x.1}}</h5>
+                  <p class="card-text">{{x.2}}</p>
                   <p class="card-text" id="id_orden">{{x.0}}</p>
                   <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="btn_verEnsayo">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="listarEnsayos({{x.0}})">
                         Agregar ensayo
                     </button>
                 </div>
@@ -40,7 +40,7 @@
                 <hr>
                 <ul class="list-group list-group-flush" id="listar_ensayos">
                   {% for x in ensayos %}
-                    <li class="list-group-item"><a href="">{{x.1}}</a></li>
+                    
                   {% endfor %}
                     
                 </ul>
@@ -56,14 +56,13 @@
 {% endblock %}
 
 {% block scripts%}
+
 <script>
-  let btn_ensayo =  document.getElementById("btn_verEnsayos");
   let id_orden = document.getElementById("id_orden");
   let ul_ensayos = document.getElementById("listar_ensayos");
-  let obtener_EnsayosURL = "";
-  btn_ensayo.element.addEventListener("click", listarEnsayos);
+  let obtener_EnsayosURL = "{% url 'obtener_ensayos_orden' %}";
 
-  function listarEnsayos() {
+  function listarEnsayos(id_orden) {
 
     axios.get(obtener_EnsayosURL, {
         params: {
@@ -71,17 +70,18 @@
         }
     })
     .then(function (response) {
-        const catalogo_factores = response.data;
+        const catalogo_servicios = response.data;
 
+        console.log(typeof(catalogo_servicios));
         // Limpiar el contenedor antes de imprimir el cliente
-        ul_ensayos.value = "";
+        ul_ensayos.innerHTML = "";
 
         // Iterar sobre cada objeto en el array recibido
-        catalogo_factores.forEach(function (info) {
-          ul_ensayos.innerHTML = "Hello World";
+        catalogo_servicios.forEach(function (info) {
+          ul_ensayos.innerHTML += '<li class="list-group-item"><a href="">'+info.servicio+'</a></li>'
         });
 
-        return ul_ensayos.value;
+        return "logrado"
     })
     .catch(function (error) {
         console.log('Error:', error);

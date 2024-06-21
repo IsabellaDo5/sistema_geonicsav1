@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load static %}
 {% block title %}
 Proyectos
 {% endblock %}
@@ -13,8 +14,8 @@ Proyectos
           <h5 class="card-title">{{item.1}}</h5>
           <p class="card-text">Cliente: {{item.2}}</p>
           <a href="{% url 'modificar-proyecto' item.0 %}" class="btn btn-primary">Editar</a>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-           Reportes
+          <button type="button" class="btn btn-primary" onclick="generar_reporte_granulometria('{{item.0}}')">
+           Granulometria
           </button>
         </div>
       </div>
@@ -23,22 +24,8 @@ Proyectos
   </div>
 
 
-  <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Reportes</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
   {% endblock %}
+
+{% block scripts %}
+<script src="{% static 'proyectos.js' %}"></script>
+{% endblock %}

@@ -22,24 +22,7 @@ function graficar(event) {
 
     curvaGranulometrica(mallas_lista, pesos_lista, document.getElementById("granulometria_chart"))
 }
-/*
-axios.get('/ajax/obtener_grafica/', {
-        params: {
-            mallas_lista: JSON.stringify(mallas_lista),
-            pesos_lista: JSON.stringify(pesos_lista)
-        },
-        responseType: 'blob'
-    })
-        .then(function (response) {
 
-            console.log(response.data);
-            const url = URL.createObjectURL(response.data);
-            document.getElementById('grafica').src = url;
-        })
-        .catch(function (error) {
-            console.error('Error al obtener la gráfica:', error);
-        });
-*/
 function calcTabla1(event, prp, perp, pera, pqp, sumaprp, sumaperp) {
     calcularPeRP(prp, perp, sumaprp, sumaperp);
     calcularPeRA(perp, pera);
@@ -279,7 +262,7 @@ function escogerColor() {
         // Devolver el color seleccionado aleatoriamente
         return colorList[randomIndex];
     } else {
-        // Si la lista de colores está vacía, devolver un mensaje de error
+        
         return "Error: La lista de colores está vacía";
     }
 }
@@ -379,21 +362,7 @@ function calcular_cu() {
     `
 
 }
-/*function calcular_d_x(d1_, d2_, x) {
-    let dx = 0.0;
-    let d1 = parseFloat(d1_[0]);
-    let d2 = parseFloat(d2_[0]);
 
-    let d1_pce = parseFloat(d1_[1]);
-    let d2_pce = parseFloat(d2_[1]);
-
-    if (d1 && d2) {
-
-        dx = ((d2 - d1) / (Math.log10(d2_pce) - Math.log10(d1_pce))) * (Math.log10(parseFloat(x)) - Math.log10(d1_pce)) + d1;
-    }
-
-    return dx;
-}*/
 
 function calcular_d_x(d1_, d2_, x) {
     let dx = 0.0;
@@ -410,23 +379,7 @@ function calcular_d_x(d1_, d2_, x) {
 
     return dx.toFixed(3);
 }
-/*function calcular_d_x( d1_, d2_, x){
-    let dx = 0.0;
-    let d1 = parseFloat(d1_[0]);
-    let d2 = parseFloat(d2_[0]);
-    let y = 0.0;
-    let d1_pce = parseFloat(d1_[1]);
-    let d2_pce = parseFloat(d2_[1]);
 
-    if(d1 && d2){
-
-        y = (((Math.log10(d1)-Math.log10(d2))/(d1_pce-d2_pce))*(x-d1_pce))+Math.log10(d1);
-
-        dx = Math.pow(x, y);
-    }
-
-    return dx;
-}*/
 function lista_de_mallas() {
     let lista_de_mallas = document.getElementsByName("PRPMM");
     let lista_completa = [];

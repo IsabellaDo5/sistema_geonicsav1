@@ -1,14 +1,7 @@
 import io
-import matplotlib
-from matplotlib.ticker import FixedLocator, MultipleLocator
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 from django.db import OperationalError, connection
 from django.shortcuts import render, redirect
 import numpy as np
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from django.http import HttpResponse, JsonResponse
 import json
 from . import models
@@ -80,56 +73,6 @@ def obtener_cliente(request):
         return JsonResponse({'error': str(e)}, status=500)
     # Devuelve los datos como JSON
     return JsonResponse(rows, safe=False)
-
-'''
-def obtener_grafica(request):
-        if request.method == 'GET':
-
-            mallas_lista = json.loads(request.GET.get('mallas_lista', '[]'))
-            pesos_lista = json.loads(request.GET.get('pesos_lista', '[]'))
-
-             # Filtrar cadenas vacías y convertir a float
-            mallas_lista = [float(i) if i else 0 for i in mallas_lista ]
-            pesos_lista = [float(i) if i else 0 for i in pesos_lista ]
-
-            print("MEDIDAS MALLAS:", mallas_lista)
-            print("PESOS LISTA:", pesos_lista)
-
-
-            # Crear la figura y el eje
-            fig, ax = plt.subplots()
-
-            # Convertir las listas a arrays de numpy
-            xpoints = np.array(mallas_lista)
-            ypoints = np.array(pesos_lista)
-
-            # Graficar los datos
-            ax.plot(xpoints, ypoints, marker='o')  # Añadido marker='o' para mostrar los puntos
-
-            # Configurar etiquetas y título
-            ax.set_xlabel('Diámetro de partículas (mm)')
-            ax.set_ylabel('% que pasa')
-            ax.set_title('Curva granulométrica')
-
-            # Configurar el rango del eje Y e invertirlo
-            ax.set_ylim(0,110)
-            ax.set_xlim(0.075,80)
-
-            # Configurar intervalos de los ejes
-            ax.yaxis.set_major_locator(MultipleLocator(10))  # Intervalo de 5 en 5 para el eje Y
-            ax.xaxis.set_major_locator(FixedLocator(mallas_lista))  # Intervalo de 5 en 5 para el eje X (si lo necesitas)
-
-            # Mostrar el gráfico
-            plt.show()
-            
-            buf = io.BytesIO()
-            plt.savefig(buf, format='png')
-            plt.close()
-            buf.seek(0)
-            
-            print(buf)
-            return HttpResponse(buf, content_type='image/png')
-'''
 
 ''' FUNCIONES NORMALES '''
 
