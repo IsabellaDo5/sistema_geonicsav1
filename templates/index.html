@@ -62,31 +62,32 @@
   let ul_ensayos = document.getElementById("listar_ensayos");
   let obtener_EnsayosURL = "{% url 'obtener_ensayos_orden' %}";
 
-  function listarEnsayos(id_orden) {
+    function listarEnsayos(id_orden) {
 
-    axios.get(obtener_EnsayosURL, {
-        params: {
-            id_orden: id_orden
-        }
-    })
-    .then(function (response) {
-        const catalogo_servicios = response.data;
+      axios.get(obtener_EnsayosURL, {
+          params: {
+              id_orden: id_orden
+          }
+      })
+      .then(function (response) {
+          const catalogo_servicios = response.data;
 
-        console.log(typeof(catalogo_servicios));
-        // Limpiar el contenedor antes de imprimir el cliente
-        ul_ensayos.innerHTML = "";
+          console.log(typeof(catalogo_servicios));
+          // Limpiar el contenedor antes de imprimir el cliente
+          ul_ensayos.innerHTML = "";
 
-        // Iterar sobre cada objeto en el array recibido
-        catalogo_servicios.forEach(function (info) {
-          ul_ensayos.innerHTML += '<li class="list-group-item"><a href="">'+info.servicio+'</a></li>'
-        });
+          // Iterar sobre cada objeto en el array recibido
+          catalogo_servicios.forEach(function (info) {
 
-        return "logrado"
-    })
-    .catch(function (error) {
-        console.log('Error:', error);
-    });
-  
-}
+            ul_ensayos.innerHTML += "<li class='list-group-item'><a href=''>"+ info.servicio +"</a></li>"
+          });
+
+          return "logrado"
+      })
+      .catch(function (error) {
+          console.log('Error:', error);
+      });
+    }
+
 </script>
 {% endblock %}

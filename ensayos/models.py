@@ -8,16 +8,16 @@ class Area(models.Model):
 
 class Servicio(models.Model):
     id_servicio = models.AutoField(primary_key=True)
-    servicio = models.CharField(max_length=255)
+    servicio = models.CharField(max_length=40)
     codigo_area = models.ForeignKey(Area, on_delete=models.CASCADE)
-
+    url_agregar = models.CharField(max_length=80, null=True)
     def __str__(self):
         return self.servicio
 
 class EnsayosLaboratorio(models.Model):
     id_ensayo = models.AutoField(primary_key=True)
     id_cliente = models.ForeignKey('clientes.Clientes', on_delete=models.CASCADE)
-    operador = models.CharField(max_length=255)
+    operador = models.CharField(max_length=60)
     descripcion_visual = models.TextField()
     no_sondeo = models.IntegerField()
     no_muestra = models.IntegerField()

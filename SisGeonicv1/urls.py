@@ -58,5 +58,5 @@ urlpatterns = [
     path('ajax/desactivar_orden/', proyectos.views.desactivar_orden_trabajo , name='desactivar_orden'),
     path('ajax/activar_orden/', proyectos.views.activar_orden_trabajo , name='activar_orden'),
     path('ajax/proyectos/ensayos/', proyectos.views.obtener_ensayos_orden , name='obtener_ensayos_orden'),
-    path('ajax/proyectos/reportes/granulometria', proyectos.views.reportes_GL_por_proyecto , name='obtener_reporte_GL'),
+    path('ajax/proyectos/reportes/granulometria/', proyectos.views.reportes_GL_por_proyecto , name='obtener_reporte_GL'),
 ]

@@ -14,7 +14,7 @@ Proyectos
           <h5 class="card-title">{{item.1}}</h5>
           <p class="card-text">Cliente: {{item.2}}</p>
           <a href="{% url 'modificar-proyecto' item.0 %}" class="btn btn-primary">Editar</a>
-          <button type="button" class="btn btn-primary" onclick="generar_reporte_granulometria('{{item.0}}')">
+          <button type="button" class="btn btn-primary" onclick="generar_reporte_granulometria(event,'{{item.0}}')">
            Granulometria
           </button>
         </div>
@@ -27,5 +27,9 @@ Proyectos
   {% endblock %}
 
 {% block scripts %}
+<script>
+  let obtener_ReportesURL = "{% url 'obtener_reporte_GL' %}";
+</script>
 <script src="{% static 'proyectos.js' %}"></script>
+
 {% endblock %}
