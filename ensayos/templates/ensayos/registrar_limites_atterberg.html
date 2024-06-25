@@ -13,11 +13,16 @@ Límites de Atterberg
   {% csrf_token %}
   <div class="row">
     <div class="col-md">
-      <label class="form-label">Proyecto</label>
-      <input type="text" name="nombre_proyecto" class="form-control">
+        <label for="exampleFormControlInput1" class="form-label">Proyecto</label>
+        <select class="form-select" name="nombre_proyecto" aria-label="Default select example" onchange="obtenerCliente('nombre_proyecto', 'cliente')" id="nombre_proyecto"  required>
+          <option disabled selected value="">Buscar un proyecto</option>
+          {% for x in proyectos %}
+            <option value="{{x.1}}">{{x.1}}</option>
+          {% endfor %}
 
+        </select>
       <label class="form-label">Cliente</label>
-      <input type="text" name="cliente" class="form-control">
+      <input type="text" name="cliente" id="cliente" class="form-control" readonly>
 
       <label class="form-label">Operador</label>
       <input type="text" name="operador" class="form-control">
@@ -324,6 +329,9 @@ Límites de Atterberg
 {% block scripts %}
 <script>
   const obtenerFactoresUrl = '{% url "obtener_factores" %}';
+  var obtenerClienteUrl = "{% url 'obtener_cliente' %}";
 </script>
+
+<script src="{% static 'general.js' %}"></script>
 <script src="{% static 'limites_atterberg.js' %}"></script>
 {% endblock %}

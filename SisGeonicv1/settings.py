@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'clientes',
     'ensayos',
     'proyectos',
-    'rest_framework',
 ]
 
 MIDDLEWARE = [

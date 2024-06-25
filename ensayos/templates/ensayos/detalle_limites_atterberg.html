@@ -14,11 +14,11 @@ Límites de Atterberg
   <div class="p-2 ms-auto">
     <a href="{% url 'modificar-limites-de-atterberg' id_ensayo %}"> <button type="button" class="btn btn-dark"><i
           class="bi bi-pencil-square"></i>
-        Editar</button></a>
+        </button></a>
 
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
         class="bi bi-trash-fill"></i>
-      Eliminar</button>
+      </button>
   </div>
 
 
@@ -74,7 +74,7 @@ Límites de Atterberg
       <input type="text" name="profundidad" value="{{item.6}}" class="form-control" disabled readonly>
 
       <label class="form-label">Fecha</label>
-      <input type="date" name="fecha_ensayo" value="{{item.7|date:" Y-m-d"}}" class="form-control" disabled readonly>
+      <input type="date" name="fecha_ensayo" value="{{item.8|date:"Y-m-d"}}" class="form-control" disabled readonly>
     </div>
     {% endfor %}
   </div>
@@ -92,7 +92,7 @@ Límites de Atterberg
               <th scope="row">Numero de golpes N.</th>
               {% for info in limite_liquido %}
               <td><input class="form-control" name="no_golpes_LL" type="number" step="0.01" value="{{info.1}}"
-                  id="no_golpes_LL1" disabled readonly> </td>
+                  id="no_golpes_LL{{forloop.counter}}" disabled readonly> </td>
               {% endfor %}
             </tr>
 
@@ -171,7 +171,7 @@ Límites de Atterberg
               <th scope="row">Factor</th>
               {% for info in limite_liquido %}
               <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="{{info.11}}"
-                  id="factor_LL1" disabled readonly> </td>
+                  id="factor_LL{{forloop.counter}}" disabled readonly> </td>
               {%endfor%}
             </tr>
 
@@ -306,15 +306,15 @@ Límites de Atterberg
             </tr>
             <tr>
               <th>L. L</th>
-              <td colspan="2"></td>
+              <td colspan="2"><input class="form-control" type="number" id="LL_promedio" readonly></td>
             </tr>
             <tr>
               <th>L. p</th>
-              <td colspan="2"></td>
+              <td colspan="2"><input class="form-control" type="number" id="LP_promedio" readonly></td>
             </tr>
             <tr>
               <th>I. P</th>
-              <td colspan="2"></td>
+              <td colspan="2"><input class="form-control" type="number" id="IP" readonly></td>
             </tr>
             <tr>
               <th>C. L</th>
@@ -324,6 +324,12 @@ Límites de Atterberg
           </tbody>
         </table>
       </div>
+
+    </div>
+
+    <div class="col-auto ">
+      <h2>Curva de fluidez</h2>
+      <canvas id="CFluidez" aria-label="Hello ARIA World" role="img"  ></canvas>
 
     </div>
   </div>
@@ -336,6 +342,12 @@ Límites de Atterberg
 {% block scripts %}
 <script>
   const obtenerFactoresUrl = '{% url "obtener_factores" %}';
+ 
 </script>
 <script src="{% static 'limites_atterberg.js' %}"></script>
+<script>
+   calcular_LLpromedio();
+   calcular_LPpromedio();
+   obtenerDatosCF();
+</script>
 {% endblock %}

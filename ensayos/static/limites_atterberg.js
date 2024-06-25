@@ -28,6 +28,7 @@ function limite_liquido(event, no_golpes, no_recipiente, pw_recip, ps_recip, agu
     calcular_peso_seco(ps_recip, recipiente, peso_seco);
     calcular_pte_agua(agua, peso_seco, pte_agua);
     calcular_limite_liquido(factor, pte_agua, ll_input);
+    calcular_LLpromedio();
 }
 
 function limite_plastico(event, pw_recip, ps_recip, agua, recipiente, peso_seco_lp, lp_input) {
@@ -142,4 +143,115 @@ function calcular_pte_agua(agua_i, peso_seco_i, pct_agua_i) {
         }
     }
 
+}
+
+function calcular_LLpromedio(){
+    let resultado = document.getElementById("LL_promedio");
+    const LL = document.getElementsByName("Limite_liquido");
+    let suma = 0;
+    let x = 0;
+
+    for(x = 0;x<LL.length; x++){
+        suma += parseFloat(LL[x].value);
+
+    }
+    console.log(suma);
+    resultado.value = suma/LL.length;
+}
+
+function calcular_LPpromedio(){
+    let resultado = document.getElementById("LP_promedio");
+    const LP = document.getElementsByName("Limite_Plastico");
+    let suma = 0;
+    let x = 0;
+
+    for(x = 0;x<LP.length; x++){
+        suma += parseFloat(LP[x].value);
+
+    }
+    console.log(suma);
+    resultado.value = suma/LP.length;
+}
+function obtenerDatosCF(){
+    const y_label = document.getElementsByName("Limite_liquido");
+    const x_label = document.getElementsByName("no_golpes_LL");
+
+    var arr_xlabel = [];
+    var arr_ylabel = [];
+
+    for(var i = 0; i < x_label.length; ++i){
+        console.log("X label: " + x_label[i].value);
+        arr_xlabel.push(x_label[i].value);
+        console.log("Y label: " + y_label[i].value);
+        arr_ylabel.push(y_label[i].value);
+    } 
+    
+    console.log("X label array: " + arr_xlabel);
+    console.log("Y label array: " + arr_ylabel);
+    curvaFluidez(arr_xlabel, arr_ylabel, document.getElementById("CFluidez"));
+}
+
+
+function curvaFluidez(x_label, y_label, ctx) {
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: x_label,
+            datasets: [
+                {
+                    label: "aaaa",
+                    backgroundColor: escogerColor(),
+                    borderColor: escogerColor(),
+                    data: y_label,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Curva Fluidez' // Puedes personalizar este texto
+            },
+            scales: {
+                x: {
+                    display: true,
+                    beginAtZero: true, // Asegura que el eje X comience en 0
+                    title: {
+                        display: true,
+                        text: 'No. de golpes' // Título del eje X
+                    },
+                    ticks: {
+                        stepSize: 10 // Define el tamaño de los pasos en el eje X
+                    }
+                },
+                y: {
+                    display: true,
+                    beginAtZero: true, // Asegura que el eje Y comience en 0
+                    title: {
+                        display: true,
+                        text: 'Limite liquido' // Título del eje Y
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+
+
+function escogerColor() {
+    var colorList = ["#a2d2ff", "#d62828", "#0077b6", "#83c5be", "#e76f51"];
+
+
+    if (colorList && colorList.length > 0) {
+        // Generar un número aleatorio entre 0 y la longitud de la lista de colores
+        var randomIndex = Math.floor(Math.random() * colorList.length);
+        // Devolver el color seleccionado aleatoriamente
+        return colorList[randomIndex];
+    } else {
+        
+        return "Error: La lista de colores está vacía";
+    }
 }

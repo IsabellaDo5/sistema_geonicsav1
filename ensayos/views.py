@@ -312,21 +312,22 @@ def registrar_limites_atterberg(request):
         with connection.cursor() as cursor:
             limite_L = cursor.execute("SELECT * FROM ensayos_limiteliquido").fetchall()
             limite_P = cursor.execute("SELECT * FROM ensayos_limiteplastico").fetchall()
-
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordendetrabajo O ON P.id_proyecto = O.id_proyecto_id INNER JOIN proyectos_serviciosporproyecto S ON P.id_proyecto = S.id_proyecto_id WHERE estado= 1 AND S.id_servicio_id = 2").fetchall()
 
         return render(request, 'ensayos/registrar_limites_atterberg.html', context={
             'limiteLiquido': limite_L,
             'limitePlastico': limite_P,
+            'proyectos': proyectos
         })
     
 def detalle_limites_de_attergberg(request, id_ensayo):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            encabezado_ensayo = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE id = %s", (id_ensayo,)).fetchall()
+            encabezado_ensayo = cursor.execute("SELECT E.id_ensayo, P.nombre, C.nombre, E.operador, E.descripcion_visual,E.no_sondeo, E.no_muestra, E.profundidad, E.fecha FROM ensayos_ensayoslaboratorio E INNER JOIN clientes_clientes C ON E.id_cliente_id = C.id_cliente INNER JOIN proyectos_proyectos P ON P.id_proyecto = E.id_proyecto_id WHERE E.id_ensayo=%s", (id_ensayo,)).fetchall()
             limite_liquido = cursor.execute("SELECT * FROM ensayos_limiteliquido WHERE id_ensayo_id = %s", (id_ensayo,)).fetchall()
             limite_plastico = cursor.execute("SELECT * FROM ensayos_limiteplastico WHERE id_ensayo_id = %s", (id_ensayo,)).fetchall()
         connection.commit()
-
+        print(encabezado_ensayo)
         print(limite_liquido)
     return render(request, 'ensayos/detalle_limites_atterberg.html', context={
         'encabezado': encabezado_ensayo,
@@ -336,8 +337,102 @@ def detalle_limites_de_attergberg(request, id_ensayo):
     })
 
 def modificar_limites_atterberg(request, id_ensayo):
+    if request.method == 'POST':
 
-    return render(request, 'ensayos/modificar_limites_atterberg.html')
+        
+        # LIMITE LIQUIDO
+        no_golpesLL= request.POST.getlist("no_golpes_LL")
+        no_recipienteLL = request.POST.getlist("recipiente_no_LL")
+        pw_mas_recipLL = request.POST.getlist("pw_mas_recip_LL")
+        ps_mas_recipLL = request.POST.getlist("ps_mas_recip_LL")
+        aguaLL = request.POST.getlist("agua_LL")
+        recipienteLL= request.POST.getlist("recipiente_LL")
+        peso_secoLL = request.POST.getlist("peso_seco_LL")
+        pce_aguaLL = request.POST.getlist("Pe_agua_LL")
+        factorLL = request.POST.getlist("factor_LL")
+        limite_liquido = request.POST.getlist("Limite_liquido")
+
+        # LIMITE PLASTICO
+        no_recipienteLP = request.POST.getlist("recipiente_no_LP")
+        pw_mas_recipLP = request.POST.getlist("pw_mas_recip_LP")
+        ps_mas_recipLP = request.POST.getlist("ps_mas_recip_LP")
+        aguaLP = request.POST.getlist("agua_LP")
+        peso_secoLP = request.POST.getlist("peso_seco_LP")
+        recipienteLP = request.POST.getlist("recipiente_LP")
+        limite_plastico = request.POST.getlist("Limite_Plastico")
+
+        id_ensayo = info_encabezado_ensayo(request,1 ,0, 2)
+
+        for i in range(len(no_golpesLL)):
+
+            if len(no_golpesLL[i])!= 0:
+                print("FACTOR: "+factorLL[i])
+                print(type(factorLL[i]))
+                with connection.cursor() as cursor:
+                    id_factor_id = cursor.execute("SELECT id_factor FROM ensayos_factoresll WHERE K = %s", (factorLL[i],)).fetchall()
+
+                    cursor.execute('''
+                        UPDATE ensayos_limiteliquido
+                        SET 
+                            no_golpes = %s, 
+                            recipiente_no = %s, 
+                            pw_mas_recip = %s, 
+                            ps_mas_recip = %s, 
+                            agua = %s, 
+                            ps_mas_recip2 = %s,
+                            recipiente = %s, 
+                            peso_seco = %s, 
+                            Pe_agua = %s, 
+                            id_factor_id = %s, 
+                            limite_liquido = %s
+                        WHERE id_ensayo_id = %s
+                    ''', [
+                        no_golpesLL[i], no_recipienteLL[i], pw_mas_recipLL[i], ps_mas_recipLL[i], aguaLL[i], "1",
+                        recipienteLL[i], peso_secoLL[i], pce_aguaLL[i], id_factor_id[0][0], limite_liquido[i], id_ensayo
+                    ])
+                connection.commit()
+
+        
+        for item in range(len(no_recipienteLP)):
+            print(len(no_recipienteLP))
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                    UPDATE ensayos_limiteplastico
+                    SET 
+                        recipiente_no = %s, 
+                        pw_mas_recip = %s, 
+                        ps_mas_recip = %s, 
+                        agua = %s, 
+                        ps_mas_recip2 = %s,
+                        recipiente = %s, 
+                        peso_seco = %s, 
+                        limite_plastico = %s
+                    WHERE id_ensayo_id = %s
+                ''', [
+                    no_recipienteLP[item], pw_mas_recipLP[item], ps_mas_recipLP[item], aguaLP[item], "1",
+                    recipienteLP[item], peso_secoLP[item], limite_plastico[item], id_ensayo
+                ])
+            connection.commit()
+
+        return redirect('/')
+    
+
+    elif request.method == 'GET':
+
+        with connection.cursor() as cursor:
+            encabezado_ensayo = cursor.execute("SELECT E.id_ensayo, P.nombre, C.nombre, E.operador, E.descripcion_visual,E.no_sondeo, E.no_muestra, E.profundidad, E.fecha FROM ensayos_ensayoslaboratorio E INNER JOIN clientes_clientes C ON E.id_cliente_id = C.id_cliente INNER JOIN proyectos_proyectos P ON P.id_proyecto = E.id_proyecto_id WHERE E.id_ensayo=%s", (id_ensayo,)).fetchall()
+            limite_liquido = cursor.execute("SELECT * FROM ensayos_limiteliquido WHERE id_ensayo_id = %s", (id_ensayo,)).fetchall()
+            limite_plastico = cursor.execute("SELECT * FROM ensayos_limiteplastico WHERE id_ensayo_id = %s", (id_ensayo,)).fetchall()
+            proyectos= cursor.execute("SELECT * FROM proyectos_proyectos P INNER JOIN proyectos_ordendetrabajo O ON P.id_proyecto = O.id_proyecto_id INNER JOIN proyectos_serviciosporproyecto S ON P.id_proyecto = S.id_proyecto_id WHERE estado= 1 AND S.id_servicio_id = 2").fetchall()
+        connection.commit()
+
+    return render(request, 'ensayos/modificar_limites_atterberg.html', context={
+        'encabezado': encabezado_ensayo,
+        'limite_liquido': limite_liquido,
+        'limite_plastico':limite_plastico,
+        'id_ensayo': id_ensayo,
+        'proyectos':proyectos,
+    })
 
 def eliminar_limites_de_atterberg(request, id_ensayo):
     

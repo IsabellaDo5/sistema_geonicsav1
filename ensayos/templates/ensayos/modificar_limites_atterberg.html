@@ -12,34 +12,45 @@ Límites de Atterberg
 <form action="" method="POST">
   {% csrf_token %}
   <div class="row">
+    {% for item in encabezado %}
     <div class="col-md">
-      <label class="form-label">Proyecto</label>
-      <input type="text" name="nombre_proyecto" class="form-control">
+        <label for="exampleFormControlInput1" class="form-label">Proyecto</label>
+        <select class="form-select" name="nombre_proyecto" aria-label="Default select example" onchange="obtenerCliente('nombre_proyecto', 'cliente')" id="nombre_proyecto"  required>
+          {% for x in proyectos %}
+            {% if item.1 == x.1 %}
+            <option selected value="{{item.1}}">{{item.1}}</option>
+            {% else %}
+            <option value="{{x.1}}">{{x.1}}</option>
+            {% endif %}
+          {% endfor %}
 
-      <label class="form-label">Cliente</label>
-      <input type="text" name="cliente" class="form-control">
+        </select>
+        <label class="form-label">Cliente</label>
+        <input type="text" name="cliente" value="{{item.2}}" id="cliente" class="form-control" readonly>
+  
+        <label class="form-label">Operador</label>
+        <input type="text" name="operador" value="{{item.3}}" class="form-control" >
+  
+        <label class="form-label">Descripción</label>
+        <input type="text" name="descripcion" value="{{item.4}}" class="form-control" >
+  
+      </div>
+  
+      <div class="col-md">
+        <label class="form-label">Sondeo No.</label>
+        <input type="text" name="no_sondeo" value="{{item.5}}" class="form-control" >
+  
+        <label class="form-label">Muestra No.</label>
+        <input type="text" name="no_muestra" value="{{item.9}}" class="form-control" >
+  
+        <label class="form-label">Profundidad</label>
+        <input type="text" name="profundidad" value="{{item.6}}" class="form-control" >
+  
+        <label class="form-label">Fecha</label>
+        <input type="date" name="fecha_ensayo" value="{{item.8|date:"Y-m-d"}}" class="form-control" >
+      </div>
 
-      <label class="form-label">Operador</label>
-      <input type="text" name="operador" class="form-control">
-
-      <label class="form-label">Descripción</label>
-      <input type="text" name="descripcion" class="form-control">
-
-    </div>
-
-    <div class="col-md">
-      <label class="form-label">Sondeo No.</label>
-      <input type="text" name="no_sondeo" class="form-control">
-
-      <label class="form-label">Muestra No.</label>
-      <input type="text" name="no_muestra" class="form-control">
-
-      <label class="form-label">Profundidad</label>
-      <input type="text" name="profundidad" class="form-control">
-
-      <label class="form-label">Fecha</label>
-      <input type="date" name="fecha_ensayo" class="form-control">
-    </div>
+    {% endfor %}
   </div>
   <hr>
   <div class="row ">
@@ -51,9 +62,11 @@ Límites de Atterberg
 
             <th scope="row">Numero de golpes N.</th>
 
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL1', 'factor_LL1')" type="number" step="0.01" value="" id="no_golpes_LL1"> </td>
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL2', 'factor_LL2')" type="number" step="0.01" value="" id="no_golpes_LL2"> </td>
-            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL3', 'factor_LL3')" type="number" step="0.01" value="" id="no_golpes_LL3"> </td>
+            {% for info in limite_liquido %}
+              <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL{{forloop.counter}}', 'factor_LL{{forloop.counter}}')" type="number" step="0.01" value="{{info.1}}"
+                  id="no_golpes_LL1" > </td>
+            {% endfor %}
+            <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL3', 'factor_LL3')" type="number" step="0.01" value="" id="no_golpes_LL4"> </td>
             <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL4', 'factor_LL4')" type="number" step="0.01" value="" id="no_golpes_LL4"> </td>
             <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL5', 'factor_LL5')" type="number" step="0.01" value="" id="no_golpes_LL5"> </td>
             <td><input class="form-control" name="no_golpes_LL" oninput="obtenerFactor('no_golpes_LL5', 'factor_LL5')" type="number" step="0.01" value="" id="no_golpes_LL6"> </td>
@@ -63,8 +76,10 @@ Límites de Atterberg
 
             <th scope="row">Recipiente no.</th>
 
-            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
+            {% for info in limite_liquido %}
+            <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="{{info.2}}" id=""
+                > </td>
+            {% endfor %}
             <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
             <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
             <td><input class="form-control" name="recipiente_no_LL" type="number" step="0.01" value="" id=""> </td>
@@ -74,9 +89,11 @@ Límites de Atterberg
           <tr>
 
             <th scope="row">Pw más recipiente:</th>
+            {% for info in limite_liquido %}
+            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="{{info.3}}" id=""
+                > </td>
 
-            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            {% endfor %}
             <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
             <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
             <td><input class="form-control" name="pw_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
@@ -86,8 +103,10 @@ Límites de Atterberg
 
             <th scope="row">Ps más recipiente</th>
 
-            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
+            {% for info in limite_liquido %}
+            <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="{{info.4}}" id=""
+                > </td>
+            {% endfor %}
             <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
             <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
             <td><input class="form-control" name="ps_mas_recip_LL" type="number" step="0.01" value="" id=""> </td>
@@ -98,10 +117,11 @@ Límites de Atterberg
 
             <th scope="row">Agua</th>
 
-            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
-            </td>
-            <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
-            </td>
+            {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="{{info.5}}"
+                  id="" >
+              </td>
+              {% endfor %}
             <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
             </td>
             <td><input class="form-control-plaintext" name="agua_LL" type="number" step="0.01" value="" id="" readonly>
@@ -117,8 +137,10 @@ Límites de Atterberg
 
             <th scope="row">Recipiente</th>
 
-            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
-            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
+            {% for info in limite_liquido %}
+            <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="{{info.6}}" id="">
+            </td>
+            {% endfor %}
             <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
             <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
             <td><input class="form-control" name="recipiente_LL" type="number" step="0.01" value="" id=""> </td>
@@ -129,10 +151,10 @@ Límites de Atterberg
 
             <th scope="row">Peso seco (Ps)</th>
 
-            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
+            {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="{{info.7}}"
+                  id="" > </td>
+              {% endfor %}
             <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
                 readonly> </td>
             <td><input class="form-control-plaintext" name="peso_seco_LL" type="number" step="0.01" value="" id=""
@@ -148,10 +170,10 @@ Límites de Atterberg
 
             <th scope="row">% de agua</th>
 
-            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
-                readonly> </td>
+            {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="{{info.8}}"
+                  id="" > </td>
+            {% endfor %}
             <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
                 readonly> </td>
             <td><input class="form-control-plaintext" name="Pe_agua_LL" type="number" step="0.01" value="" id=""
@@ -168,10 +190,10 @@ Límites de Atterberg
 
             <th scope="row">Factor</th>
 
-            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL1"
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL2"
-                readonly> </td>
+            {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="{{info.11}}"
+                  id="factor_LL{{forloop.counter}}" > </td>
+              {%endfor%}
             <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL3"
                 readonly> </td>
             <td><input class="form-control-plaintext" name="factor_LL" type="number" step="0.01" value="" id="factor_LL4"
@@ -187,10 +209,10 @@ Límites de Atterberg
 
             <th scope="row">Limite Liquido</th>
 
-            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
-                readonly> </td>
-            <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
-                readonly> </td>
+            {% for info in limite_liquido %}
+              <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01"
+                  value="{{info.9}}" id="" readonly> </td>
+            {% endfor %}
             <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
                 readonly> </td>
             <td><input class="form-control-plaintext" name="Limite_liquido" type="number" step="0.01" value="" id=""
@@ -221,38 +243,49 @@ Límites de Atterberg
                 <tbody>
                     <tr>
                         <th scope="row">Recipiente no.</th>
-                        <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value=""></td>
-                        <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value=""></td>
+                        {% for info in limite_plastico %}
+                            <td><input class="form-control" name="recipiente_no_LP" type="number" step="0.01" value="{{info.1}}" id="" > </td>
+                        {% endfor %}
                     </tr>
                     <tr>
                         <th scope="row">Pw más recipiente:</th>
-                        <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value=""></td>
-                        <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value=""></td>
+                        {% for info in limite_plastico %}
+                        <td><input class="form-control" name="pw_mas_recip_LP" type="number" step="0.01" value="{{info.2}}" id="" > </td>
+                        {% endfor %}
                     </tr>
                     <tr>
                         <th scope="row">Ps más recipiente</th>
-                        <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value=""></td>
-                        <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value=""></td>
+                        {% for info in limite_plastico %}
+                            <td><input class="form-control" name="ps_mas_recip_LP" type="number" step="0.01" value="{{info.3}}" id="" > </td>
+                        {% endfor %}
                     </tr>
                     <tr>
                         <th scope="row">Agua</th>
-                        <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" readonly></td>
-                        <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="" readonly></td>
+                        {% for info in limite_plastico %}
+                        <td><input class="form-control-plaintext" name="agua_LP" type="number" step="0.01" value="{{info.4}}" id=""
+                            >
+                        </td>
+                        {% endfor %}
                     </tr>
                     <tr>
                         <th scope="row">Recipiente</th>
-                        <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value=""></td>
-                        <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value=""></td>
+                        {% for info in limite_plastico %}
+                        <td><input class="form-control" name="recipiente_LP" type="number" step="0.01" value="{{info.5}}" id="" > </td>
+                        {% endfor %}
                     </tr>
                     <tr>
                         <th scope="row">Peso seco (Ps)</th>
-                        <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" readonly></td>
-                        <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="" readonly></td>
-                    </tr>
+                        {% for info in limite_plastico %}
+                        <td><input class="form-control-plaintext" name="peso_seco_LP" type="number" step="0.01" value="{{info.6}}" id=""
+                            readonly> </td>
+                        {%endfor%}
+                </tr>
                     <tr>
                         <th scope="row">Limite Plástico</th>
-                        <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" readonly></td>
-                        <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="" readonly></td>
+                        {% for info in limite_plastico %}
+                        <td><input class="form-control-plaintext" name="Limite_Plastico" type="number" step="0.01" value="{{info.7}}" id=""
+                            readonly> </td>
+                        {% endfor %}
                     </tr>
                 </tbody>
             </table>
@@ -324,6 +357,9 @@ Límites de Atterberg
 {% block scripts %}
 <script>
   const obtenerFactoresUrl = '{% url "obtener_factores" %}';
+  var obtenerClienteUrl = "{% url 'obtener_cliente' %}";
 </script>
+
+<script src="{% static 'general.js' %}"></script>
 <script src="{% static 'limites_atterberg.js' %}"></script>
 {% endblock %}
