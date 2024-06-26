@@ -268,10 +268,11 @@ def obtener_ensayos_orden(request):
     
 def reportes_GL_por_proyecto(request):
     if request.method == 'GET':
-        row = 7
+        row = 11
         col = 1
         try: 
             id_proyecto = int(request.GET.get('id_proyecto'))
+            lista_PeQP = []
             print(id_proyecto)
             with connection.cursor() as cursor:
                 encabezado = cursor.execute('''SELECT P.nombre, C.nombre, P.ubicacion, E.descripcion_visual, E.fecha FROM proyectos_proyectos P
@@ -297,45 +298,83 @@ def reportes_GL_por_proyecto(request):
             print("Info limite plastico: "+str(limite_plastico))
             print("Info limite liquido: "+str(limite_liquido))
 
-            workbook = xlsxwriter.Workbook('Granulometria_Proyecto'+str(id_proyecto)+'.xlsx')
+            workbook = xlsxwriter.Workbook('Granulometria '+str(encabezado[0][0])+'.xlsx')
             worksheet = workbook.add_worksheet()
-
+            formato_encabezado = workbook.add_format({'font_name':'Agency FB','font_size':14 ,'bold': True})
+            formato_encabezadoTabla = workbook.add_format({'font_name':'Agency FB','font_size':11})
             # ENCABEZADO
-            worksheet.write(1, 1, "Proyecto")
+            worksheet.write(1, 1, "Proyecto", formato_encabezado)
             worksheet.merge_range(1,2,1,6,encabezado[0][0])
-            worksheet.write(2, 1, "Cliente")
+            worksheet.write(2, 1, "Cliente", formato_encabezado)
             worksheet.merge_range(2,2,2,6,encabezado[0][1])
-            worksheet.write(3, 1, "Ubicación")
+            worksheet.write(3, 1, "Ubicación", formato_encabezado)
             worksheet.merge_range(3,2,3,6,encabezado[0][2])
-            worksheet.write(4, 1, "Descripcion visual")
+            worksheet.write(4, 1, "Descripcion visual", formato_encabezado)
             worksheet.merge_range(4,2,4,6,encabezado[0][3])
-            worksheet.write(1, 7, "Fecha")
+            worksheet.write(1, 7, "Fecha", formato_encabezado)
             worksheet.write(1, 8, str(encabezado[0][4]))
 
             # CONTENIDO GRANULOMETRIA 
-            worksheet.write(6, 1, "Pulgadas")
-            worksheet.write(6, 2, "mm")
-            worksheet.write(6, 3, "Peso retenido parcial (gms)")
-            worksheet.write(6, 4, "% retenido pacial")
-            worksheet.write(6, 5, "% retenido acumulado")
-            worksheet.write(6, 6, "% que pasa la malla")
+            worksheet.merge_range(9,1,9,2,"Tamices", formato_encabezadoTabla)
+            worksheet.write(10, 1, "Pulgadas", formato_encabezadoTabla)
+            worksheet.write(10, 2, "mm", formato_encabezadoTabla)
+            worksheet.merge_range(9, 3,10,3, "Peso retenido parcial (gms)", formato_encabezadoTabla)
+            worksheet.merge_range(9, 4,10,4, "% retenido pacial", formato_encabezadoTabla)
+            worksheet.merge_range(9, 5,10,5, "% retenido acumulado", formato_encabezadoTabla)
+            worksheet.merge_range(9, 6,10,6, "% que pasa la malla", formato_encabezadoTabla)
 
 
             for x in e_granulometria:
+                if x[1] == 5:
+                        lista_PeQP.append(x[2])
+                        
                 for i in x:
                     worksheet.write(row, col, i)
+                    
                     col+=1
                 row+=1
                 col = 1
 
+            print("Lista PeQp: "+str(lista_PeQP))
 
+            # GRAFICO GRANULOMETRIA
+            g_chart = workbook.add_chart({'type': 'line'})
+            g_chart.set_size({'width': 560, 'height': 350})
+            g_chart.set_legend({'none': True})
+            # Add a series to the g_chart.
+            g_chart.set_x_axis({
+                'log_base': 10,
+                'name': 'Mallas (mm)',
+                'name_font': {'size': 14, 'bold': True},
+                'num_font':  {'italic': True },
+                
+            })
+            
+            g_chart.add_series({
+                'name':       'Curva granulometrica',
+                'categories': '=Sheet1!$C$12:$C$20,Sheet1!$C$22:$C$24',  # Eje X Excluyendo fila 3
+                'values':     '=Sheet1!$G$12:$G$20,Sheet1!$G$22:$G$24',  # Eje Y, excluyendo fila 3
+            })
+            
+            g_chart.set_y_axis({
+                'name': '% que pasa',
+                'name_font': {'size': 14, 'bold': True},
+                'min': 0, 
+                'max': 100,
+                
+            })
+            worksheet.insert_chart(row,col, g_chart)
+
+            ########################################
+
+            # Contenido Limites de Atterberg
             row+=20
             
             inicio_ll = row
             col = 2
 
-            worksheet.merge_range(inicio_ll-1,1,inicio_ll-1,3, "Límite líquido")
-            worksheet.merge_range(inicio_ll-1,4,inicio_ll-1,5, "Límite plastico")
+            worksheet.merge_range(inicio_ll-1,1,inicio_ll-1,3, "Límite líquido", formato_encabezadoTabla)
+            worksheet.merge_range(inicio_ll-1,4,inicio_ll-1,5, "Límite plastico", formato_encabezadoTabla)
 
             worksheet.write(inicio_ll, 1, "No. de golpes de cierre")
             worksheet.write(inicio_ll+1, 1, "Factor")
@@ -347,10 +386,10 @@ def reportes_GL_por_proyecto(request):
             worksheet.write(inicio_ll+6, 1, "Peso del agua (gr)")
             worksheet.write(inicio_ll+7, 1, "% límite liquido")
             worksheet.write(inicio_ll+8, 1, "Resultado")
-            worksheet.write(inicio_ll+9, 2, "Límite liquido %: ")
-            worksheet.write(inicio_ll+9, 3, (limite_liquido[0][5]+limite_liquido[1][5])/2)
-            worksheet.write(inicio_ll+9, 4, "Límite plástico %: ")
-            worksheet.write(inicio_ll+9, 5, (limite_plastico[0][5]+limite_plastico[1][5])/2)
+            worksheet.write(inicio_ll+8, 2, "Límite liquido %: ")
+            worksheet.write(inicio_ll+8, 3, (limite_liquido[0][5]+limite_liquido[1][5])/2)
+            worksheet.write(inicio_ll+8, 4, "Límite plástico %: ")
+            worksheet.write(inicio_ll+8, 5, (limite_plastico[0][5]+limite_plastico[1][5])/2)
             
             for item in limite_liquido:
                 for i in item:
@@ -368,7 +407,41 @@ def reportes_GL_por_proyecto(request):
                     row+=1
                 col+=1
                 row = inicio_ll+2
-      
+
+            # GRAFICO CF
+            cf_chart = workbook.add_chart({'type': 'line'})
+            cf_chart.set_size({'width': 200, 'height': 200})
+            cf_chart.set_legend({'none': True})
+            # Add a series to the cf_chart.
+            cf_chart.set_x_axis({
+                'min': 0, 
+                'interval_unit': 10,
+                'name': 'No. de golpes',
+                'name_font': {'size': 10, 'bold': True},
+                'num_font':  {'italic': True },
+                
+            })
+            cf_chart.add_series({
+                'name':       'Curva de Fluidez',
+                'categories': '=Sheet1!$C$46:$D$46',  # Eje X Excluyendo fila 3
+                'values':     '=Sheet1!$C$53:$D$53',  # Eje Y, excluyendo fila 3
+            
+            })
+            
+            cf_chart.set_y_axis({
+                'name': 'LL %',
+                'name_font': {'size': 10, 'bold': True},
+            })
+
+            cf_chart.set_title({
+            'name': 'Curva de Fluidez',
+            'name_font': {
+                'name': 'Calibri',
+                'size': 12,  # Cambiar el tamaño de la fuente aquí
+            }
+        })
+            worksheet.insert_chart(inicio_ll,col, cf_chart)
+
             workbook.close()
             #print(rows)
         except OperationalError as e:
