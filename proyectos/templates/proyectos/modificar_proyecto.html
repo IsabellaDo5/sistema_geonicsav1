@@ -43,13 +43,13 @@ Modificar un proyecto
         <hr>
         <h4>Estudios de suelos</h4>
         {% for item in servicios_general %}
-            {% if item.2 == 1 %}
+            {% if item.1 == 1 %}
 
                 <div class="form-check">
          
-                    <input class="form-check-input" type="checkbox" name="servicio"  value="{{item.0}}" id="defaultCheck{{item.0}}" {{item.3}} >
+                    <input class="form-check-input" type="checkbox" name="servicio"  value="{{item.0}}" id="defaultCheck{{item.0}}" {{item.4}} >
                     <label class="form-check-label" for="defaultCheck{{item.0}}">
-                        {{item.1}}
+                        {{item.3}}
                       </label>
                     
                   </div>
@@ -59,12 +59,12 @@ Modificar un proyecto
         <h4>Control de calidad</h4>
         {% for item in servicios_general %}
 
-        {% if item.2 == 2 %}
+        {% if item.1 == 2 %}
  
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="servicio" value="{{item.0}}" id="defaultCheck{{item.0}}" {{item.3}}>
+                <input class="form-check-input" type="checkbox" name="servicio" value="{{item.0}}" id="defaultCheck{{item.0}}" {{item.4}}>
                 <label class="form-check-label" for="defaultCheck{{item.0}}">
-                {{item.1}}
+                {{item.3}}
                 </label>
             </div> 
         {% endif %}

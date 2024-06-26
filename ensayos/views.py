@@ -242,7 +242,7 @@ def eliminar_granulometria(request, id_ensayo):
 def reportes_limites_atterberg(request):
     if request.method == 'GET':
         with connection.cursor() as cursor:
-            ensayos = cursor.execute("SELECT * FROM ensayos_ensayoslaboratorio WHERE id_servicio_id=2").fetchall()
+            ensayos = cursor.execute("SELECT E.id_ensayo, P.nombre, C.nombre, E.profundidad, E.no_muestra, E.fecha FROM ensayos_ensayoslaboratorio E INNER JOIN clientes_clientes C ON E.id_cliente_id = C.id_cliente INNER JOIN proyectos_proyectos P ON P.id_proyecto = E.id_proyecto_id WHERE E.id_servicio_id=2").fetchall()
         connection.commit()
         return render(request, 'ensayos/reportes.html', context={
             'nombre_ensayo': "Límites de Atterberg",

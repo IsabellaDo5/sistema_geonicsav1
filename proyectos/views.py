@@ -47,14 +47,6 @@ def querys_utiles():
         id+=1
     return N
 
-def test_excel():
-    workbook = xlsxwriter.Workbook('hello.xlsx')
-    worksheet = workbook.add_worksheet()
-
-    worksheet.write('A1', 'Hello world')
-
-    workbook.close()
-
 def index(request):
     with connection.cursor() as cursor:
         ordenes_trabajo =cursor.execute("SELECT O.id_ordenTrabajo, O.no_orden, P.nombre FROM proyectos_ordendetrabajo O INNER JOIN proyectos_proyectos P ON P.id_proyecto = O.id_proyecto_id WHERE O.estado == 1").fetchall()
@@ -129,9 +121,9 @@ def modificar_proyecto(request, id_proyecto):
             
             try:
                 if servicios[x][0] == servicios_proyecto[x][2]:
-                    servicios_lista.append((servicios[x][0],servicios[x][1], servicios[x][2], "checked",))
+                    servicios_lista.append((servicios[x][0],servicios[x][1], servicios[x][2],servicios[x][3], "checked",))
             except:
-                servicios_lista.append((servicios[x][0],servicios[x][1], servicios[x][2], "",))    
+                servicios_lista.append((servicios[x][0],servicios[x][1], servicios[x][2],servicios[x][3], "",))    
 
         print(servicios_lista)        
         print("Info del proyecto: "+str(info_proyecto))
@@ -276,16 +268,109 @@ def obtener_ensayos_orden(request):
     
 def reportes_GL_por_proyecto(request):
     if request.method == 'GET':
+        row = 7
+        col = 1
         try: 
             id_proyecto = int(request.GET.get('id_proyecto'))
             print(id_proyecto)
             with connection.cursor() as cursor:
-                e_granulometria = cursor.execute("SELECT G.* FROM ensayos_ensayoslaboratorio E INNER JOIN ensayos_granulometria G ON E.id_ensayo = G.id_ensayo_id WHERE E.id_proyecto_id = %s", (id_proyecto,))
-                columns = [col[0] for col in cursor.description]
+                encabezado = cursor.execute('''SELECT P.nombre, C.nombre, P.ubicacion, E.descripcion_visual, E.fecha FROM proyectos_proyectos P
+                                            INNER JOIN clientes_clientes C ON P.id_cliente_id = C.id_cliente
+                                            INNER JOIN ensayos_ensayoslaboratorio E ON P.id_proyecto = E.id_proyecto_id WHERE E.id_proyecto_id = %s
+                                            ''', (id_proyecto,)).fetchall()
+                e_granulometria = cursor.execute("SELECT M.medida, M.medida_mm, G.PRP, G.PeRP, G.PRA, G.PeQP FROM ensayos_ensayoslaboratorio E INNER JOIN ensayos_granulometria G ON E.id_ensayo = G.id_ensayo_id INNER JOIN ensayos_mallas M ON M.id_malla = G.id_malla_id WHERE E.id_proyecto_id = %s", (id_proyecto,)).fetchall()
+                limite_liquido = cursor.execute('''SELECT LL.no_golpes, F.K, LL.recipiente_no,LL.pw_mas_recip, LL.ps_mas_recip, LL.peso_seco, LL.agua, LL.limite_liquido
+                                                FROM ensayos_limiteliquido LL 
+                                                INNER JOIN ensayos_ensayoslaboratorio E ON E.id_ensayo = LL.id_ensayo_id 
+                                                INNER JOIN ensayos_factoresll F ON F.id_factor = LL.id_factor_id WHERE E.id_proyecto_id = %s''', (id_proyecto,)).fetchall()
+                limite_plastico = cursor.execute('''SELECT LP.recipiente_no,LP.pw_mas_recip, LP.ps_mas_recip, LP.peso_seco, LP.agua, LP.limite_plastico
+                                                FROM ensayos_limiteplastico LP 
+                                                INNER JOIN ensayos_ensayoslaboratorio E ON E.id_ensayo = LP.id_ensayo_id 
+                                                WHERE E.id_proyecto_id = %s''', (id_proyecto,)).fetchall()
+                #columns = [col[0] for col in cursor.description]
                 # Obtener todos los resultados de la consulta como una lista de diccionarios [{"key":value, "key2": value2}]
-                rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+                #rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-                print(rows)
+            print(encabezado)    
+            print("Info de la desgraciada tupla: "+str(e_granulometria))
+            print("Tamaño de la tupla: "+str(len(e_granulometria)))
+            print("Info limite plastico: "+str(limite_plastico))
+            print("Info limite liquido: "+str(limite_liquido))
+
+            workbook = xlsxwriter.Workbook('Granulometria_Proyecto'+str(id_proyecto)+'.xlsx')
+            worksheet = workbook.add_worksheet()
+
+            # ENCABEZADO
+            worksheet.write(1, 1, "Proyecto")
+            worksheet.merge_range(1,2,1,6,encabezado[0][0])
+            worksheet.write(2, 1, "Cliente")
+            worksheet.merge_range(2,2,2,6,encabezado[0][1])
+            worksheet.write(3, 1, "Ubicación")
+            worksheet.merge_range(3,2,3,6,encabezado[0][2])
+            worksheet.write(4, 1, "Descripcion visual")
+            worksheet.merge_range(4,2,4,6,encabezado[0][3])
+            worksheet.write(1, 7, "Fecha")
+            worksheet.write(1, 8, str(encabezado[0][4]))
+
+            # CONTENIDO GRANULOMETRIA 
+            worksheet.write(6, 1, "Pulgadas")
+            worksheet.write(6, 2, "mm")
+            worksheet.write(6, 3, "Peso retenido parcial (gms)")
+            worksheet.write(6, 4, "% retenido pacial")
+            worksheet.write(6, 5, "% retenido acumulado")
+            worksheet.write(6, 6, "% que pasa la malla")
+
+
+            for x in e_granulometria:
+                for i in x:
+                    worksheet.write(row, col, i)
+                    col+=1
+                row+=1
+                col = 1
+
+
+            row+=20
+            
+            inicio_ll = row
+            col = 2
+
+            worksheet.merge_range(inicio_ll-1,1,inicio_ll-1,3, "Límite líquido")
+            worksheet.merge_range(inicio_ll-1,4,inicio_ll-1,5, "Límite plastico")
+
+            worksheet.write(inicio_ll, 1, "No. de golpes de cierre")
+            worksheet.write(inicio_ll+1, 1, "Factor")
+            worksheet.write(inicio_ll+2, 1, "No. Tara")
+            worksheet.write(inicio_ll+3, 1, "P de tara + Mat Húmedo (gr)")
+            worksheet.write(inicio_ll+4, 1, "P de tara + Mat Seco (gr)")
+            #worksheet.write(inicio_ll+5, 1, "Peso del material húmedo (gr)")
+            worksheet.write(inicio_ll+5, 1, "Peso del material seco (gr)")
+            worksheet.write(inicio_ll+6, 1, "Peso del agua (gr)")
+            worksheet.write(inicio_ll+7, 1, "% límite liquido")
+            worksheet.write(inicio_ll+8, 1, "Resultado")
+            worksheet.write(inicio_ll+9, 2, "Límite liquido %: ")
+            worksheet.write(inicio_ll+9, 3, (limite_liquido[0][5]+limite_liquido[1][5])/2)
+            worksheet.write(inicio_ll+9, 4, "Límite plástico %: ")
+            worksheet.write(inicio_ll+9, 5, (limite_plastico[0][5]+limite_plastico[1][5])/2)
+            
+            for item in limite_liquido:
+                for i in item:
+                    worksheet.write(row, col, i)
+                    row+=1
+                col+=1
+                row = inicio_ll
+
+            # Re-asignando los valores para imprimir el limite plastico
+            row = inicio_ll+2
+            col = 4
+            for item_lp in limite_plastico:
+                for i in item_lp:
+                    worksheet.write(row, col, i)
+                    row+=1
+                col+=1
+                row = inicio_ll+2
+      
+            workbook.close()
+            #print(rows)
         except OperationalError as e:
             # Envia un error si la consulta falla
             return JsonResponse({'error': str(e)}, status=500)

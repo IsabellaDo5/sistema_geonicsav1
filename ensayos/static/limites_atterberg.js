@@ -199,28 +199,34 @@ function curvaFluidez(x_label, y_label, ctx) {
             labels: x_label,
             datasets: [
                 {
-                    label: "aaaa",
+                    label: "Limite liquido",
                     backgroundColor: escogerColor(),
                     borderColor: escogerColor(),
                     data: y_label,
-                    fill: false
+                    fill: false,
+                    pointStyle: 'circle',
+                    pointRadius: 10,
+                    pointHoverRadius: 15
                 }
             ]
         },
         options: {
             responsive: true,
-            title: {
-                display: true,
-                text: 'Curva Fluidez' // Puedes personalizar este texto
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Curva de Fluidez' // Puedes personalizar este texto
+                }
             },
             scales: {
                 x: {
+                    type: 'linear', // Asegúrate de que el tipo de eje sea 'linear'
                     display: true,
-                    beginAtZero: true, // Asegura que el eje X comience en 0
                     title: {
                         display: true,
                         text: 'No. de golpes' // Título del eje X
                     },
+                    min: 0, // Configura el mínimo valor del eje X
                     ticks: {
                         stepSize: 10 // Define el tamaño de los pasos en el eje X
                     }
